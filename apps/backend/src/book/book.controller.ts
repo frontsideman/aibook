@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Query, UseGuards } from '@nestjs/common';
 import { BookService } from './book.service';
-import { Prisma } from '@repo/database';
+import { Prisma, BookStyle } from '@repo/database';
 import { SubscriptionGuard } from '../payment/subscription.guard';
 
 export class SearchQueryDto {
@@ -27,7 +27,7 @@ export class BookController {
     }
 
     if (query.style) {
-      where.style = { contains: query.style, mode: 'insensitive' };
+      where.style = query.style as BookStyle;
     }
 
     return this.bookService.findAll({

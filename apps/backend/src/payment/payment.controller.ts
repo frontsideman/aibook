@@ -7,7 +7,7 @@ export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Post('webhook')
-  async webhook(@Body() event: any, @Req() req: Request, @Res() res: Response) {
+  async webhook(@Body() event: any, @Res() res: Response) {
     // In production, you would use the raw body to verify Stripe signature
     // For this prototype, we'll accept the JSON body directly
     try {
@@ -15,7 +15,8 @@ export class PaymentController {
       res.status(HttpStatus.OK).json(result);
     } catch (error) {
       console.error('Webhook error:', error);
-      res.status(HttpStatus.BAD_REQUEST).send(`Webhook Error: ${error.message}`);
+      const message = error instanceof Error ? error.message : 'Unknown error';
+      res.status(HttpStatus.BAD_REQUEST).send(`Webhook Error: ${message}`);
     }
   }
 }

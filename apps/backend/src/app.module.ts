@@ -1,14 +1,13 @@
 import { Module } from '@nestjs/common';
 import { BullModule } from '@nestjs/bullmq';
-import { PrismaService } from './prisma.service';
-import { ChildProfileService } from './child-profile/child-profile.service';
-import { ChildProfileController } from './child-profile/child-profile.controller';
 import { AiModule } from './ai/ai.module';
 import { BookGenerationModule } from './book-generation/book-generation.module';
 import { StorageModule } from './storage/storage.module';
 import { PdfModule } from './pdf/pdf.module';
 import { BookModule } from './book/book.module';
 import { PaymentModule } from './payment/payment.module';
+import { ChildProfileModule } from './child-profile/child-profile.module';
+import { PrismaModule } from './prisma.module';
 
 @Module({
   imports: [
@@ -18,15 +17,16 @@ import { PaymentModule } from './payment/payment.module';
         port: parseInt(process.env.REDIS_PORT || '6379'),
       },
     }),
+    PrismaModule,
     AiModule,
     BookGenerationModule,
     StorageModule,
     PdfModule,
     BookModule,
     PaymentModule,
+    ChildProfileModule,
   ],
-  controllers: [ChildProfileController],
-  providers: [PrismaService, ChildProfileService],
-  exports: [PrismaService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

@@ -22,11 +22,13 @@ model ChildProfile {
   age       Int
   gender    String
   interests String[]
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   books     Book[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId])
 }
 
 enum BookStatus {
@@ -41,19 +43,32 @@ enum BookType {
   MANUAL
 }
 
+enum BookStyle {
+  WATERCOLOR
+  CARTOON
+  REALISTIC
+  PIXAR
+  SKETCH
+  MANGA
+  COMIC
+}
+
 model Book {
   id        String     @id @default(cuid())
   title     String
   status    BookStatus @default(DRAFT)
   type      BookType   @default(AI_ADAPTED)
-  style     String
+  style     BookStyle
   pages     Page[]
-  user      User       @relation(fields: [userId], references: [id])
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
-  child     ChildProfile @relation(fields: [childId], references: [id])
+  child     ChildProfile @relation(fields: [childId], references: [id], onDelete: Cascade)
   childId   String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+
+  @@index([userId])
+  @@index([childId])
 }
 
 model Page {
@@ -61,18 +76,23 @@ model Page {
   pageNumber   Int
   textContent  String
   illustrations Illustration[]
-  book         Book           @relation(fields: [bookId], references: [id])
+  book         Book           @relation(fields: [bookId], references: [id], onDelete: Cascade)
   bookId       String
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
+
+  @@unique([bookId, pageNumber])
+  @@index([bookId])
 }
 
 model Illustration {
   id        String   @id @default(cuid())
   url       String?
   prompt    String
-  page      Page     @relation(fields: [pageId], references: [id])
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
   pageId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([pageId])
 }

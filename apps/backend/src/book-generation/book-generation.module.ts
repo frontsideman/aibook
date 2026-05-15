@@ -1,17 +1,14 @@
 import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bullmq';
 import { BookProcessor } from './book.processor';
 import { AiModule } from '../ai/ai.module';
-import { PrismaService } from '../prisma.service';
+import { QueueModule } from '../queue/queue.module';
 
 @Module({
   imports: [
-    BullModule.registerQueue({
-      name: 'book-generation',
-    }),
+    QueueModule,
     AiModule,
   ],
-  providers: [BookProcessor, PrismaService],
-  exports: [BullModule],
+  providers: [BookProcessor],
+  exports: [QueueModule],
 })
 export class BookGenerationModule {}

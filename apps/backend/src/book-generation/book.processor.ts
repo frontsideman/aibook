@@ -46,7 +46,7 @@ export class BookProcessor extends WorkerHost {
         },
       });
 
-      const childFeatures = `${book.child.age} year old ${book.child.gender}, interested in ${book.child.interests.join(', ')}`;
+      const childFeatures = `${book.child.age} year old ${book.child.gender}, interested in ${(book.child.interests || []).join(', ')}`;
       const numIllustrations = (book.style === 'MANGA' || book.style === 'COMIC') ? 2 : 1;
 
       for (let j = 0; j < numIllustrations; j++) {
