@@ -9,7 +9,7 @@ export class ChildProfileService {
     name: string;
     age: number;
     gender: string;
-    interests: string;
+    interests: string[];
     userId: string;
   }) {
     return this.prisma.client.childProfile.create({
@@ -33,7 +33,7 @@ export class ChildProfileService {
     name: string;
     age: number;
     gender: string;
-    interests: string;
+    interests: string[];
   }>) {
     return this.prisma.client.childProfile.update({
       where: { id },

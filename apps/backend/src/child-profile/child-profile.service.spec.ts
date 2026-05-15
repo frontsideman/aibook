@@ -41,7 +41,7 @@ describe('ChildProfileService', () => {
         name: 'John',
         age: 5,
         gender: 'boy',
-        interests: 'dinosaurs',
+        interests: ['dinosaurs'],
         userId: 'user123',
       };
       const expectedResult = { id: 'cp123', ...dto };

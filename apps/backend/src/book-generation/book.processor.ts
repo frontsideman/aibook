@@ -46,19 +46,27 @@ export class BookProcessor extends WorkerHost {
         },
       });
 
-      let illustrationPrompt = '';
-      if (book.style === 'MANGA' || book.style === 'COMIC') {
-        illustrationPrompt = `Manga style, high contrast, black and white, ${trimmedContent}`;
-      } else {
-        illustrationPrompt = `${book.style} style, ${trimmedContent}`;
-      }
+      const childFeatures = `${book.child.age} year old ${book.child.gender}, interested in ${book.child.interests.join(', ')}`;
+      const numIllustrations = (book.style === 'MANGA' || book.style === 'COMIC') ? 2 : 1;
 
-      await this.prisma.client.illustration.create({
-        data: {
-          pageId: page.id,
-          prompt: illustrationPrompt,
-        },
-      });
+      for (let j = 0; j < numIllustrations; j++) {
+        let illustrationPrompt = '';
+        if (book.style === 'MANGA' || book.style === 'COMIC') {
+          illustrationPrompt = `Manga style, high contrast, black and white, featuring a ${childFeatures}, panel ${j + 1}, ${trimmedContent}`;
+        } else {
+          illustrationPrompt = `${book.style} style, featuring a ${childFeatures}, ${trimmedContent}`;
+        }
+
+        const imageUrl = await this.aiService.generateImage(illustrationPrompt);
+
+        await this.prisma.client.illustration.create({
+          data: {
+            pageId: page.id,
+            prompt: illustrationPrompt,
+            url: imageUrl,
+          },
+        });
+      }
     }
 
     await this.prisma.client.book.update({

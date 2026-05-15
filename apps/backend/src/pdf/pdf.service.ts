@@ -25,6 +25,12 @@ export class PdfService {
         if (page.imageUrl) {
           try {
             const response = await fetch(page.imageUrl);
+            
+            const contentType = response.headers.get('Content-Type');
+            if (!contentType || !contentType.startsWith('image/')) {
+              throw new Error(`Invalid content type: ${contentType} for image ${page.imageUrl}`);
+            }
+
             const arrayBuffer = await response.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);
             

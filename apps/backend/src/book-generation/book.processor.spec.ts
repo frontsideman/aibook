@@ -33,6 +33,7 @@ describe('BookProcessor', () => {
   };
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BookProcessor,
@@ -55,16 +56,17 @@ describe('BookProcessor', () => {
     const mockBook = {
       id: bookId,
       title: 'Test Book',
-      style: 'MANGA',
+      style: 'WATERCOLOR',
       child: {
         name: 'Alice',
         age: 5,
-        interests: 'dinosaurs',
+        interests: ['dinosaurs'],
       },
     };
 
     mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
     mockAiService.generateStory.mockResolvedValue('Page 1: Content 1\nPage 2: Content 2\nPage 3: Content 3');
+    mockAiService.generateImage.mockResolvedValue('https://example.com/image.jpg');
     mockPrismaClient.page.create.mockImplementation(({ data }) => Promise.resolve({ id: `page-${data.pageNumber}`, ...data }));
 
     const job = {
@@ -79,6 +81,7 @@ describe('BookProcessor', () => {
     });
 
     expect(aiService.generateStory).toHaveBeenCalled();
+    expect(aiService.generateImage).toHaveBeenCalledTimes(3);
     
     // Check if pages were created
     expect(prisma.client.page.create).toHaveBeenCalledTimes(3);
@@ -90,7 +93,7 @@ describe('BookProcessor', () => {
     });
   });
 
-  it('should use manga style prompt prefix when style is MANGA', async () => {
+  it('should generate 2 illustrations per page when style is MANGA', async () => {
     const bookId = 'manga-book-id';
     const mockBook = {
       id: bookId,
@@ -99,12 +102,13 @@ describe('BookProcessor', () => {
       child: {
         name: 'Bob',
         age: 7,
-        interests: 'robots',
+        interests: ['robots'],
       },
     };
 
     mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
     mockAiService.generateStory.mockResolvedValue('Page 1: Robots fighting');
+    mockAiService.generateImage.mockResolvedValue('https://example.com/manga-image.jpg');
     mockPrismaClient.page.create.mockResolvedValue({ id: 'page-1' });
 
     const job = {
@@ -113,10 +117,14 @@ describe('BookProcessor', () => {
 
     await processor.process(job);
 
+    expect(aiService.generateImage).toHaveBeenCalledTimes(2);
+    expect(prisma.client.illustration.create).toHaveBeenCalledTimes(2);
+
     expect(prisma.client.illustration.create).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
           prompt: expect.stringContaining('Manga style, high contrast, black and white'),
+          url: 'https://example.com/manga-image.jpg',
         }),
       }),
     );

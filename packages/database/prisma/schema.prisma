@@ -22,7 +22,7 @@ model ChildProfile {
   name      String
   age       Int
   gender    String
-  interests String
+  interests String[]
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   books     Book[]

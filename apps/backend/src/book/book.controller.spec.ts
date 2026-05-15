@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BookController } from './book.controller';
 import { BookService } from './book.service';
+import { PrismaService } from '../prisma.service';
 
 describe('BookController', () => {
   let controller: BookController;
@@ -8,15 +9,29 @@ describe('BookController', () => {
 
   const mockBookService = {
     findAll: jest.fn(),
+    triggerGeneration: jest.fn(),
+  };
+
+  const mockPrismaService = {
+    client: {
+      user: {
+        findUnique: jest.fn(),
+      },
+    },
   };
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       controllers: [BookController],
       providers: [
         {
           provide: BookService,
           useValue: mockBookService,
+        },
+        {
+          provide: PrismaService,
+          useValue: mockPrismaService,
         },
       ],
     }).compile();

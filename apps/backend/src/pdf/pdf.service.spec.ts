@@ -15,7 +15,10 @@ describe('PdfService', () => {
     global.fetch = jest.fn().mockImplementation(() =>
       Promise.resolve({
         arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
-      } as Response)
+        headers: {
+          get: (name: string) => name === 'Content-Type' ? 'image/png' : null,
+        },
+      } as any)
     );
   });
 
