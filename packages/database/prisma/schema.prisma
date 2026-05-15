@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String         @id @default(cuid())
+  email              String         @unique
+  subscriptionActive Boolean        @default(false)
+  childProfiles      ChildProfile[]
+  books              Book[]
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+}
+
+model ChildProfile {
+  id        String   @id @default(cuid())
+  name      String
+  age       Int
+  gender    String
+  interests String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  books     Book[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum BookStatus {
+  DRAFT
+  GENERATING
+  REVIEW
+  COMPLETED
+}
+
+enum BookType {
+  AI_ADAPTED
+  MANUAL
+}
+
+model Book {
+  id        String     @id @default(cuid())
+  title     String
+  status    BookStatus @default(DRAFT)
+  type      BookType   @default(AI_ADAPTED)
+  style     String
+  pages     Page[]
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String
+  child     ChildProfile @relation(fields: [childId], references: [id])
+  childId   String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Page {
+  id           String         @id @default(cuid())
+  pageNumber   Int
+  textContent  String
+  illustrations Illustration[]
+  book         Book           @relation(fields: [bookId], references: [id])
+  bookId       String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Illustration {
+  id        String   @id @default(cuid())
+  url       String?
+  prompt    String
+  page      Page     @relation(fields: [pageId], references: [id])
+  pageId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

@@ -5,15 +5,19 @@
 
 # dependencies
 /node_modules
+node_modules
 /.pnp
 .pnp.js
 
-# testing
+# build and test output
 /coverage
-
-# next.js
+dist
+.next
 /.next/
 /out/
+.turbo
+.turbo/
+*.log
 
 # production
 /build
@@ -30,6 +34,8 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env.*
+!.env.example
 
 # vercel
 .vercel
@@ -37,6 +43,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-# turborepo
-.turbo/
