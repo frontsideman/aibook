@@ -7,6 +7,8 @@ import { AiModule } from './ai/ai.module';
 import { BookGenerationModule } from './book-generation/book-generation.module';
 import { StorageModule } from './storage/storage.module';
 import { PdfModule } from './pdf/pdf.module';
+import { BookModule } from './book/book.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { PdfModule } from './pdf/pdf.module';
     BookGenerationModule,
     StorageModule,
     PdfModule,
+    BookModule,
+    PaymentModule,
   ],
   controllers: [ChildProfileController],
   providers: [PrismaService, ChildProfileService],
