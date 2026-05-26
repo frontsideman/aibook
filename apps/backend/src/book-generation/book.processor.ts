@@ -13,8 +13,8 @@ export class BookProcessor extends WorkerHost {
     super();
   }
 
-  async process(job: Job<{ bookId: string }>): Promise<any> {
-    const { bookId } = job.data;
+  async process(job: Job<{ bookId: string; parentFeedback?: string }>): Promise<any> {
+    const { bookId, parentFeedback } = job.data;
 
     const book = await this.prisma.client.book.findUnique({
       where: { id: bookId },
@@ -25,23 +25,33 @@ export class BookProcessor extends WorkerHost {
       throw new Error(`Book with id ${bookId} not found`);
     }
 
-    const storyPrompt = `Generate a children's book story titled "${book.title}" for a ${book.child.age} year old ${book.child.gender} who likes ${book.child.interests}. 
-    The story should be between 3 and 20 pages long. 
-    Format each page as "Page X: [content]".`;
+    let storyPrompt = `Generate a children's book story titled "${book.title}" for a ${book.child.age} year old ${book.child.gender} who likes ${(book.child.interests || []).join(', ')}.`;
+
+    if (book.tone) {
+      storyPrompt += ` The tone should be ${book.tone.toLowerCase()}.`;
+    }
+
+    if (book.parentComments) {
+      storyPrompt += ` Parent instructions: ${book.parentComments}.`;
+    }
+
+    if (parentFeedback) {
+      storyPrompt += ` The parent requested changes: ${parentFeedback}. Revise the story accordingly.`;
+    }
+
+    storyPrompt += ` The story should be between 3 and 20 pages long. Format each page as "Page X: [content]".`;
 
     const storyText = await this.aiService.generateStory(storyPrompt);
-
-    // Basic splitting logic: split by "Page X:" and filter out empty strings
     const pagesContent = storyText.split(/Page \d+:/).map(c => c.trim()).filter(content => content.length > 0);
 
     for (let i = 0; i < pagesContent.length; i++) {
       const trimmedContent = pagesContent[i];
       const pageNumber = i + 1;
-      
+
       const page = await this.prisma.client.page.create({
         data: {
           bookId: book.id,
-          pageNumber: pageNumber,
+          pageNumber,
           textContent: trimmedContent,
         },
       });
@@ -58,7 +68,6 @@ export class BookProcessor extends WorkerHost {
         }
 
         const imageUrl = await this.aiService.generateImage(illustrationPrompt);
-
         await this.prisma.client.illustration.create({
           data: {
             pageId: page.id,
