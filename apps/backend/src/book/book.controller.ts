@@ -1,15 +1,10 @@
-import { Controller, Get, Post, Body, Query, UseGuards } from '@nestjs/common';
-import { BookService } from './book.service';
-import { Prisma, BookStyle } from '@repo/database';
+import {
+  Controller, Get, Post, Patch, Body, Param, Query,
+  UseGuards, Req, ParseIntPipe,
+} from '@nestjs/common';
+import { BookService, CreateBookDto, SearchQueryDto, PageEditDto, RegenerateDto } from './book.service';
 import { SubscriptionGuard } from '../payment/subscription.guard';
 import { MockAuthGuard } from '../mock-auth.guard';
-
-export class SearchQueryDto {
-  title?: string;
-  style?: string;
-  page?: string | number;
-  limit?: string | number;
-}
 
 @Controller('books')
 @UseGuards(MockAuthGuard)
@@ -17,32 +12,53 @@ export class BookController {
   constructor(private readonly bookService: BookService) {}
 
   @Get()
-  async findAll(@Query() query: SearchQueryDto) {
+  async findAll(@Query() query: SearchQueryDto, @Req() req: any) {
     const page = parseInt(query.page as string) || 1;
     const limit = parseInt(query.limit as string) || 10;
     const skip = (page - 1) * limit;
 
-    const where: Prisma.BookWhereInput = {};
+    const where: any = { userId: req.user.id };
+    if (query.title) where.title = { contains: query.title, mode: 'insensitive' };
+    if (query.style) where.style = query.style;
+    if (query.status) where.status = query.status;
+    if (query.childId) where.childId = query.childId;
 
-    if (query.title) {
-      where.title = { contains: query.title, mode: 'insensitive' };
-    }
-
-    if (query.style) {
-      where.style = query.style as BookStyle;
-    }
-
-    return this.bookService.findAll({
-      skip,
-      take: limit,
-      where,
-    });
+    return this.bookService.findAll({ skip, take: limit, where });
   }
 
   @Post('generate')
   @UseGuards(SubscriptionGuard)
-  async generate(@Body() body: { bookId: string }) {
-    // This will trigger the BullMQ job via the BookService
-    return this.bookService.triggerGeneration(body.bookId);
+  async generate(@Body() body: CreateBookDto, @Req() req: any) {
+    return this.bookService.createAndGenerate(body, req.user.id);
+  }
+
+  @Get(':id/preview')
+  async preview(@Param('id') id: string) {
+    return this.bookService.getPreview(id);
+  }
+
+  @Patch(':id/pages/:pageNumber')
+  async editPage(
+    @Param('id') id: string,
+    @Param('pageNumber', ParseIntPipe) pageNumber: number,
+    @Body() body: PageEditDto,
+  ) {
+    return this.bookService.editPage(id, pageNumber, body);
+  }
+
+  @Patch(':id/regenerate')
+  async regenerate(@Param('id') id: string, @Body() body: RegenerateDto) {
+    return this.bookService.regenerate(id, body);
+  }
+
+  @Post(':id/approve')
+  @UseGuards(SubscriptionGuard)
+  async approve(@Param('id') id: string) {
+    return this.bookService.approveBook(id);
+  }
+
+  @Get(':id/pdf')
+  async getPdf(@Param('id') id: string) {
+    return this.bookService.getPdfUrl(id);
   }
 }
