@@ -1,19 +1,20 @@
-import { Controller, Get, Post, Body, Param, Delete, Put, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, Req, UseGuards } from '@nestjs/common';
 import { ChildProfileService } from './child-profile.service';
+import { MockAuthGuard } from '../mock-auth.guard';
 
 @Controller('child-profiles')
+@UseGuards(MockAuthGuard)
 export class ChildProfileController {
   constructor(private readonly childProfileService: ChildProfileService) {}
 
   @Post()
-  create(@Body() createDto: any) {
-    // userId will come from Auth later, using a mock for now
-    return this.childProfileService.create({ ...createDto, userId: 'mock-user-id' });
+  create(@Body() createDto: any, @Req() req: any) {
+    return this.childProfileService.create({ ...createDto, userId: req.user.id });
   }
 
   @Get()
-  findAll(@Query('userId') userId: string) {
-    return this.childProfileService.findAll(userId || 'mock-user-id');
+  findAll(@Req() req: any) {
+    return this.childProfileService.findAll(req.user.id);
   }
 
   @Get(':id')
@@ -21,7 +22,7 @@ export class ChildProfileController {
     return this.childProfileService.findOne(id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   update(@Param('id') id: string, @Body() updateDto: any) {
     return this.childProfileService.update(id, updateDto);
   }

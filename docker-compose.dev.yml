@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: aibook
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - '6379:6379'
+
+  backend:
+    image: node:24-alpine
+    working_dir: /app
+    command: npm run dev --filter=backend
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      DATABASE_URL: postgresql://user:password@db:5432/aibook?schema=public
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      PORT: 3001
+      MOCK_AUTH: 'true'
+    ports:
+      - '3001:3001'
+    depends_on:
+      - db
+      - redis
+
+  frontend:
+    image: node:24-alpine
+    working_dir: /app
+    command: npm run dev --filter=frontend
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/frontend/.next
+    environment:
+      BACKEND_URL: http://backend:3001
+      PORT: 3000
+    ports:
+      - '3000:3000'
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

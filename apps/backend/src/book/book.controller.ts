@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Query, UseGuards } from '@nestjs/common';
 import { BookService } from './book.service';
 import { Prisma, BookStyle } from '@repo/database';
 import { SubscriptionGuard } from '../payment/subscription.guard';
+import { MockAuthGuard } from '../mock-auth.guard';
 
 export class SearchQueryDto {
   title?: string;
@@ -11,6 +12,7 @@ export class SearchQueryDto {
 }
 
 @Controller('books')
+@UseGuards(MockAuthGuard)
 export class BookController {
   constructor(private readonly bookService: BookService) {}
 

@@ -1,0 +1,25 @@
+# Builder stage
+FROM node:24-alpine AS builder
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+COPY . .
+RUN npm ci
+RUN npx turbo run build --filter=frontend
+
+# Runner stage
+FROM node:24-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+
+# Next.js standalone output includes only necessary files
+# The structure usually puts the entry point at apps/frontend/server.js 
+# but it moves node_modules and other things to the standalone root.
+COPY --from=builder /app/apps/frontend/.next/standalone ./
+COPY --from=builder /app/apps/frontend/.next/static ./apps/frontend/.next/static
+COPY --from=builder /app/apps/frontend/public ./apps/frontend/public
+
+EXPOSE 3000
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
+
+CMD ["node", "apps/frontend/server.js"]

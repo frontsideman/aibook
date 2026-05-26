@@ -1,0 +1,24 @@
+# Builder stage
+FROM node:24-alpine AS builder
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+COPY . .
+RUN npm ci
+# Build backend and its workspace dependencies (like @repo/database)
+RUN npx turbo run build --filter=backend...
+
+# Runner stage
+FROM node:24-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+
+# Copy necessary files
+# Note: In a real production setup, we might use 'turbo prune' for a smaller footprint,
+# but for this prototype, copying the built artifacts is reliable.
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/packages/database ./packages/database
+COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
+COPY --from=builder /app/package.json ./package.json
+
+EXPOSE 3001
+CMD ["node", "apps/backend/dist/main.js"]

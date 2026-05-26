@@ -1,0 +1,15 @@
+node_modules
+dist
+.next
+.git
+.turbo
+*.log
+.env
+.env.*
+.DS_Store
+Dockerfile*
+docker-compose*
+README.md
+GEMINI.md
+DRAFT.md
+docs
