@@ -53,12 +53,33 @@ enum BookStyle {
   COMIC
 }
 
+enum Tone {
+  WARM
+  EDUCATIONAL
+  PLAYFUL
+  MAGICAL
+  ADVENTUROUS
+}
+
+model StoryLibrary {
+  id          String   @id @default(cuid())
+  title       String   @unique
+  description String?
+  promptHint  String?
+  createdAt   DateTime @default(now())
+}
+
 model Book {
   id        String     @id @default(cuid())
   title     String
   status    BookStatus @default(DRAFT)
   type      BookType   @default(AI_ADAPTED)
   style     BookStyle
+  tone       Tone?
+  parentComments String?
+  parentFeedback Json?
+  pdfUrl     String?
+  approvedAt DateTime?
   pages     Page[]
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String

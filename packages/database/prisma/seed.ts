@@ -1,0 +1,129 @@
+import { createPrismaClient } from '../index';
+
+const stories = [
+  { title: 'The Little Red Riding Hood', description: 'A girl meets a wolf on her way to grandmother\'s house', promptHint: 'Classic tale about a girl in a red cloak, a wolf, a grandmother, and a woodcutter' },
+  { title: 'Cinderella', description: 'A kind girl goes to the ball with the help of her fairy godmother', promptHint: 'Young girl mistreated by stepfamily, fairy godmother, glass slipper, prince' },
+  { title: 'Snow White and the Seven Dwarfs', description: 'A princess finds refuge with seven dwarfs', promptHint: 'Jealous queen, magic mirror, poisoned apple, seven dwarfs, prince\'s kiss' },
+  { title: 'The Three Little Pigs', description: 'Three pigs build houses to escape the big bad wolf', promptHint: 'Straw house, stick house, brick house, wolf blows houses down' },
+  { title: 'Jack and the Beanstalk', description: 'A boy trades a cow for magic beans that grow a giant beanstalk', promptHint: 'Magic beans, beanstalk, giant in the sky, golden eggs, harp' },
+  { title: 'Goldilocks and the Three Bears', description: 'A girl enters the house of three bears', promptHint: 'Porridge too hot too cold just right, chair breaks, bed, bears come home' },
+  { title: 'Hansel and Gretel', description: 'Two siblings outwit a witch in the forest', promptHint: 'Breadcrumb trail, gingerbread house, witch, oven, candy and treats' },
+  { title: 'The Princess and the Pea', description: 'A prince finds a real princess through a hidden pea', promptHint: 'Royal test, many mattresses, tiny pea, sensitivity proves royalty' },
+  { title: 'The Ugly Duckling', description: 'An odd-looking duckling grows into a beautiful swan', promptHint: 'Different from siblings, teased, grows up, discovers true identity as swan' },
+  { title: 'The Emperor\'s New Clothes', description: 'Two weavers trick an emperor with invisible clothes', promptHint: 'Vanity, invisible fabric, nobody admits truth, child speaks honestly' },
+  { title: 'Beauty and the Beast', description: 'A young woman learns to love a cursed prince', promptHint: 'Enchanted castle, cursed beast, rose, true love breaks spell' },
+  { title: 'The Little Mermaid', description: 'A mermaid princess trades her voice for legs', promptHint: 'Underwater kingdom, sea witch, human legs, voice sacrificed, true love' },
+  { title: 'Sleeping Beauty', description: 'A princess cursed to sleep until true love\'s kiss', promptHint: 'Curse from evil fairy, spinning wheel, hundred year sleep, prince breaks spell' },
+  { title: 'Aladdin and the Magic Lamp', description: 'A poor boy finds a magic lamp with a genie', promptHint: 'Magic lamp, genie, wishes, princess Jasmine, evil sorcerer, flying carpet' },
+  { title: 'Ali Baba and the Forty Thieves', description: 'A woodcutter discovers a thieves\' secret cave', promptHint: 'Open sesame, cave of treasures, forty thieves, clever servant girl' },
+  { title: 'The Wolf and the Seven Young Kids', description: 'A wolf tricks seven baby goats', promptHint: 'Mother goat, wolf disguises voice, white paw, swallowed kids rescued' },
+  { title: 'Rapunzel', description: 'A girl with long hair is trapped in a tower', promptHint: 'Long golden hair, tower, witch, prince climbs hair, escape' },
+  { title: 'Rumpelstiltskin', description: 'A miller\'s daughter must guess a strange man\'s name', promptHint: 'Straw spun into gold, mysterious helper, guessing name, baby bargain' },
+  { title: 'The Frog Prince', description: 'A princess befriends a frog who is a prince', promptHint: 'Golden ball, well, frog promise, princess kiss, prince revealed' },
+  { title: 'Puss in Boots', description: 'A clever cat helps his master become a nobleman', promptHint: 'Talking cat, boots, gifts for king, ogre turns into mouse' },
+  { title: 'The Snow Queen', description: 'A girl travels to the ice palace to rescue her friend', promptHint: 'Magic mirror shard, frozen heart, Kay, Gerda, Snow Queen\'s palace' },
+  { title: 'The Nightingale', description: 'An emperor discovers the beauty of a real nightingale\'s song', promptHint: 'Mechanical bird vs real bird, emperor\'s court, song saves emperor' },
+  { title: 'The Steadfast Tin Soldier', description: 'A one-legged toy soldier falls in love with a paper dancer', promptHint: 'Tin soldier, paper ballerina, adventures, fish, fireplace' },
+  { title: 'Thumbelina', description: 'A tiny girl born from a flower has many adventures', promptHint: 'Tiny girl, flower, toad, fish, mole, swallow, flower prince' },
+  { title: 'Pinocchio', description: 'A wooden puppet wants to become a real boy', promptHint: 'Geppetto, talking cricket, lying nose grows, whale, becoming real' },
+  { title: 'Peter Pan', description: 'A boy who never grows up takes children to Neverland', promptHint: 'Neverland, Wendy, Tinker Bell, Captain Hook, crocodile, flying' },
+  { title: 'Alice in Wonderland', description: 'A girl falls down a rabbit hole into a fantasy world', promptHint: 'Rabbit hole, shrinking and growing, Mad Hatter, Queen of Hearts, Cheshire Cat' },
+  { title: 'The Wizard of Oz', description: 'A girl travels to a magical land to find her way home', promptHint: 'Kansas tornado, yellow brick road, Scarecrow, Tin Man, Cowardly Lion, Emerald City' },
+  { title: 'The Jungle Book', description: 'A boy raised by wolves in the Indian jungle', promptHint: 'Mowgli, Baloo the bear, Bagheera the panther, Shere Khan the tiger' },
+  { title: 'The Little Prince', description: 'A prince from a tiny asteroid learns about life and love', promptHint: 'Little prince, asteroid B-612, rose, fox, desert, what is essential' },
+  { title: 'The Selfish Giant', description: 'A giant learns the joy of sharing his garden with children', promptHint: 'Giant\'s garden, perpetual winter, children return, spring comes back' },
+  { title: 'The Happy Prince', description: 'A statue and a swallow help the poor', promptHint: 'Golden statue, sapphire eyes, swallow delivers gifts to needy, heaven' },
+  { title: 'The Elves and the Shoemaker', description: 'Elves secretly help a poor shoemaker', promptHint: 'Poor shoemaker, elves make shoes at night, beautiful shoes, grateful tailor' },
+  { title: 'The Gingerbread Man', description: 'A gingerbread cookie runs away from everyone', promptHint: 'Run run as fast as you can, fox, river crossing, caught' },
+  { title: 'Chicken Little', description: 'A chicken thinks the sky is falling', promptHint: 'Acorn falls, sky is falling, Foxy Loxy, tricked' },
+  { title: 'The Boy Who Cried Wolf', description: 'A boy learns the danger of lying', promptHint: 'Shepherd boy, false alarms, wolf really comes, nobody believes' },
+  { title: 'The Tortoise and the Hare', description: 'A slow tortoise wins a race against a fast hare', promptHint: 'Overconfident hare, naps during race, steady tortoise wins' },
+  { title: 'The Lion and the Mouse', description: 'A tiny mouse helps a mighty lion', promptHint: 'Mouse wakes lion, lion spares mouse, mouse chews net, kindness repaid' },
+  { title: 'The Ant and the Grasshopper', description: 'A hardworking ant and a lazy grasshopper', promptHint: 'Summer preparation, grasshopper plays, ant works, winter comes' },
+  { title: 'The Fox and the Grapes', description: 'A fox cannot reach grapes and pretends they are sour', promptHint: 'Hungry fox, high grapes, cannot reach, calls them sour, sour grapes' },
+  { title: 'The Town Mouse and the Country Mouse', description: 'Two mice discover each other\'s way of living', promptHint: 'Country mouse visits town, luxurious but dangerous, prefers simple safe life' },
+  { title: 'The Crow and the Pitcher', description: 'A clever crow figures out how to drink water', promptHint: 'Thirsty crow, pitcher with low water, drops stones, water rises' },
+  { title: 'The North Wind and the Sun', description: 'Kindness wins over force', promptHint: 'Competition, wind blows coat off fails, sun warms traveler, coat removed' },
+  { title: 'The Little Red Hen', description: 'A hen who does all the work reaps all the reward', promptHint: 'Planting wheat, nobody helps, harvest, bake bread, eat alone' },
+  { title: 'Stone Soup', description: 'Soldiers trick a village into making soup from a stone', promptHint: 'Stone in pot, villagers add ingredients, community feast, sharing' },
+  { title: 'The Bremen Town Musicians', description: 'Four aging animals become musicians together', promptHint: 'Donkey, dog, cat, rooster, outwit robbers, Bremen' },
+  { title: 'The Musicians of Bremen', description: 'Same as The Bremen Town Musicians - classic animal band tale', promptHint: 'Donkey, dog, cat, rooster, outwit robbers, Bremen' },
+  { title: 'The Twelve Dancing Princesses', description: 'Princesses who wear out their shoes every night', promptHint: 'Worn shoes every morning, soldier solves mystery, secret underground ball' },
+  { title: 'The Six Swans', description: 'A sister must break a spell turning her brothers into swans', promptHint: 'Six brothers turned to swans, sister weaves nettle shirts, silence spell' },
+  { title: 'Mother Hulda', description: 'A girl is rewarded for her kindness', promptHint: 'Well, magic realm, shake feather bed for snow, gold reward, lazy sister punished' },
+  { title: 'The Goose Girl', description: 'A princess is forced to trade places with her maid', promptHint: 'Princess and maid switch roles, talking horse, wind blows hat, truth revealed' },
+  { title: 'The Brave Little Tailor', description: 'A tailor who kills seven flies with one blow', promptHint: 'Seven with one blow, giants, unicorn, boar, becomes king' },
+  { title: 'The Emperor and the Nightingale', description: 'Chinese emperor discovers true beauty', promptHint: 'Mechanical bird vs real bird, emperor\'s court, song saves emperor' },
+  { title: 'The Snow White and Rose Red', description: 'Two sisters befriend a kind bear', promptHint: 'Two kind sisters, bear visitor, wicked dwarf, bear turns to prince' },
+  { title: 'The Seven Ravens', description: 'A sister searches for her seven lost brothers', promptHint: 'Seven brothers turned to ravens, sister journeys to end of world, star glass mountain' },
+  { title: 'Jorinde and Joringel', description: 'A man rescues his love from a witch', promptHint: 'Witch turns maidens to birds, magic flower breaks spell' },
+  { title: 'The Spindle, the Shuttle and the Needle', description: 'Magic tools help a kind girl find love', promptHint: 'Orphan girl, magic tools weave carpet, prince follows, marriage' },
+  { title: 'The Three Spinners', description: 'Three strange women help a lazy girl', promptHint: 'Lazy girl, three women with strange features, spinning contest, queen' },
+  { title: 'The Lambkin and the Little Fish', description: 'Siblings transformed into animals stay together', promptHint: 'Stepsister transforms brother and stepsister, care for each other, spell breaks' },
+  { title: 'The Water of Life', description: 'A prince seeks healing water for his father', promptHint: 'Sick king, healing water, three princes, dwarf helper, quest' },
+  { title: 'The White Snake', description: 'A servant gains animal language understanding', promptHint: 'Eats white snake, understands animals, princess puzzle, three tasks' },
+  { title: 'The Star Money', description: 'A girl who gives away everything is rewarded', promptHint: 'Orphan girl, gives away all possessions, stars fall as coins, rich forever' },
+  { title: 'The Willow-Wren', description: 'Tiny bird becomes king of all birds', promptHint: 'Bird contest, highest flyer, smallest bird hides on eagle, wins' },
+  { title: 'The Golden Bird', description: 'A prince must capture a golden bird', promptHint: 'Golden bird, fox helper, three brothers, castle tasks' },
+  { title: 'The Queen Bee', description: 'Kindness to animals helps youngest brother succeed', promptHint: 'Three brothers, ants fish bees helped, princess tasks solved with animal aid' },
+  { title: 'The Three Feathers', description: 'The simple youngest son inherits the kingdom', promptHint: 'Three feathers, youngest son seen as simple, magic toad helps, wins kingdom' },
+  { title: 'The Gold-Children', description: 'Children born with golden stars fulfill their destiny', promptHint: 'Golden children, fisherman, knight, adventures and reunion' },
+  { title: 'Rapunzel of the Tower', description: 'Alternate title for the Rapunzel story', promptHint: 'Long golden hair, tower, witch, prince climbs hair, escape' },
+  { title: 'The Giant with the Three Golden Hairs', description: 'A boy must fetch golden hairs from a giant', promptHint: 'Fortune child, three golden hairs, giant\'s grandmother helps, rewards' },
+  { title: 'The Maid of Brakel', description: 'A girl learns to be careful what she wishes for', promptHint: 'Church, wishing, Saint Anne, humorous lesson' },
+  { title: 'The Grave Mound', description: 'A rich farmer learns about true wealth', promptHint: 'Rich farmer, grave mound, soul bargaining, lesson about greed' },
+  { title: 'Old Rinkrank', description: 'A princess trapped by an old man finds clever escape', promptHint: 'Glass mountain, princess captured, old man, clever escape' },
+  { title: 'The Crystal Ball', description: 'Three brothers break an enchantment with courage', promptHint: 'Three brothers, enchantment, crystal ball, animal helpers, princess freed' },
+  { title: 'Maid Maleen', description: 'A faithful princess finally marries her love after years', promptHint: 'False bride, seven years in tower, faithful princess, true love wins' },
+  { title: 'The Golden Goose', description: 'A simpleton who shares his food gets a golden goose', promptHint: 'Simple brother shares food, golden goose, everyone gets stuck, princess laughs' },
+  { title: 'Doctor Know-All', description: 'A poor man becomes a famous doctor by luck', promptHint: 'Poor farmer, doctor disguise, lucky guesses, crab discovery, becomes wealthy' },
+  { title: 'The Spirit in the Bottle', description: 'A boy frees a spirit and gets a magical rag', promptHint: 'Forest spirit trapped in bottle, freed, reward is magic cloth healing wounds' },
+  { title: 'The Devil\'s Sooty Brother', description: 'A soldier makes a pact with the devil', promptHint: 'Discharged soldier, devil\'s kitchen, no washing, becomes wealthy' },
+  { title: 'Bearskin', description: 'A soldier who cannot wash for seven years wins a princess', promptHint: 'Devil\'s coat, seven years no washing, faithful princess, redemption' },
+  { title: 'The Wren and the Bear', description: 'A tiny wren outwits a huge bear', promptHint: 'Bear insulted wren\'s children, war between animals, wren\'s clever tactics win' },
+  { title: 'The Sweet Porridge', description: 'A magic pot that makes endless porridge', promptHint: 'Magic pot, cook porridge, magic words, pot floods town, stopped' },
+  { title: 'The Clever Little Tailor', description: 'A tailor uses wit to achieve the impossible', promptHint: 'Wins princess with cleverness, bear fight, riddle solving' },
+  { title: 'The Old Woman in the Wood', description: 'A girl helps a dove and is rewarded', promptHint: 'Lost girl, dove helper, opens tree, finds treasures, prince freed' },
+  { title: 'The Three Little Men in the Wood', description: 'A kind girl shares her food with forest men', promptHint: 'Three little men, sharing food, gifts of beauty wealth speech, stepfamily' },
+  { title: 'The Drummer', description: 'A drummer boy rescues a princess from a glass mountain', promptHint: 'Drummer boy, glass mountain, princess trapped, magic gifts, rescue' },
+  { title: 'The Ear of Corn', description: 'Why grain has only one ear', promptHint: 'When grain had many ears, wasteful people, God reduces to one ear' },
+  { title: 'Old Sultan', description: 'An old dog and wolf help each other', promptHint: 'Old dog to be killed, wolf helps fake attack, dog kept, friendship' },
+  { title: 'The Hare and the Hedgehog', description: 'A clever hedgehog races a hare', promptHint: 'Hedgehog and wife at finish line, hare runs back and forth, tricked' },
+  { title: 'The Moon', description: 'People steal the moon and learn its importance', promptHint: 'Moon taken from earth, underworld, darkness, moon returned' },
+  { title: 'The Duration of Life', description: 'Why humans live as long as they do', promptHint: 'God gives years, donkey dog monkey give human their years, lifespan' },
+  { title: 'Death\'s Messengers', description: 'Death sends messengers before taking a soul', promptHint: 'Sickness, fever, accident, giant, prepare for death' },
+  { title: 'Master Pfriem', description: 'A shoemaker who criticizes everything learns a lesson', promptHint: 'Critical shoemaker, angel, wife, learns not to judge God\'s work' },
+  { title: 'The Jew Among Thorns', description: 'A good-hearted servant inherits a magic fiddle', promptHint: 'Magic fiddle, makes everyone dance, justice, reward for kindness' },
+  { title: 'The Skilful Huntsman', description: 'A huntsman uses his skills to win a princess', promptHint: 'Magic gun, invisibility cloak, princess, three giants, clever huntsman' },
+  { title: 'The Bright Sun Brings It to Light', description: 'A crime hidden in darkness is revealed by sunlight', promptHint: 'Murder, hidden gold chain, tailor\'s secret, sunlight exposes truth' },
+  { title: 'The Blue Light', description: 'A soldier with a magic light triumphs over a king', promptHint: 'Blue light, magic pipe, soldier, princess, king punished' },
+  { title: 'The True Sweethearts', description: 'A girl remains faithful while her love forgets her', promptHint: 'Faithful girl, forgetful lover, magic gifts, memory restored, reunion' },
+];
+
+async function main() {
+  const prisma = createPrismaClient();
+
+  try {
+    console.log('Seeding story library...');
+
+    for (const story of stories) {
+      await prisma.storyLibrary.create({
+        data: {
+          title: story.title,
+          description: story.description,
+          promptHint: story.promptHint,
+        },
+      });
+      console.log(`  Created: ${story.title}`);
+    }
+
+    console.log(`Successfully seeded ${stories.length} stories.`);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+main().catch((error) => {
+  console.error('Seed failed:', error);
+  process.exit(1);
+});
