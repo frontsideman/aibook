@@ -109,18 +109,12 @@ async function main() {
   try {
     console.log('Seeding story library...');
 
-    for (const story of stories) {
-      await prisma.storyLibrary.create({
-        data: {
-          title: story.title,
-          description: story.description,
-          promptHint: story.promptHint,
-        },
-      });
-      console.log(`  Created: ${story.title}`);
-    }
+    const { count } = await prisma.storyLibrary.createMany({
+      data: stories,
+      skipDuplicates: true,
+    });
 
-    console.log(`Successfully seeded ${stories.length} stories.`);
+    console.log(`Seeded ${count} new stories (skipped ${stories.length - count} duplicates).`);
   } finally {
     await prisma.$disconnect();
   }
