@@ -8,6 +8,7 @@ import { PdfModule } from './pdf/pdf.module';
 import { BookModule } from './book/book.module';
 import { PaymentModule } from './payment/payment.module';
 import { ChildProfileModule } from './child-profile/child-profile.module';
+import { StoryLibraryModule } from './story-library/story-library.module';
 import { PrismaModule } from './prisma.module';
 
 @Module({
@@ -29,6 +30,7 @@ import { PrismaModule } from './prisma.module';
     BookModule,
     PaymentModule,
     ChildProfileModule,
+    StoryLibraryModule,
   ],
   controllers: [],
   providers: [],
