@@ -98,6 +98,9 @@ const stories = [
   { title: 'The Bright Sun Brings It to Light', description: 'A crime hidden in darkness is revealed by sunlight', promptHint: 'Murder, hidden gold chain, tailor\'s secret, sunlight exposes truth' },
   { title: 'The Blue Light', description: 'A soldier with a magic light triumphs over a king', promptHint: 'Blue light, magic pipe, soldier, princess, king punished' },
   { title: 'The True Sweethearts', description: 'A girl remains faithful while her love forgets her', promptHint: 'Faithful girl, forgetful lover, magic gifts, memory restored, reunion' },
+  { title: 'The Two Brothers', description: 'Two brothers overcome separation and hardship', promptHint: 'Two brothers, separated at birth, adventures, gold, reunion' },
+  { title: 'The Clever Farmer', description: 'A farmer outsmarts a king with wit', promptHint: 'Poor farmer, king\'s challenge, clever answers, wins reward and daughter' },
+  { title: 'The Wishing Table', description: 'A magical table that provides endless food', promptHint: 'Three sons, magic table, donkey and stick, innkeeper steals, recovered' },
 ];
 
 async function main() {
