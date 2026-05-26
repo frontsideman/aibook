@@ -74,16 +74,18 @@ describe('BookController', () => {
   });
 
   describe('preview', () => {
-    it('should call getPreview with book id', async () => {
-      await controller.preview('book-1');
-      expect(service.getPreview).toHaveBeenCalledWith('book-1');
+    it('should call getPreview with book id and userId', async () => {
+      const req = { user: { id: 'user-1' } };
+      await controller.preview('book-1', req);
+      expect(service.getPreview).toHaveBeenCalledWith('book-1', 'user-1');
     });
   });
 
   describe('approve', () => {
-    it('should call approveBook with book id', async () => {
-      await controller.approve('book-1');
-      expect(service.approveBook).toHaveBeenCalledWith('book-1');
+    it('should call approveBook with book id and userId', async () => {
+      const req = { user: { id: 'user-1' } };
+      await controller.approve('book-1', req);
+      expect(service.approveBook).toHaveBeenCalledWith('book-1', 'user-1');
     });
   });
 });

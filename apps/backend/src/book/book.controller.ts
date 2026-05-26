@@ -33,8 +33,8 @@ export class BookController {
   }
 
   @Get(':id/preview')
-  async preview(@Param('id') id: string) {
-    return this.bookService.getPreview(id);
+  async preview(@Param('id') id: string, @Req() req: any) {
+    return this.bookService.getPreview(id, req.user.id);
   }
 
   @Patch(':id/pages/:pageNumber')
@@ -42,23 +42,24 @@ export class BookController {
     @Param('id') id: string,
     @Param('pageNumber', ParseIntPipe) pageNumber: number,
     @Body() body: PageEditDto,
+    @Req() req: any,
   ) {
-    return this.bookService.editPage(id, pageNumber, body);
+    return this.bookService.editPage(id, pageNumber, body, req.user.id);
   }
 
   @Patch(':id/regenerate')
-  async regenerate(@Param('id') id: string, @Body() body: RegenerateDto) {
-    return this.bookService.regenerate(id, body);
+  async regenerate(@Param('id') id: string, @Body() body: RegenerateDto, @Req() req: any) {
+    return this.bookService.regenerate(id, body, req.user.id);
   }
 
   @Post(':id/approve')
   @UseGuards(SubscriptionGuard)
-  async approve(@Param('id') id: string) {
-    return this.bookService.approveBook(id);
+  async approve(@Param('id') id: string, @Req() req: any) {
+    return this.bookService.approveBook(id, req.user.id);
   }
 
   @Get(':id/pdf')
-  async getPdf(@Param('id') id: string) {
-    return this.bookService.getPdfUrl(id);
+  async getPdf(@Param('id') id: string, @Req() req: any) {
+    return this.bookService.getPdfUrl(id, req.user.id);
   }
 }
