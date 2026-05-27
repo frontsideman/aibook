@@ -1,9 +1,18 @@
 'use client';
 
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
-import BookCard from '@/components/BookCard';
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Pagination from '@/components/Pagination';
+import DashboardFilters from '@/components/dashboard/DashboardFilters';
+import ViewModeToggle from '@/components/dashboard/ViewModeToggle';
+import BooksListGrid from '@/components/dashboard/BooksListGrid';
 import {
+  DashboardLoadingState,
+  DashboardErrorState,
+  DashboardEmptyState,
+} from '@/components/dashboard/DashboardStates';
+import {
+  applyDashboardBookFilterSort,
   toDashboardBookViewModel,
   type DashboardBookApiModel,
 } from '@/lib/books-view-model';
@@ -14,6 +23,8 @@ type PaginatedResponse = {
   page: number;
   totalPages: number;
 };
+
+type ViewMode = 'grid' | 'list';
 
 const isPaginatedResponse = (value: unknown): value is PaginatedResponse => {
   if (!value || typeof value !== 'object') return false;
@@ -26,19 +37,31 @@ const isPaginatedResponse = (value: unknown): value is PaginatedResponse => {
   );
 };
 
-const STATUSES = ['', 'DRAFT', 'GENERATING', 'REVIEW', 'COMPLETED'];
-const STYLES = ['', 'WATERCOLOR', 'CARTOON', 'REALISTIC', 'PIXAR', 'SKETCH', 'MANGA', 'COMIC'];
-
 export default function DashboardPage() {
+  const searchParams = useSearchParams();
+  const requestedView = searchParams.get('view');
+  const viewMode: ViewMode = requestedView === 'list' ? 'list' : 'grid';
+
   const [data, setData] = useState<PaginatedResponse | null>(null);
+  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [style, setStyle] = useState('');
+  const [sort, setSort] = useState<'updated' | 'title'>('updated');
   const [page, setPage] = useState(1);
+  const latestRequestIdRef = useRef(0);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   const fetchBooks = useCallback(async () => {
+    abortControllerRef.current?.abort();
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+    const requestId = ++latestRequestIdRef.current;
+
     setLoading(true);
+    setError(false);
+
     const params = new URLSearchParams();
     if (search) params.set('search', search);
     if (status) params.set('status', status);
@@ -47,35 +70,47 @@ export default function DashboardPage() {
     params.set('limit', '10');
 
     try {
-      const res = await fetch(`/api/books?${params}`);
+      const res = await fetch(`/api/books?${params}`, { signal: controller.signal });
+      if (requestId !== latestRequestIdRef.current) return;
       if (!res.ok) {
-        console.error(`Failed to fetch books: HTTP ${res.status}`);
         setData(null);
+        setError(true);
         return;
       }
+
       const json = await res.json();
+      if (requestId !== latestRequestIdRef.current) return;
       if (isPaginatedResponse(json)) {
         setData(json);
       } else {
-        console.error('Failed to fetch books: invalid payload shape');
         setData(null);
+        setError(true);
       }
-    } catch (err) {
-      console.error('Failed to fetch books:', err);
+    } catch {
+      if (controller.signal.aborted || requestId !== latestRequestIdRef.current) {
+        return;
+      }
       setData(null);
+      setError(true);
     } finally {
-      setLoading(false);
+      if (requestId === latestRequestIdRef.current) {
+        setLoading(false);
+      }
     }
   }, [search, status, style, page]);
 
   useEffect(() => {
     fetchBooks();
+    return () => {
+      abortControllerRef.current?.abort();
+    };
   }, [fetchBooks]);
 
   const visibleBooks = useMemo(() => {
     if (!data) return [];
-    return data.books.map(toDashboardBookViewModel);
-  }, [data]);
+    const mapped = data.books.map(toDashboardBookViewModel);
+    return applyDashboardBookFilterSort(mapped, { sort });
+  }, [data, sort]);
 
   return (
     <div>
@@ -87,60 +122,41 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <div className="paper-card mb-8 flex flex-wrap gap-3 p-4">
-        <input
-          type="text"
-          placeholder="Search by title..."
-          value={search}
-          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-          className="flex-1 min-w-[220px] rounded-xl border border-border/80 bg-background px-3 py-2 text-sm"
-        />
-        <select
-          value={status}
-          onChange={(e) => { setStatus(e.target.value); setPage(1); }}
-          className="rounded-xl border border-border/80 bg-background px-3 py-2 text-sm"
-        >
-          {STATUSES.map((s) => (
-            <option key={s} value={s}>{s || 'All Status'}</option>
-          ))}
-        </select>
-        <select
-          value={style}
-          onChange={(e) => { setStyle(e.target.value); setPage(1); }}
-          className="rounded-xl border border-border/80 bg-background px-3 py-2 text-sm"
-        >
-          {STYLES.map((s) => (
-            <option key={s} value={s}>{s || 'All Styles'}</option>
-          ))}
-        </select>
+      <div className="mb-4 flex justify-end">
+        <ViewModeToggle viewMode={viewMode} />
       </div>
 
+      <DashboardFilters
+        search={search}
+        status={status}
+        style={style}
+        sort={sort}
+        onSearchChange={(value) => {
+          setSearch(value);
+          setPage(1);
+        }}
+        onStatusChange={(value) => {
+          setStatus(value);
+          setPage(1);
+        }}
+        onStyleChange={(value) => {
+          setStyle(value);
+          setPage(1);
+        }}
+        onSortChange={setSort}
+      />
+
       {loading ? (
-        <p className="text-muted-foreground">Loading books...</p>
-      ) : data && visibleBooks.length > 0 ? (
+        <DashboardLoadingState />
+      ) : error ? (
+        <DashboardErrorState onRetry={fetchBooks} />
+      ) : visibleBooks.length > 0 ? (
         <>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {visibleBooks.map((book) => (
-              <BookCard
-                key={book.id}
-                id={book.id}
-                title={book.title}
-                style={book.style}
-                status={book.status}
-                childName={book.childName}
-                createdAt={book.createdAt}
-              />
-            ))}
-          </div>
-          <Pagination page={data.page} totalPages={data.totalPages} onPageChange={setPage} />
+          <BooksListGrid books={visibleBooks} viewMode={viewMode} />
+          {data ? <Pagination page={data.page} totalPages={data.totalPages} onPageChange={setPage} /> : null}
         </>
       ) : (
-        <div className="paper-card text-center py-16">
-          <p className="mb-4 text-muted-foreground">No books found</p>
-          <a href="/books/new" className="inline-block rounded-xl bg-primary px-4 py-2 text-sm font-medium text-primary-foreground">
-            Create your first book
-          </a>
-        </div>
+        <DashboardEmptyState />
       )}
     </div>
   );
