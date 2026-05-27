@@ -1,23 +1,29 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import BookCard from '@/components/BookCard';
 import Pagination from '@/components/Pagination';
-
-type Book = {
-  id: string;
-  title: string;
-  style: string;
-  status: string;
-  child?: { name: string };
-  createdAt: string;
-};
+import {
+  toDashboardBookViewModel,
+  type DashboardBookApiModel,
+} from '@/lib/books-view-model';
 
 type PaginatedResponse = {
-  books: Book[];
+  books: DashboardBookApiModel[];
   total: number;
   page: number;
   totalPages: number;
+};
+
+const isPaginatedResponse = (value: unknown): value is PaginatedResponse => {
+  if (!value || typeof value !== 'object') return false;
+  const payload = value as Record<string, unknown>;
+  return (
+    Array.isArray(payload.books) &&
+    typeof payload.total === 'number' &&
+    typeof payload.page === 'number' &&
+    typeof payload.totalPages === 'number'
+  );
 };
 
 const STATUSES = ['', 'DRAFT', 'GENERATING', 'REVIEW', 'COMPLETED'];
@@ -42,10 +48,21 @@ export default function DashboardPage() {
 
     try {
       const res = await fetch(`/api/books?${params}`);
+      if (!res.ok) {
+        console.error(`Failed to fetch books: HTTP ${res.status}`);
+        setData(null);
+        return;
+      }
       const json = await res.json();
-      setData(json);
+      if (isPaginatedResponse(json)) {
+        setData(json);
+      } else {
+        console.error('Failed to fetch books: invalid payload shape');
+        setData(null);
+      }
     } catch (err) {
       console.error('Failed to fetch books:', err);
+      setData(null);
     } finally {
       setLoading(false);
     }
@@ -54,6 +71,11 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchBooks();
   }, [fetchBooks]);
+
+  const visibleBooks = useMemo(() => {
+    if (!data) return [];
+    return data.books.map(toDashboardBookViewModel);
+  }, [data]);
 
   return (
     <div>
@@ -95,17 +117,17 @@ export default function DashboardPage() {
 
       {loading ? (
         <p className="text-muted-foreground">Loading books...</p>
-      ) : data && data.books.length > 0 ? (
+      ) : data && visibleBooks.length > 0 ? (
         <>
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {data.books.map((book) => (
+            {visibleBooks.map((book) => (
               <BookCard
                 key={book.id}
                 id={book.id}
                 title={book.title}
                 style={book.style}
                 status={book.status}
-                childName={book.child?.name}
+                childName={book.childName}
                 createdAt={book.createdAt}
               />
             ))}
