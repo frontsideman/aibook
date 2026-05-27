@@ -9,6 +9,11 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test",
+    "db:generate": "npm --workspace packages/database run generate",
+    "db:migrate:dev": "npm --workspace packages/database run migrate:dev",
+    "db:push": "npm --workspace packages/database run db:push",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
