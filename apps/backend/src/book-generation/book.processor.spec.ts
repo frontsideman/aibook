@@ -142,4 +142,11 @@ describe('BookProcessor', () => {
       expect.stringContaining('Make the ending happier')
     );
   });
+
+  it('should throw when book is not found', async () => {
+    mockPrismaClient.book.findUnique.mockResolvedValue(null);
+
+    const job = { data: { bookId: 'missing-book' } } as Job;
+    await expect(processor.process(job)).rejects.toThrow('Book with id missing-book not found');
+  });
 });

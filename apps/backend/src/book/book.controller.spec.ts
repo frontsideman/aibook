@@ -62,6 +62,21 @@ describe('BookController', () => {
         take: 10,
       });
     });
+
+    it('should include status and childId filters when provided', async () => {
+      const query = { status: 'REVIEW', childId: 'child-1', page: '2', limit: '5' };
+      const req = { user: { id: 'user-2' } };
+      await controller.findAll(query, req);
+      expect(service.findAll).toHaveBeenCalledWith({
+        where: {
+          userId: 'user-2',
+          status: 'REVIEW',
+          childId: 'child-1',
+        },
+        skip: 5,
+        take: 5,
+      });
+    });
   });
 
   describe('generate', () => {
@@ -86,6 +101,32 @@ describe('BookController', () => {
       const req = { user: { id: 'user-1' } };
       await controller.approve('book-1', req);
       expect(service.approveBook).toHaveBeenCalledWith('book-1', 'user-1');
+    });
+  });
+
+  describe('editPage', () => {
+    it('should call editPage with book id, page number, body and userId', async () => {
+      const req = { user: { id: 'user-1' } };
+      const body = { textContent: 'Updated text' };
+      await controller.editPage('book-1', 3, body as any, req);
+      expect(service.editPage).toHaveBeenCalledWith('book-1', 3, body, 'user-1');
+    });
+  });
+
+  describe('regenerate', () => {
+    it('should call regenerate with book id, body and userId', async () => {
+      const req = { user: { id: 'user-1' } };
+      const body = { parentFeedback: 'Make it shorter' };
+      await controller.regenerate('book-1', body as any, req);
+      expect(service.regenerate).toHaveBeenCalledWith('book-1', body, 'user-1');
+    });
+  });
+
+  describe('getPdf', () => {
+    it('should call getPdfUrl with book id and userId', async () => {
+      const req = { user: { id: 'user-1' } };
+      await controller.getPdf('book-1', req);
+      expect(service.getPdfUrl).toHaveBeenCalledWith('book-1', 'user-1');
     });
   });
 });
