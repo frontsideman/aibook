@@ -10,11 +10,13 @@ import { PaymentModule } from './payment/payment.module';
 import { ChildProfileModule } from './child-profile/child-profile.module';
 import { StoryLibraryModule } from './story-library/story-library.module';
 import { PrismaModule } from './prisma.module';
+import { validateEnv } from './config/env.validation';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      validate: validateEnv,
     }),
     BullModule.forRoot({
       connection: {
