@@ -12,31 +12,31 @@ type BookCardProps = {
 };
 
 const statusColors: Record<string, string> = {
-  DRAFT: 'bg-gray-100 text-gray-800',
-  GENERATING: 'bg-yellow-100 text-yellow-800',
-  REVIEW: 'bg-blue-100 text-blue-800',
-  COMPLETED: 'bg-green-100 text-green-800',
+  DRAFT: 'bg-secondary text-secondary-foreground',
+  GENERATING: 'bg-accent/35 text-foreground',
+  REVIEW: 'bg-primary/15 text-primary',
+  COMPLETED: 'bg-emerald-100 text-emerald-800',
 };
 
 export default function BookCard({ id, title, style, status, childName, createdAt }: BookCardProps) {
   const href = status === 'COMPLETED' ? `/books/${id}` : `/books/${id}/preview`;
 
   return (
-    <Link href={href} className="block border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-      <div className="aspect-[1.414/1] bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center">
+    <Link href={href} className="paper-card block overflow-hidden transition hover:-translate-y-0.5 hover:shadow-lg">
+      <div className="aspect-[1.414/1] bg-gradient-to-br from-amber-100/80 via-orange-50 to-rose-100/70 flex items-center justify-center border-b border-border/70">
         <div className="text-center p-4">
           <div className="text-4xl mb-2">📖</div>
-          <p className="text-xs text-gray-400">{style}</p>
+          <p className="text-xs uppercase tracking-wide text-muted-foreground">{style}</p>
         </div>
       </div>
-      <div className="p-4">
-        <h2 className="font-semibold text-lg truncate">{title}</h2>
-        {childName && <p className="text-gray-500 text-sm">For: {childName}</p>}
-        <div className="mt-3 flex justify-between items-center">
+      <div className="p-5">
+        <h2 className="font-semibold text-xl truncate">{title}</h2>
+        {childName && <p className="text-muted-foreground text-sm mt-1">For: {childName}</p>}
+        <div className="mt-4 flex justify-between items-center">
           <span className={`text-xs font-medium px-2 py-1 rounded ${statusColors[status] || 'bg-gray-100 text-gray-800'}`}>
             {status}
           </span>
-          <span className="text-xs text-gray-400">{new Date(createdAt).toLocaleDateString()}</span>
+          <span className="text-xs text-muted-foreground">{new Date(createdAt).toLocaleDateString()}</span>
         </div>
       </div>
     </Link>

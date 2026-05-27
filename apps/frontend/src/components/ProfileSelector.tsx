@@ -21,15 +21,15 @@ export default function ProfileSelector({ profiles, selectedId, onSelect }: Prof
         <button
           key={profile.id}
           onClick={() => onSelect(profile.id)}
-          className={`p-4 rounded-lg border text-left transition-all ${
+          className={`paper-card p-4 text-left transition-all ${
             selectedId === profile.id
-              ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-200'
-              : 'border-gray-200 hover:border-blue-300 hover:bg-gray-50'
+              ? 'border-primary/70 bg-secondary ring-2 ring-primary/20'
+              : 'hover:border-primary/30 hover:bg-secondary/50'
           }`}
         >
-          <h3 className="font-semibold">{profile.name}</h3>
-          <p className="text-sm text-gray-600">{profile.age} years old · {profile.gender}</p>
-          <p className="text-xs text-gray-400 mt-1">{profile.interests?.join(', ')}</p>
+          <h3 className="font-semibold text-lg">{profile.name}</h3>
+          <p className="text-sm text-muted-foreground">{profile.age} years old · {profile.gender}</p>
+          <p className="mt-1 text-xs text-muted-foreground">{profile.interests?.join(', ')}</p>
         </button>
       ))}
     </div>

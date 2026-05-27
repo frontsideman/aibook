@@ -100,35 +100,35 @@ export default function PreviewPage() {
     }
   };
 
-  if (loading) return <p className="text-gray-500">Loading preview...</p>;
+  if (loading) return <p className="text-muted-foreground">Loading preview...</p>;
   if (error) return <p className="text-red-600">{error}</p>;
-  if (!data) return <p className="text-gray-500">No preview available</p>;
+  if (!data) return <p className="text-muted-foreground">No preview available</p>;
 
   const hasFeedback = Object.values(pageFeedback).some((f) => f.trim()) || globalFeedback.trim();
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{data.book.title}</h1>
-          <p className="text-sm text-gray-500">
+          <h1 className="section-heading !text-3xl">{data.book.title}</h1>
+          <p className="text-sm text-muted-foreground">
             {data.book.style} · {data.book.tone?.toLowerCase()}
-            <span className="ml-2 text-xs font-medium px-2 py-0.5 bg-blue-100 text-blue-800 rounded">REVIEW</span>
+            <span className="ml-2 rounded bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary">REVIEW</span>
           </p>
         </div>
-        <a href="/" className="text-sm text-gray-600 hover:text-gray-900">← Back to Dashboard</a>
+        <a href="/" className="text-sm text-muted-foreground hover:text-foreground">← Back to Dashboard</a>
       </div>
 
       <SpreadViewer pages={data.book.pages} />
 
       <div className="mt-8 space-y-4">
-        <h2 className="text-lg font-semibold">Suggest Changes</h2>
+        <h2 className="text-xl font-semibold">Suggest Changes</h2>
         {data.book.pages.map((page) => (
-          <div key={page.id} className="border rounded-lg p-4">
+          <div key={page.id} className="paper-card p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium">Page {page.pageNumber}</span>
               {pageFeedback[page.pageNumber]?.trim() && (
-                <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">Pending edit</span>
+                <span className="rounded bg-accent/40 px-2 py-0.5 text-xs text-foreground">Pending edit</span>
               )}
             </div>
             <button
@@ -136,7 +136,7 @@ export default function PreviewPage() {
                 const el = document.getElementById(`feedback-${page.pageNumber}`);
                 el?.classList.toggle('hidden');
               }}
-              className="text-sm text-blue-600 hover:underline mb-2 inline-block"
+              className="mb-2 inline-block text-sm text-primary hover:underline"
             >
               ✏️ Edit this page
             </button>
@@ -146,20 +146,20 @@ export default function PreviewPage() {
               value={pageFeedback[page.pageNumber] || ''}
               onChange={(e) => setPageFeedback((prev) => ({ ...prev, [page.pageNumber]: e.target.value }))}
               rows={2}
-              className="hidden w-full border rounded-lg px-3 py-2 text-sm mt-2"
+              className="mt-2 hidden w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm"
             />
           </div>
         ))}
       </div>
 
-      <div className="mt-6 border rounded-lg p-4">
+      <div className="paper-card mt-6 p-4">
         <h3 className="text-sm font-medium mb-2">✏️ Global Changes</h3>
         <textarea
           placeholder="Describe changes that affect the whole book..."
           value={globalFeedback}
           onChange={(e) => setGlobalFeedback(e.target.value)}
           rows={3}
-          className="w-full border rounded-lg px-3 py-2 text-sm"
+          className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm"
         />
       </div>
 
@@ -169,14 +169,14 @@ export default function PreviewPage() {
         <button
           onClick={handleSubmitChanges}
           disabled={submitting || !hasFeedback}
-          className="px-6 py-2 border border-blue-600 text-blue-600 rounded-lg text-sm disabled:opacity-50 hover:bg-blue-50"
+          className="rounded-xl border border-primary px-6 py-2 text-sm text-primary disabled:opacity-50 hover:bg-primary/10"
         >
           {submitting ? 'Submitting...' : 'Submit Changes'}
         </button>
         <button
           onClick={handleApprove}
           disabled={submitting}
-          className="px-6 py-2 bg-green-600 text-white rounded-lg text-sm disabled:opacity-50 hover:bg-green-700"
+          className="rounded-xl bg-primary px-6 py-2 text-sm text-primary-foreground disabled:opacity-50 hover:opacity-90"
         >
           ✅ Approve Book
         </button>

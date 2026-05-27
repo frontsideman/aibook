@@ -10,11 +10,11 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
   if (totalPages <= 1) return null;
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-8">
+    <div className="mt-10 flex items-center justify-center gap-2">
       <button
         onClick={() => onPageChange(page - 1)}
         disabled={page <= 1}
-        className="px-3 py-1 rounded border text-sm disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50"
+        className="rounded-xl border border-border/80 bg-card px-3 py-1.5 text-sm disabled:cursor-not-allowed disabled:opacity-30 hover:bg-secondary"
       >
         Previous
       </button>
@@ -23,7 +23,9 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
           key={p}
           onClick={() => onPageChange(p)}
           className={`px-3 py-1 rounded text-sm ${
-            p === page ? 'bg-blue-600 text-white' : 'border hover:bg-gray-50'
+            p === page
+              ? 'rounded-xl bg-primary px-3 py-1.5 text-sm text-primary-foreground'
+              : 'rounded-xl border border-border/80 bg-card px-3 py-1.5 text-sm hover:bg-secondary'
           }`}
         >
           {p}
@@ -32,7 +34,7 @@ export default function Pagination({ page, totalPages, onPageChange }: Paginatio
       <button
         onClick={() => onPageChange(page + 1)}
         disabled={page >= totalPages}
-        className="px-3 py-1 rounded border text-sm disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50"
+        className="rounded-xl border border-border/80 bg-card px-3 py-1.5 text-sm disabled:cursor-not-allowed disabled:opacity-30 hover:bg-secondary"
       >
         Next
       </button>

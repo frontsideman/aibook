@@ -60,24 +60,27 @@ export default function ProfilesPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Child Profiles</h1>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Family</p>
+          <h1 className="section-heading !text-3xl">Child Profiles</h1>
+        </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
+          className="rounded-xl bg-primary px-4 py-2 text-sm text-primary-foreground"
         >
           {showForm ? 'Cancel' : 'Add Profile'}
         </button>
       </div>
 
       {showForm && (
-        <form onSubmit={handleCreate} className="mb-8 p-4 border rounded-lg space-y-3">
+        <form onSubmit={handleCreate} className="paper-card mb-8 space-y-3 p-5">
           <input
             placeholder="Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full border rounded px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm"
           />
           <input
             type="number"
@@ -87,9 +90,9 @@ export default function ProfilesPage() {
             required
             min={1}
             max={18}
-            className="w-full border rounded px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm"
           />
-          <select value={gender} onChange={(e) => setGender(e.target.value)} className="w-full border rounded px-3 py-2 text-sm">
+          <select value={gender} onChange={(e) => setGender(e.target.value)} className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm">
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>
@@ -97,38 +100,38 @@ export default function ProfilesPage() {
             placeholder="Interests (comma separated)"
             value={interests}
             onChange={(e) => setInterests(e.target.value)}
-            className="w-full border rounded px-3 py-2 text-sm"
+            className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm"
           />
-          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded text-sm">Save</button>
+          <button type="submit" className="rounded-xl bg-primary px-4 py-2 text-sm text-primary-foreground">Save</button>
         </form>
       )}
 
       {loading ? (
-        <p className="text-gray-500">Loading profiles...</p>
+        <p className="text-muted-foreground">Loading profiles...</p>
       ) : profiles.length === 0 ? (
-        <div className="text-center py-12 border rounded-lg bg-gray-50">
-          <p className="text-gray-500 mb-2">No profiles found</p>
-          <button onClick={() => setShowForm(true)} className="text-blue-600 hover:underline text-sm">
+        <div className="paper-card py-12 text-center">
+          <p className="mb-2 text-muted-foreground">No profiles found</p>
+          <button onClick={() => setShowForm(true)} className="text-sm text-primary hover:underline">
             Create your first profile
           </button>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {profiles.map((profile) => (
-            <div key={profile.id} className="border rounded-lg p-4">
+            <div key={profile.id} className="paper-card p-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <h3 className="font-semibold">{profile.name}</h3>
-                  <p className="text-sm text-gray-600">{profile.age} years · {profile.gender}</p>
+                  <h3 className="text-lg font-semibold">{profile.name}</h3>
+                  <p className="text-sm text-muted-foreground">{profile.age} years · {profile.gender}</p>
                 </div>
-                <button onClick={() => handleDelete(profile.id)} className="text-red-500 text-sm hover:underline">
+                <button onClick={() => handleDelete(profile.id)} className="text-sm text-red-600 hover:underline">
                   Delete
                 </button>
               </div>
               {profile.interests.length > 0 && (
                 <div className="mt-2 flex flex-wrap gap-1">
                   {profile.interests.map((interest, i) => (
-                    <span key={i} className="text-xs bg-gray-100 text-gray-700 px-2 py-0.5 rounded">
+                    <span key={i} className="rounded bg-secondary px-2 py-0.5 text-xs text-secondary-foreground">
                       {interest}
                     </span>
                   ))}

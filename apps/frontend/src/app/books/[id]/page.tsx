@@ -27,32 +27,32 @@ export default function BookDetailPage() {
       .catch(console.error);
   };
 
-  if (loading) return <p className="text-gray-500">Loading...</p>;
+  if (loading) return <p className="text-muted-foreground">Loading...</p>;
   if (!book) return <p className="text-red-600">Book not found</p>;
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <a href="/" className="text-sm text-gray-600 hover:text-gray-900 mb-4 inline-block">← Back to Dashboard</a>
+    <div className="mx-auto max-w-3xl">
+      <a href="/" className="mb-4 inline-block text-sm text-muted-foreground hover:text-foreground">← Back to Dashboard</a>
 
-      <div className="aspect-[1.414/1] bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg flex items-center justify-center mb-6">
+      <div className="paper-card mb-6 flex aspect-[1.414/1] items-center justify-center overflow-hidden bg-gradient-to-br from-amber-100/80 via-orange-50 to-rose-100/70">
         <div className="text-center">
           <div className="text-6xl mb-4">📖</div>
-          <p className="text-gray-400 text-sm">{book.style}</p>
+          <p className="text-sm text-muted-foreground">{book.style}</p>
         </div>
       </div>
 
-      <h1 className="text-2xl font-bold mb-2">{book.title}</h1>
+      <h1 className="section-heading !text-3xl mb-2">{book.title}</h1>
 
       <div className="flex gap-2 mb-6">
-        <span className="text-xs font-medium px-2 py-1 bg-green-100 text-green-800 rounded">{book.status}</span>
-        {book.style && <span className="text-xs font-medium px-2 py-1 bg-gray-100 text-gray-800 rounded">{book.style}</span>}
-        {book.tone && <span className="text-xs font-medium px-2 py-1 bg-gray-100 text-gray-800 rounded">{book.tone}</span>}
+        <span className="rounded bg-primary/15 px-2 py-1 text-xs font-medium text-primary">{book.status}</span>
+        {book.style && <span className="rounded bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground">{book.style}</span>}
+        {book.tone && <span className="rounded bg-secondary px-2 py-1 text-xs font-medium text-secondary-foreground">{book.tone}</span>}
       </div>
 
       {book.status === 'COMPLETED' && (
         <button
           onClick={handleDownload}
-          className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700"
+          className="w-full rounded-xl bg-primary px-6 py-3 font-medium text-primary-foreground hover:opacity-90"
         >
           Download PDF
         </button>
@@ -60,10 +60,10 @@ export default function BookDetailPage() {
 
       {book.pages && (
         <div className="mt-8 space-y-4">
-          <h2 className="text-lg font-semibold">Pages</h2>
+          <h2 className="text-xl font-semibold">Pages</h2>
           {book.pages.map((page: any) => (
-            <div key={page.id} className="border rounded-lg p-4">
-              <p className="text-xs text-gray-400 mb-1">Page {page.pageNumber}</p>
+            <div key={page.id} className="paper-card p-4">
+              <p className="mb-1 text-xs text-muted-foreground">Page {page.pageNumber}</p>
               <p className="text-sm">{page.textContent}</p>
             </div>
           ))}
