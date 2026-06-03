@@ -8,7 +8,15 @@ export class StoryLibraryController {
   constructor(private readonly service: StoryLibraryService) {}
 
   @Get()
-  async findAll(@Query('search') search?: string) {
-    return this.service.findAll(search);
+  async findAll(
+    @Query('search') search?: string,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ) {
+    return this.service.findAll({
+      search,
+      limit: limit ? Number.parseInt(limit, 10) : undefined,
+      offset: offset ? Number.parseInt(offset, 10) : undefined,
+    });
   }
 }

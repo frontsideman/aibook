@@ -35,21 +35,23 @@ describe('StoryLibraryService', () => {
 
   it('should find all stories without search', async () => {
     mockPrismaClient.storyLibrary.findMany.mockResolvedValue([]);
-    await service.findAll();
+    await service.findAll({});
     expect(prisma.client.storyLibrary.findMany).toHaveBeenCalledWith({
       where: {},
       orderBy: { title: 'asc' },
-      take: 20,
+      take: 10,
+      skip: 0,
     });
   });
 
   it('should search stories by title', async () => {
     mockPrismaClient.storyLibrary.findMany.mockResolvedValue([]);
-    await service.findAll('wolf');
+    await service.findAll({ search: 'wolf' });
     expect(prisma.client.storyLibrary.findMany).toHaveBeenCalledWith({
       where: { title: { contains: 'wolf', mode: 'insensitive' } },
       orderBy: { title: 'asc' },
-      take: 20,
+      take: 10,
+      skip: 0,
     });
   });
 });
