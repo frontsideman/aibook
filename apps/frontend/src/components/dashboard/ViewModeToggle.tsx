@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Button } from '@/components/ui/button';
 
 type ViewMode = 'grid' | 'list';
 
@@ -21,22 +22,24 @@ export default function ViewModeToggle({ viewMode }: ViewModeToggleProps) {
 
   return (
     <div className="inline-flex rounded-xl border border-border/80 bg-card p-1" role="group" aria-label="View mode">
-      <button
+      <Button
         type="button"
+        variant={viewMode === 'grid' ? 'default' : 'ghost'}
+        size="sm"
         onClick={() => setViewMode('grid')}
         aria-pressed={viewMode === 'grid'}
-        className={`rounded-lg px-3 py-1.5 text-sm ${viewMode === 'grid' ? 'bg-primary text-primary-foreground' : 'hover:bg-secondary'}`}
       >
         Grid
-      </button>
-      <button
+      </Button>
+      <Button
         type="button"
+        variant={viewMode === 'list' ? 'default' : 'ghost'}
+        size="sm"
         onClick={() => setViewMode('list')}
         aria-pressed={viewMode === 'list'}
-        className={`rounded-lg px-3 py-1.5 text-sm ${viewMode === 'list' ? 'bg-primary text-primary-foreground' : 'hover:bg-secondary'}`}
       >
         List
-      </button>
+      </Button>
     </div>
   );
 }

@@ -11,12 +11,20 @@ const mockProfiles = [
   { id: '2', name: 'Bob', age: 7, gender: 'male', interests: ['robots', 'coding'] },
 ];
 
-const mockStories = [
+const seedStories = [
   { id: 's1', title: 'The Little Red Riding Hood', description: 'A girl meets a wolf' },
   { id: 's2', title: 'Cinderella', description: 'A kind girl goes to the ball' },
-  { id: 's3', title: 'Snow White', description: 'A princess and seven dwarfs' },
+  { id: 's3', title: 'The Snow Queen', description: 'A winter fairy tale' },
   { id: 's4', title: 'The Three Little Pigs', description: 'Three pigs build houses' },
   { id: 's5', title: 'Jack and the Beanstalk', description: 'A boy and magic beans' },
+];
+const mockStories = [
+  ...seedStories,
+  ...Array.from({ length: 995 }, (_, index) => ({
+    id: `s${index + 6}`,
+    title: `Popular Bedtime Story ${index + 1}`,
+    description: 'Popular children story',
+  })),
 ];
 
 export const handlers = [
@@ -101,6 +109,11 @@ export const handlers = [
     return HttpResponse.json({ id: Math.random().toString(36).substr(2, 9), ...(newProfile as object) }, { status: 201 })
   }),
 
+  http.patch('/api/child-profiles/:id', async ({ params, request }) => {
+    const body = await request.json() as Record<string, unknown>;
+    return HttpResponse.json({ id: params.id, ...body });
+  }),
+
   http.delete('/api/child-profiles/:id', () => {
     return new HttpResponse(null, { status: 204 });
   }),
@@ -108,9 +121,13 @@ export const handlers = [
   http.get('/api/stories', ({ request }) => {
     const url = new URL(request.url);
     const search = (url.searchParams.get('search') || '').toLowerCase();
+    const limit = Number.parseInt(url.searchParams.get('limit') || '10', 10);
+    const offset = Number.parseInt(url.searchParams.get('offset') || '0', 10);
+    const safeLimit = Number.isFinite(limit) ? Math.min(Math.max(limit, 1), 50) : 10;
+    const safeOffset = Number.isFinite(offset) ? Math.max(offset, 0) : 0;
     const filtered = search
       ? mockStories.filter((s) => s.title.toLowerCase().includes(search))
       : mockStories;
-    return HttpResponse.json(filtered);
+    return HttpResponse.json(filtered.slice(safeOffset, safeOffset + safeLimit));
   }),
 ]

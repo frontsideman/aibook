@@ -12,23 +12,24 @@ type BooksListGridProps = {
 };
 
 export default function BooksListGrid({ books, viewMode }: BooksListGridProps) {
-  if (viewMode === 'list') {
+  if (viewMode === 'grid') {
     return <BooksDataTable books={books} />;
   }
 
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" data-testid="books-grid-mode">
+    <section className="flex flex-wrap gap-4" data-testid="books-list-mode">
       {books.map((book) => (
-        <BookCard
-          key={book.id}
-          id={book.id}
-          title={book.title}
-          style={book.style}
-          status={book.status}
-          childName={book.childName}
-          createdAt={book.createdAt}
-        />
+        <div key={book.id} className="w-full md:w-[320px]">
+          <BookCard
+            id={book.id}
+            title={book.title}
+            style={book.style}
+            status={book.status}
+            childName={book.childName}
+            createdAt={book.createdAt}
+          />
+        </div>
       ))}
-    </div>
+    </section>
   );
 }
