@@ -1,11 +1,15 @@
+import type { ComponentType } from 'react';
+import { BookPlus, LayoutDashboard, Settings, Users } from 'lucide-react';
+
 export type NavItem = {
   label: string;
   href: string;
+  icon: ComponentType<{ className?: string }>;
 };
 
 export const navItems: readonly NavItem[] = [
-  { label: 'Dashboard', href: '/' },
-  { label: 'Create Book', href: '/books/new' },
-  { label: 'Profiles', href: '/profiles' },
-  { label: 'Settings', href: '/settings' },
+  { label: 'Dashboard', href: '/', icon: LayoutDashboard },
+  { label: 'Create Book', href: '/books/new', icon: BookPlus },
+  { label: 'Profiles', href: '/profiles', icon: Users },
+  { label: 'Settings', href: '/settings', icon: Settings },
 ];
