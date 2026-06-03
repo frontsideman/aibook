@@ -1,0 +1,246 @@
+meta:
+  profile: engineering-review
+  theme: tech-blue
+  layout: hierarchical
+  canvas: auto
+  routing: orthogonal
+  title: Backend Module Dependency Graph
+  description: NestJS module dependencies, queue setup, and external integrations
+modules:
+  - id: core
+    label: Core
+    color: '#E0E7FF'
+  - id: features
+    label: Feature Modules
+    color: '#EDE9FE'
+  - id: integrations
+    label: Integrations
+    color: '#FCE7F3'
+nodes:
+  - id: prismaService
+    label: PrismaService (Global)
+    type: service
+    module: core
+    size: medium
+    style:
+      fillColor: '#C7D2FE'
+  - id: prismaClient
+    label: |-
+      @repo/database
+      createPrismaClient()
+    type: database
+    module: core
+    size: medium
+    style:
+      fillColor: '#C7D2FE'
+  - id: mockAuthGuard
+    label: MockAuthGuard
+    type: service
+    module: core
+    size: medium
+    style:
+      fillColor: '#FEF08A'
+  - id: queueModule
+    label: QueueModule
+    type: queue
+    module: core
+    size: medium
+    style:
+      fillColor: '#FED7AA'
+  - id: redisBull
+    label: Redis (BullMQ)
+    type: database
+    module: core
+    size: medium
+  - id: aiModule
+    label: AiModule
+    type: service
+    module: integrations
+    size: medium
+    style:
+      fillColor: '#DDD6FE'
+  - id: mockAi
+    label: MockAiService
+    type: service
+    module: integrations
+    size: medium
+    style:
+      fillColor: '#DDD6FE'
+  - id: pdfModule
+    label: PdfModule
+    type: service
+    module: integrations
+    size: medium
+    style:
+      fillColor: '#DDD6FE'
+  - id: pdfkit
+    label: PDFKit (A3 PDF)
+    type: service
+    module: integrations
+    size: small
+  - id: storageModule
+    label: StorageModule
+    type: service
+    module: integrations
+    size: medium
+    style:
+      fillColor: '#DDD6FE'
+  - id: minioS3
+    label: MinIO / S3
+    type: database
+    module: integrations
+    size: medium
+  - id: bookModule
+    label: BookModule
+    type: service
+    module: features
+    size: medium
+    style:
+      fillColor: '#BFDBFE'
+  - id: bookController
+    label: BookController\n/books (7 endpoints)
+    type: service
+    module: features
+    size: medium
+  - id: bookService
+    label: BookService
+    type: service
+    module: features
+    size: medium
+  - id: bookProcessor
+    label: BookProcessor\nBullMQ Worker
+    type: process
+    module: features
+    size: medium
+    style:
+      fillColor: '#BFDBFE'
+  - id: childProfileMod
+    label: ChildProfileModule
+    type: service
+    module: features
+    size: medium
+    style:
+      fillColor: '#BFDBFE'
+  - id: childProfileCtrl
+    label: ChildProfileController\n/child-profiles (5 endpoints)
+    type: service
+    module: features
+    size: medium
+  - id: storyLibraryMod
+    label: StoryLibraryModule
+    type: service
+    module: features
+    size: medium
+    style:
+      fillColor: '#BFDBFE'
+  - id: storyLibraryCtrl
+    label: StoryLibraryController\n/stories (1 endpoint)
+    type: service
+    module: features
+    size: medium
+  - id: paymentMod
+    label: PaymentModule
+    type: service
+    module: features
+    size: medium
+    style:
+      fillColor: '#BFDBFE'
+  - id: paymentCtrl
+    label: PaymentController\n/webhook (Stripe)
+    type: service
+    module: features
+    size: medium
+  - id: subscriptionGuard
+    label: SubscriptionGuard
+    type: service
+    module: features
+    size: small
+    style:
+      fillColor: '#FEF08A'
+  - id: postgresDb
+    label: PostgreSQL\n(Prisma ORM)
+    type: database
+    size: xl
+edges:
+  - from: prismaService
+    to: prismaClient
+    type: primary
+    label: wraps
+  - from: queueModule
+    to: redisBull
+    type: data
+    label: BullMQ
+  - from: bookProcessor
+    to: queueModule
+    type: primary
+    label: consumes
+  - from: bookModule
+    to: prismaService
+    type: data
+    label: queries
+  - from: childProfileMod
+    to: prismaService
+    type: data
+    label: queries
+  - from: storyLibraryMod
+    to: prismaService
+    type: data
+    label: queries
+  - from: paymentMod
+    to: prismaService
+    type: data
+    label: queries
+  - from: bookModule
+    to: aiModule
+    type: primary
+    label: generates
+  - from: aiModule
+    to: mockAi
+    type: primary
+    label: uses
+  - from: bookModule
+    to: queueModule
+    type: primary
+    label: enqueues
+  - from: bookModule
+    to: pdfModule
+    type: primary
+    label: renders
+  - from: bookModule
+    to: storageModule
+    type: primary
+    label: uploads
+  - from: pdfModule
+    to: pdfkit
+    type: primary
+  - from: storageModule
+    to: minioS3
+    type: data
+    label: S3 API
+  - from: bookController
+    to: bookService
+    type: primary
+  - from: bookController
+    to: mockAuthGuard
+    type: dependency
+  - from: bookController
+    to: subscriptionGuard
+    type: dependency
+    label: POST/PATCH
+  - from: childProfileCtrl
+    to: childProfileMod
+    type: primary
+  - from: storyLibraryCtrl
+    to: storyLibraryMod
+    type: primary
+  - from: paymentCtrl
+    to: paymentMod
+    type: primary
+  - from: bookProcessor
+    to: mockAi
+    type: primary
+    label: AI calls
+  - from: bookProcessor
+    to: prismaService
+    type: data
+    label: saves pages
