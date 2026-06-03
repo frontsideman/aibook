@@ -17,6 +17,9 @@ dist
 /out/
 .turbo
 .turbo/
+**.next
+.turbo
+**.turbo
 *.log
 
 # production

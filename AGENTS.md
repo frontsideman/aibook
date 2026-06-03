@@ -69,3 +69,7 @@ docker compose -f docker-compose.dev.yml up  # Dev mode with hot-reloading
 ## Project State
 
 Prototype stage. Mock Auth implemented, Core generation logic stable, Docker setup complete. Prisma migration flow requires `prisma db push` or manual migrations.
+
+## Git
+
+Use git naming convention https://www.conventionalcommits.org/en/v1.0.0/ for every commit
