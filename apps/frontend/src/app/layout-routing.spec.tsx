@@ -11,7 +11,6 @@ vi.mock(
       </div>
     ),
   }),
-  { virtual: true },
 );
 
 describe("route group layouts", () => {

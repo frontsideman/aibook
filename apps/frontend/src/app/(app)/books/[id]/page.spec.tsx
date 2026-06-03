@@ -1,34 +1,30 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import PreviewPage from './page';
-
-const replace = vi.fn();
+import BookDetailPage from './page';
 
 vi.mock('next/navigation', () => ({
   useParams: () => ({ id: 'book-1' }),
-  useRouter: () => ({ replace, push: vi.fn() }),
 }));
 
-describe('PreviewPage smoke', () => {
-  it('renders preview page after loading', async () => {
+describe('BookDetailPage', () => {
+  it('renders book detail page for existing id', async () => {
     global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
       json: async () => ({
         book: {
           id: 'book-1',
           title: 'Test Book',
-          status: 'REVIEW',
+          status: 'COMPLETED',
           style: 'CARTOON',
-          tone: 'PLAYFUL',
-          pages: [{ id: 'p1', pageNumber: 1, textContent: 'Hello', illustrations: [] }],
+          pages: [],
         },
       }),
     } as Response);
 
-    render(<PreviewPage />);
+    render(<BookDetailPage />);
 
     await waitFor(() => {
       expect(screen.getByText('Test Book')).toBeInTheDocument();
     });
-    expect(replace).not.toHaveBeenCalled();
+
+    expect(screen.getByRole('button', { name: 'Download PDF' })).toBeInTheDocument();
   });
 });

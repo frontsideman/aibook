@@ -48,6 +48,8 @@ export default function DashboardPage() {
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [style, setStyle] = useState('');
+  const [type, setType] = useState('');
+  const [profile, setProfile] = useState('');
   const [sort, setSort] = useState<'updated' | 'title'>('updated');
   const [page, setPage] = useState(1);
   const latestRequestIdRef = useRef(0);
@@ -109,8 +111,17 @@ export default function DashboardPage() {
   const visibleBooks = useMemo(() => {
     if (!data) return [];
     const mapped = data.books.map(toDashboardBookViewModel);
-    return applyDashboardBookFilterSort(mapped, { sort });
-  }, [data, sort]);
+    return applyDashboardBookFilterSort(mapped, { titleSearch: search, status, style, type, profile, sort });
+  }, [data, profile, search, sort, status, style, type]);
+
+  const profileOptions = useMemo(() => {
+    const names = new Set<string>();
+    if (!data) return [];
+    for (const book of data.books) {
+      if (book.child?.name) names.add(book.child.name);
+    }
+    return [...names].sort((a, b) => a.localeCompare(b));
+  }, [data]);
 
   return (
     <div>
@@ -130,6 +141,9 @@ export default function DashboardPage() {
         search={search}
         status={status}
         style={style}
+        type={type}
+        profile={profile}
+        profiles={profileOptions}
         sort={sort}
         onSearchChange={(value) => {
           setSearch(value);
@@ -141,6 +155,14 @@ export default function DashboardPage() {
         }}
         onStyleChange={(value) => {
           setStyle(value);
+          setPage(1);
+        }}
+        onTypeChange={(value) => {
+          setType(value);
+          setPage(1);
+        }}
+        onProfileChange={(value) => {
+          setProfile(value);
           setPage(1);
         }}
         onSortChange={setSort}
