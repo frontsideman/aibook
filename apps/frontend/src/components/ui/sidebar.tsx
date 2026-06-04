@@ -48,12 +48,12 @@ function Sidebar({
       data-state={open ? "open" : "closed"}
       className={cn(
         "relative hidden border-r bg-card md:block",
-        open ? "w-72" : "w-0 overflow-hidden border-transparent",
+        open ? "w-[244px]" : "w-0 overflow-hidden border-transparent",
         className
       )}
       {...props}
     >
-      <div className="flex h-full flex-col">{children}</div>
+      <div className="flex h-full flex-col px-5 py-5">{children}</div>
     </aside>
   )
 }
@@ -64,7 +64,7 @@ function SidebarHeader({ className, ...props }: React.ComponentProps<"div">) {
 
 function SidebarContent({ className, ...props }: React.ComponentProps<"div">) {
   return (
-    <div data-slot="sidebar-content" className={cn("flex-1 overflow-y-auto p-3", className)} {...props} />
+    <div data-slot="sidebar-content" className={cn("flex-1 overflow-y-auto", className)} {...props} />
   )
 }
 

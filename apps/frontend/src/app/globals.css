@@ -20,6 +20,9 @@
   --color-ab-success: #2E7D55;
   --color-ab-warning: #B7791F;
   --color-ab-info: #5D7382;
+  --color-ab-sidebar-active: #EFE0C8;
+  --color-ab-sidebar-active-border: #D6BB91;
+  --color-ab-avatar: #D9A456;
   --font-mono: var(--font-mono);
   --ab-radius-sm: 6px;
   --ab-radius-md: 10px;
