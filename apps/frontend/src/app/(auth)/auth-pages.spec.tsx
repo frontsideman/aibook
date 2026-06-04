@@ -73,12 +73,15 @@ describe('auth pages', () => {
     expect(typeof window.localStorage.clear).toBe('function');
   });
 
-  it('renders login demo helper copy and secondary auth actions', () => {
+  it('renders login form with brand, heading, and secondary actions', () => {
     renderLoginPage();
 
-    expect(screen.getByText(/demo parent/i)).toBeInTheDocument();
+    expect(screen.getByText('aiBook')).toBeInTheDocument();
     expect(
-      screen.getByText(/submit starts a local mock session/i),
+      screen.getByRole('heading', { name: 'Welcome back' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Sign in to continue your books.'),
     ).toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
