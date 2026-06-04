@@ -46,14 +46,14 @@ export function SignupForm() {
   }
 
   return (
-    <div className="w-full max-w-[430px] rounded-[22px] border border-border bg-card p-7 shadow-[0_16px_34px_-14px_#3A28141A]">
+    <div className="w-full max-w-[430px] rounded-[22px] border border-border bg-card p-7 shadow-[0_16px_34px_#3A28141A]">
       <BrandMark className="mb-[18px]" />
 
       <h1 className="font-display text-[34px] font-semibold text-foreground">
         Create your account
       </h1>
 
-      <p className="mt-1 text-sm text-muted-foreground">
+      <p className="mt-[18px] text-sm text-muted-foreground">
         Start creating personalized keepsakes.
       </p>
 
@@ -140,7 +140,7 @@ export function SignupForm() {
           className="w-full"
           loading={isSubmitting}
         >
-          {isSubmitting ? undefined : 'Create account'}
+          {isSubmitting ? 'Creating account...' : 'Create account'}
         </Button>
 
         <div className="flex items-center justify-center gap-1.5 text-[13px]">

@@ -88,10 +88,10 @@ describe('auth pages', () => {
     expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'Continue with Google' }),
-    ).toBeDisabled();
+    ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Forgot password?' }),
-    ).toBeDisabled();
+      screen.getByRole('link', { name: 'Forgot password?' }),
+    ).toHaveAttribute('href', '/forgot-password');
     expect(screen.getByRole('link', { name: 'Create account' })).toHaveAttribute(
       'href',
       '/signup',
@@ -193,7 +193,7 @@ describe('auth pages', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
 
     expect(
-      screen.getByRole('button', { name: 'Continuing...' }),
+      screen.getByRole('button', { name: 'Creating account...' }),
     ).toBeDisabled();
 
     await waitFor(() => {
