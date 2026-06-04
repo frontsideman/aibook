@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { MSWProvider } from "@/components/MSWProvider";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -18,10 +19,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className="font-sans">
       <body>
         <ThemeProvider>
-          <MSWProvider>
-            {children}
-            <Toaster />
-          </MSWProvider>
+          <AuthProvider>
+            <MSWProvider>
+              {children}
+              <Toaster />
+            </MSWProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
