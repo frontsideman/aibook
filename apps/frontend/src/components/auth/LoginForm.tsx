@@ -6,6 +6,9 @@ import { useState, type FormEvent } from 'react';
 import { Lock, Mail, X } from 'lucide-react';
 
 import { useAuth } from '@/components/auth/AuthProvider';
+import { BrandMark } from '@/components/ui/brand-mark';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export function LoginForm() {
   const router = useRouter();
@@ -38,30 +41,25 @@ export function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-[430px] rounded-[22px] border border-[#E3D5C2] bg-[#FFFDF8] p-7 shadow-[0_16px_34px_-14px_#3A28141A]">
-      <div className="mb-[18px] flex items-center gap-2.5">
-        <div className="size-[34px] rounded-[9px] bg-[#9B5E1A]" />
-        <span className="font-display text-[27px] font-semibold text-[#2F261D]">
-          aiBook
-        </span>
-      </div>
+    <div className="w-full max-w-[430px] rounded-[22px] border border-border bg-card p-7 shadow-[0_16px_34px_-14px_#3A28141A]">
+      <BrandMark className="mb-[18px]" />
 
-      <h1 className="font-display text-[34px] font-semibold text-[#2F261D]">
+      <h1 className="font-display text-[34px] font-semibold text-foreground">
         Welcome back
       </h1>
 
-      <p className="mt-1 text-sm text-[#75695B]">
+      <p className="mt-1 text-sm text-muted-foreground">
         Sign in to continue your books.
       </p>
 
       <form className="mt-[18px] space-y-[14px]" onSubmit={handleSubmit}>
         <div className="space-y-1.5">
-          <label className="text-[13px] font-extrabold text-[#2F261D]">
+          <label className="text-[13px] font-extrabold text-foreground">
             Email
           </label>
-          <div className="flex h-[46px] items-center gap-2 rounded-[11px] border border-[#E3D5C2] bg-[#FFF9F0] px-3 focus-within:border-[#3D6C8D] focus-within:ring-1 focus-within:ring-[#3D6C8D]">
-            <Mail className="size-4 shrink-0 text-[#75695B]" />
-            <input
+          <div className="relative">
+            <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
               aria-label="Email"
               type="email"
               value={email}
@@ -70,7 +68,7 @@ export function LoginForm() {
                 if (error) setError('');
               }}
               placeholder="parent@example.com"
-              className="h-full flex-1 bg-transparent text-sm text-[#2F261D] placeholder:text-[#75695B] outline-none"
+              className="pl-9"
               autoComplete="email"
               disabled={isSubmitting}
             />
@@ -78,18 +76,12 @@ export function LoginForm() {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-[13px] font-extrabold text-[#2F261D]">
+          <label className="text-[13px] font-extrabold text-foreground">
             Password
           </label>
-          <div
-            className={`flex h-[46px] items-center gap-2 rounded-[11px] bg-[#FFF9F0] px-3 focus-within:ring-1 focus-within:ring-[#3D6C8D] ${
-              error
-                ? 'border border-[#B6483D]'
-                : 'border border-[#E3D5C2]'
-            }`}
-          >
-            <Lock className="size-4 shrink-0 text-[#75695B]" />
-            <input
+          <div className="relative">
+            <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
               aria-label="Password"
               type="password"
               value={password}
@@ -98,61 +90,54 @@ export function LoginForm() {
                 if (error) setError('');
               }}
               placeholder="Enter your password"
-              className="h-full flex-1 bg-transparent text-sm text-[#2F261D] placeholder:text-[#75695B] outline-none"
+              className="pl-9"
               autoComplete="current-password"
               disabled={isSubmitting}
+              aria-invalid={!!error}
             />
           </div>
         </div>
 
         {error && (
-          <div className="flex items-center gap-2.5 rounded-[12px] border border-[#B6483D] bg-[#FFF1ED] p-3">
-            <X className="size-4 shrink-0 text-[#B6483D]" />
-            <span className="text-xs font-bold text-[#B6483D]" role="alert">
+          <div className="flex items-center gap-2.5 rounded-[12px] border border-destructive bg-destructive/10 p-3">
+            <X className="size-4 shrink-0 text-destructive" />
+            <span className="text-xs font-bold text-destructive" role="alert">
               {error}
             </span>
           </div>
         )}
 
-        {isSubmitting ? (
-          <button
-            type="submit"
-            disabled
-            className="flex h-[42px] w-full items-center justify-center gap-2 rounded-[11px] bg-[#9B5E1A] text-[13px] font-extrabold text-white opacity-85"
-          >
-            <span className="size-2.5 animate-pulse rounded-full bg-white/70" />
-            Continuing...
-          </button>
-        ) : (
-          <button
-            type="submit"
-            className="flex h-[46px] w-full items-center justify-center rounded-[12px] bg-[#9B5E1A] text-[15px] font-extrabold text-white"
-          >
-            Continue
-          </button>
-        )}
+        <Button
+          type="submit"
+          className="w-full"
+          loading={isSubmitting}
+        >
+          {isSubmitting ? undefined : 'Continue'}
+        </Button>
 
-        <button
+        <Button
           type="button"
+          variant="outline"
+          className="w-full opacity-50"
           disabled
           aria-label="Continue with Google"
-          className="flex h-[46px] w-full items-center justify-center gap-2.5 rounded-[12px] border border-[#E3D5C2] bg-transparent text-sm font-extrabold text-[#2F261D] opacity-50"
         >
-          <span className="text-[15px] font-extrabold text-[#9B5E1A]">G</span>
+          <span className="text-[15px] font-extrabold text-primary">G</span>
           Continue with Google
-        </button>
+        </Button>
 
         <div className="flex items-center justify-between">
-          <button
+          <Button
             type="button"
+            variant="ghost"
+            className="text-[13px] font-extrabold text-primary opacity-50"
             disabled
-            className="text-[13px] font-extrabold text-[#9B5E1A] opacity-50"
           >
             Forgot password?
-          </button>
+          </Button>
           <Link
             href="/signup"
-            className="text-[13px] font-extrabold text-[#9B5E1A]"
+            className="text-[13px] font-extrabold text-primary"
           >
             Create account
           </Link>
