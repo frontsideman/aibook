@@ -43,6 +43,7 @@
   --color-chart-1: var(--chart-1);
   --color-ring: var(--ring);
   --color-input: var(--input);
+  --color-input-bg: var(--input-bg);
   --color-border: var(--border);
   --color-destructive: var(--destructive);
   --color-accent-foreground: var(--accent-foreground);
@@ -83,7 +84,8 @@
   --accent-foreground: #2F261D;
   --destructive: #B6483D;
   --border: #E3D5C2;
-  --input: #FFF9F0;
+  --input: #E3D5C2;
+  --input-bg: #FFF9F0;
   --ring: #3D6C8D;
   --chart-1: #D9902F;
   --chart-2: #9B5E1A;
@@ -126,7 +128,8 @@
   --accent-foreground: #171410;
   --destructive: #F08B80;
   --border: #4A3D31;
-  --input: #211B16;
+  --input: #4A3D31;
+  --input-bg: #211B16;
   --ring: #3D6C8D;
   --chart-1: #E2A85F;
   --chart-2: #F2BE72;
