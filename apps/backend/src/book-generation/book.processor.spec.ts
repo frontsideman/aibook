@@ -3,7 +3,7 @@ import { BookProcessor } from './book.processor';
 import { PrismaService } from '../prisma.service';
 import { AiService } from '../ai/ai.service';
 import { Job } from 'bullmq';
-import { BookStatus } from '@repo/database';
+import { BookStatus, ReasoningEffort } from '@repo/database';
 
 describe('BookProcessor', () => {
   let processor: BookProcessor;
@@ -14,6 +14,7 @@ describe('BookProcessor', () => {
     book: { findUnique: jest.fn(), update: jest.fn() },
     page: { create: jest.fn() },
     illustration: { create: jest.fn() },
+    $transaction: jest.fn(),
   };
 
   const mockPrismaService = { client: mockPrismaClient };
@@ -24,6 +25,8 @@ describe('BookProcessor', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockPrismaClient.$transaction.mockImplementation(async callback => callback(mockPrismaClient));
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BookProcessor,
@@ -47,51 +50,36 @@ describe('BookProcessor', () => {
       id: bookId,
       title: 'Test Book',
       style: 'WATERCOLOR',
-      child: { name: 'Alice', age: 5, interests: ['dinosaurs'] },
+      llmModel: 'openai:gpt-5.4-mini',
+      reasoningEffort: ReasoningEffort.MEDIUM,
+      child: { name: 'Alice', age: 5, gender: 'female', interests: ['dinosaurs'] },
     };
 
     mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
     mockAiService.generateStory.mockResolvedValue('Page 1: Content 1\nPage 2: Content 2\nPage 3: Content 3');
-    mockAiService.generateImage.mockResolvedValue('https://example.com/image.jpg');
     mockPrismaClient.page.create.mockImplementation(({ data }) => Promise.resolve({ id: `page-${data.pageNumber}`, ...data }));
 
     const job = { data: { bookId } } as Job;
     await processor.process(job);
 
-    expect(aiService.generateStory).toHaveBeenCalled();
-    expect(aiService.generateImage).toHaveBeenCalledTimes(3);
+    expect(prisma.client.book.update).toHaveBeenNthCalledWith(1, {
+      where: { id: bookId },
+      data: { status: BookStatus.GENERATING },
+    });
+    expect(aiService.generateStory).toHaveBeenCalledWith(
+      expect.stringContaining('Generate a children\'s book story titled "Test Book"'),
+      {
+        model: 'openai:gpt-5.4-mini',
+        reasoningEffort: ReasoningEffort.MEDIUM,
+      },
+    );
+    expect(aiService.generateImage).not.toHaveBeenCalled();
+    expect(prisma.client.illustration.create).not.toHaveBeenCalled();
     expect(prisma.client.page.create).toHaveBeenCalledTimes(3);
-    expect(prisma.client.book.update).toHaveBeenCalledWith({
+    expect(prisma.client.book.update).toHaveBeenNthCalledWith(2, {
       where: { id: bookId },
       data: { status: BookStatus.REVIEW },
     });
-  });
-
-  it('should generate 2 illustrations per page when style is MANGA', async () => {
-    const bookId = 'manga-book-id';
-    const mockBook = {
-      id: bookId,
-      title: 'Manga Book',
-      style: 'MANGA',
-      child: { name: 'Bob', age: 7, interests: ['robots'] },
-    };
-
-    mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
-    mockAiService.generateStory.mockResolvedValue('Page 1: Robots fighting');
-    mockAiService.generateImage.mockResolvedValue('https://example.com/manga-image.jpg');
-    mockPrismaClient.page.create.mockResolvedValue({ id: 'page-1' });
-
-    const job = { data: { bookId } } as Job;
-    await processor.process(job);
-
-    expect(aiService.generateImage).toHaveBeenCalledTimes(2);
-    expect(prisma.client.illustration.create).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: expect.objectContaining({
-          prompt: expect.stringContaining('Manga style, high contrast, black and white'),
-        }),
-      }),
-    );
   });
 
   it('should include tone and parentComments in story prompt', async () => {
@@ -102,22 +90,28 @@ describe('BookProcessor', () => {
       style: 'CARTOON',
       tone: 'PLAYFUL',
       parentComments: 'Make it very funny',
+      llmModel: 'openai:gpt-5.4',
+      reasoningEffort: ReasoningEffort.HIGH,
       child: { name: 'Charlie', age: 4, gender: 'male', interests: ['dogs'] },
     };
 
     mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
     mockAiService.generateStory.mockResolvedValue('Page 1: Fun content');
-    mockAiService.generateImage.mockResolvedValue('https://example.com/img.jpg');
     mockPrismaClient.page.create.mockResolvedValue({ id: 'page-1' });
 
     const job = { data: { bookId } } as Job;
     await processor.process(job);
 
     expect(aiService.generateStory).toHaveBeenCalledWith(
-      expect.stringContaining('playful')
+      expect.stringContaining('playful'),
+      expect.objectContaining({
+        model: 'openai:gpt-5.4',
+        reasoningEffort: ReasoningEffort.HIGH,
+      }),
     );
     expect(aiService.generateStory).toHaveBeenCalledWith(
-      expect.stringContaining('Make it very funny')
+      expect.stringContaining('Make it very funny'),
+      expect.any(Object),
     );
   });
 
@@ -127,20 +121,117 @@ describe('BookProcessor', () => {
       id: bookId,
       title: 'Regen Test',
       style: 'CARTOON',
+      llmModel: 'openai:gpt-5.4-nano',
+      reasoningEffort: ReasoningEffort.LOW,
       child: { name: 'Dana', age: 6, gender: 'female', interests: ['cats'] },
     };
 
     mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
     mockAiService.generateStory.mockResolvedValue('Page 1: New content');
-    mockAiService.generateImage.mockResolvedValue('https://example.com/img.jpg');
     mockPrismaClient.page.create.mockResolvedValue({ id: 'page-1' });
 
     const job = { data: { bookId, parentFeedback: 'Make the ending happier' } } as Job;
     await processor.process(job);
 
     expect(aiService.generateStory).toHaveBeenCalledWith(
-      expect.stringContaining('Make the ending happier')
+      expect.stringContaining('Make the ending happier'),
+      {
+        model: 'openai:gpt-5.4-nano',
+        reasoningEffort: ReasoningEffort.LOW,
+      },
     );
+  });
+
+  it('should mark the book as failed and rethrow when story generation fails', async () => {
+    const bookId = 'failed-book-id';
+    const error = new Error('provider unavailable');
+    const mockBook = {
+      id: bookId,
+      title: 'Failure Test',
+      style: 'CARTOON',
+      llmModel: 'openai:gpt-5.4-mini',
+      reasoningEffort: ReasoningEffort.MEDIUM,
+      child: { name: 'Eve', age: 8, gender: 'female', interests: ['space'] },
+    };
+
+    mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
+    mockAiService.generateStory.mockRejectedValue(error);
+
+    const job = { data: { bookId } } as Job;
+
+    await expect(processor.process(job)).rejects.toThrow(error);
+
+    expect(prisma.client.book.update).toHaveBeenNthCalledWith(1, {
+      where: { id: bookId },
+      data: { status: BookStatus.GENERATING },
+    });
+    expect(prisma.client.book.update).toHaveBeenNthCalledWith(2, {
+      where: { id: bookId },
+      data: { status: BookStatus.FAILED },
+    });
+    expect(prisma.client.page.create).not.toHaveBeenCalled();
+    expect(aiService.generateImage).not.toHaveBeenCalled();
+    expect(prisma.client.illustration.create).not.toHaveBeenCalled();
+  });
+
+  it('should roll back page writes and mark the book as failed when review transition fails', async () => {
+    const bookId = 'rollback-book-id';
+    const error = new Error('review update failed');
+    const mockBook = {
+      id: bookId,
+      title: 'Rollback Test',
+      style: 'CARTOON',
+      llmModel: 'openai:gpt-5.4-mini',
+      reasoningEffort: ReasoningEffort.MEDIUM,
+      child: { name: 'Finn', age: 7, gender: 'male', interests: ['dragons'] },
+    };
+    const createdPages: Array<{ bookId: string; pageNumber: number; textContent: string }> = [];
+    const txPageCreate = jest.fn(async ({ data }) => {
+      createdPages.push(data);
+      return { id: `page-${data.pageNumber}`, ...data };
+    });
+    const txBookUpdate = jest.fn(async ({ data }) => {
+      if (data.status === BookStatus.REVIEW) {
+        throw error;
+      }
+
+      return { id: bookId, ...data };
+    });
+
+    mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
+    mockAiService.generateStory.mockResolvedValue('Page 1: Content 1\nPage 2: Content 2');
+    mockPrismaClient.$transaction.mockImplementation(async callback => {
+      try {
+        return await callback({
+          book: { update: txBookUpdate },
+          page: { create: txPageCreate },
+        });
+      } catch (transactionError) {
+        createdPages.length = 0;
+        throw transactionError;
+      }
+    });
+
+    const job = { data: { bookId } } as Job;
+
+    await expect(processor.process(job)).rejects.toThrow(error);
+
+    expect(txPageCreate).toHaveBeenCalledTimes(2);
+    expect(txBookUpdate).toHaveBeenCalledWith({
+      where: { id: bookId },
+      data: { status: BookStatus.REVIEW },
+    });
+    expect(createdPages).toEqual([]);
+    expect(prisma.client.book.update).toHaveBeenNthCalledWith(1, {
+      where: { id: bookId },
+      data: { status: BookStatus.GENERATING },
+    });
+    expect(prisma.client.book.update).toHaveBeenNthCalledWith(2, {
+      where: { id: bookId },
+      data: { status: BookStatus.FAILED },
+    });
+    expect(aiService.generateImage).not.toHaveBeenCalled();
+    expect(prisma.client.illustration.create).not.toHaveBeenCalled();
   });
 
   it('should throw when book is not found', async () => {
