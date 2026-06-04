@@ -2,6 +2,23 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock(
+  "@/components/auth/AuthGuard",
+  () => ({
+    AuthGuard: ({
+      children,
+      mode,
+    }: {
+      children: React.ReactNode;
+      mode: "guest" | "authenticated";
+    }) => (
+      <div data-testid={`auth-guard-${mode}`}>
+        {children}
+      </div>
+    ),
+  }),
+);
+
+vi.mock(
   "@/components/app-shell/AppShell",
   () => ({
     AppShell: ({ children }: { children: React.ReactNode }) => (
@@ -14,7 +31,7 @@ vi.mock(
 );
 
 describe("route group layouts", () => {
-  it("renders app shell slot for internal pages", async () => {
+  it("app layout wraps children in authenticated guard and app shell", async () => {
     const { default: AppLayout } = await import("./(app)/layout");
     render(
       <AppLayout>
@@ -22,11 +39,14 @@ describe("route group layouts", () => {
       </AppLayout>,
     );
 
+    const authGuard = screen.getByTestId("auth-guard-authenticated");
+    const appShell = screen.getByTestId("app-shell-mock");
+
     expect(screen.getByText("internal")).toBeInTheDocument();
-    expect(screen.getByTestId("app-shell-mock")).toBeInTheDocument();
+    expect(authGuard).toContainElement(appShell);
   });
 
-  it("renders auth layout without sidebar", async () => {
+  it("auth layout wraps children in guest guard", async () => {
     const { default: AuthLayout } = await import("./(auth)/layout");
 
     render(
@@ -35,7 +55,11 @@ describe("route group layouts", () => {
       </AuthLayout>,
     );
 
-    expect(screen.getByText("auth")).toBeInTheDocument();
+    const authGuard = screen.getByTestId("auth-guard-guest");
+    const authContent = screen.getByText("auth");
+
+    expect(authContent).toBeInTheDocument();
+    expect(authGuard).toContainElement(authContent);
     expect(screen.queryByTestId("app-shell-mock")).not.toBeInTheDocument();
   });
 });

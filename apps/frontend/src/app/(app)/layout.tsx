@@ -1,3 +1,4 @@
+import { AuthGuard } from "@/components/auth/AuthGuard";
 import { AppShell } from "@/components/app-shell/AppShell";
 
 export default function AppGroupLayout({
@@ -5,5 +6,9 @@ export default function AppGroupLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <AppShell>{children}</AppShell>;
+  return (
+    <AuthGuard mode="authenticated">
+      <AppShell>{children}</AppShell>
+    </AuthGuard>
+  );
 }
