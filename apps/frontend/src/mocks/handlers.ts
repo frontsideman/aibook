@@ -77,6 +77,13 @@ export const handlers = [
     return HttpResponse.json({ bookId: 'b5', status: 'DRAFT' });
   }),
 
+  http.get('/api/settings/generation', () => {
+    return HttpResponse.json({
+      llmModel: 'openai:gpt-5.4-mini',
+      reasoningEffort: 'MEDIUM',
+    });
+  }),
+
   http.post('/api/books/:id/approve', () => {
     return HttpResponse.json({ pdfUrl: 'https://example.com/book.pdf' });
   }),
