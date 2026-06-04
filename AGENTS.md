@@ -63,12 +63,16 @@ docker compose -f docker-compose.dev.yml up  # Dev mode with hot-reloading
 ## Testing
 
 - Backend: Jest with `ts-jest`. Tests in `src/`. MSW not used in backend.
-- Frontend: Uses MSW (`src/mocks/`) for API mocking. No test runner configured yet.
-- No e2e tests configured.
+- Frontend: Vitest + Testing Library are configured. Tests live in `src/**/*.spec.ts(x)`.
+- Frontend: Uses MSW (`src/mocks/`) for API mocking.
+- Frontend auth flow currently has coverage for mock session storage, provider state, route guards, and auth pages.
+- No committed e2e suite yet, but Playwright is installed and can be used for local smoke-checks.
 
 ## Project State
 
 Prototype stage. Mock Auth implemented, Core generation logic stable, Docker setup complete. Prisma migration flow requires `prisma db push` or manual migrations.
+
+Frontend auth currently uses a local mock session in `localStorage` with guarded `(auth)` and `(app)` route groups. Follow-up auth work is tracked in `backlog.md`.
 
 ## Git
 

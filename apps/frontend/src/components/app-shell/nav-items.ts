@@ -1,5 +1,5 @@
 import type { ComponentType } from 'react';
-import { BookPlus, LayoutDashboard, Settings, Users } from 'lucide-react';
+import { BookPlus, LayoutDashboard, LogOut, Settings, Users } from 'lucide-react';
 
 export type NavItem = {
   label: string;
@@ -12,4 +12,5 @@ export const navItems: readonly NavItem[] = [
   { label: 'Create Book', href: '/books/new', icon: BookPlus },
   { label: 'Profiles', href: '/profiles', icon: Users },
   { label: 'Settings', href: '/settings', icon: Settings },
+  { label: 'Logout', href: '/logout', icon: LogOut },
 ];
