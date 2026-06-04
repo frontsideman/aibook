@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import * as React from "react";
+import { LogOut } from "lucide-react";
 
 import {
   Sidebar,
@@ -61,6 +62,28 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           })}
         </nav>
       </SidebarContent>
+
+      {/* Account */}
+      <div className="mb-2 flex h-[68px] items-center gap-2.5 rounded-xl border border-border bg-secondary p-3">
+        <div className="size-[34px] shrink-0 rounded-full bg-avatar" />
+        <div className="flex flex-col gap-0.5">
+          <span className="text-sm font-extrabold text-foreground">
+            Sarah K.
+          </span>
+          <span className="text-xs leading-none text-muted-foreground">
+            Family plan
+          </span>
+        </div>
+      </div>
+
+      {/* Logout */}
+      <Link
+        href="/logout"
+        className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <LogOut className="size-[18px]" />
+        Log out
+      </Link>
 
       <SidebarRail />
     </Sidebar>
