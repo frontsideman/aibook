@@ -32,6 +32,11 @@ export class BookController {
     return this.bookService.createAndGenerate(body, req.user.id);
   }
 
+  @Get(':id')
+  async findOne(@Param('id') id: string, @Req() req: any) {
+    return this.bookService.getById(id, req.user.id);
+  }
+
   @Get(':id/preview')
   async preview(@Param('id') id: string, @Req() req: any) {
     return this.bookService.getPreview(id, req.user.id);

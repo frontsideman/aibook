@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { BookStatus } from '@repo/database';
+import { BookStatus, ReasoningEffort } from '@repo/database';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { PdfService } from '../pdf/pdf.service';
@@ -32,6 +32,9 @@ export class PageEditDto {
 export class RegenerateDto {
   parentFeedback: string;
 }
+
+const DEFAULT_LLM_MODEL = 'openai:gpt-5.4-mini';
+const DEFAULT_REASONING_EFFORT = ReasoningEffort.MEDIUM;
 
 @Injectable()
 export class BookService {
@@ -68,11 +71,21 @@ export class BookService {
   }
 
   async createAndGenerate(dto: CreateBookDto, userId: string) {
+    const user = await this.prisma.client.user.findUnique({
+      where: { id: userId },
+      select: {
+        preferredLlmModel: true,
+        preferredReasoningEffort: true,
+      },
+    });
+
     const book = await this.prisma.client.book.create({
       data: {
         title: dto.storyTitle || (dto.userContent ? dto.userContent.slice(0, 50) : 'New Book'),
         type: dto.type,
         style: dto.style,
+        llmModel: user?.preferredLlmModel ?? DEFAULT_LLM_MODEL,
+        reasoningEffort: user?.preferredReasoningEffort ?? DEFAULT_REASONING_EFFORT,
         tone: dto.tone,
         parentComments: dto.parentComments,
         status: BookStatus.DRAFT,
@@ -83,6 +96,19 @@ export class BookService {
 
     await this.bookQueue.add('generate-book', { bookId: book.id });
     return { bookId: book.id, status: 'DRAFT' };
+  }
+
+  async getById(bookId: string, userId?: string) {
+    const book = await this.prisma.client.book.findUnique({
+      where: { id: bookId, ...(userId ? { userId } : {}) },
+      include: {
+        child: { select: { id: true, name: true, age: true } },
+        pages: { orderBy: { pageNumber: 'asc' } },
+      },
+    });
+
+    if (!book) throw new NotFoundException('Book not found');
+    return book;
   }
 
   async triggerGeneration(bookId: string) {
@@ -116,12 +142,6 @@ export class BookService {
   async approveBook(bookId: string, userId?: string) {
     const book = await this.prisma.client.book.findUnique({
       where: { id: bookId, ...(userId ? { userId } : {}) },
-      include: {
-        pages: {
-          orderBy: { pageNumber: 'asc' },
-          include: { illustrations: true },
-        },
-      },
     });
 
     if (!book) throw new NotFoundException('Book not found');
@@ -129,23 +149,12 @@ export class BookService {
       throw new NotFoundException('Book must be in REVIEW status to approve');
     }
 
-    const pages = book.pages.map((p: { textContent: string; illustrations: { url?: string }[] }) => ({
-      text: p.textContent,
-      imageUrl: p.illustrations[0]?.url,
-    }));
-
-    const pdfBuffer = await this.pdfService.generateBookPdf(pages);
-    const pdfKey = `books/${bookId}/book.pdf`;
-    await this.storageService.upload(pdfKey, pdfBuffer, 'application/pdf');
-
-    const pdfUrl = `${process.env.S3_ENDPOINT || 'http://localhost:9000'}/${process.env.S3_BUCKET || 'test-bucket'}/${pdfKey}`;
-
     await this.prisma.client.book.update({
       where: { id: bookId },
-      data: { status: BookStatus.COMPLETED, pdfUrl, approvedAt: new Date() },
+      data: { status: BookStatus.COMPLETED, approvedAt: new Date() },
     });
 
-    return { pdfUrl };
+    return { status: BookStatus.COMPLETED };
   }
 
   async editPage(bookId: string, pageNumber: number, dto: PageEditDto, userId?: string) {

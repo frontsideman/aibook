@@ -7,13 +7,15 @@ datasource db {
 }
 
 model User {
-  id                 String         @id @default(cuid())
-  email              String         @unique
-  subscriptionActive Boolean        @default(false)
-  childProfiles      ChildProfile[]
-  books              Book[]
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
+  id                       String            @id @default(cuid())
+  email                    String            @unique
+  subscriptionActive       Boolean           @default(false)
+  preferredLlmModel        String            @default("openai:gpt-5.4-mini")
+  preferredReasoningEffort ReasoningEffort  @default(MEDIUM)
+  childProfiles            ChildProfile[]
+  books                    Book[]
+  createdAt                DateTime          @default(now())
+  updatedAt                DateTime          @updatedAt
 }
 
 model ChildProfile {
@@ -36,6 +38,13 @@ enum BookStatus {
   GENERATING
   REVIEW
   COMPLETED
+  FAILED
+}
+
+enum ReasoningEffort {
+  LOW
+  MEDIUM
+  HIGH
 }
 
 enum BookType {
@@ -71,11 +80,13 @@ model StoryLibrary {
 }
 
 model Book {
-  id        String     @id @default(cuid())
-  title     String
-  status    BookStatus @default(DRAFT)
-  type      BookType   @default(AI_ADAPTED)
-  style     BookStyle
+  id               String            @id @default(cuid())
+  title            String
+  status           BookStatus        @default(DRAFT)
+  type             BookType          @default(AI_ADAPTED)
+  style            BookStyle
+  llmModel         String
+  reasoningEffort  ReasoningEffort
   tone       Tone?
   parentComments String?
   parentFeedback Json?
