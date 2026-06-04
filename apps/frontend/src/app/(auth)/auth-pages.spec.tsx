@@ -13,8 +13,12 @@ vi.mock('next/navigation', () => ({
 }));
 
 function ensureClearableLocalStorage(): void {
-  if (typeof window.localStorage.clear === 'function') {
-    return;
+  try {
+    if (typeof window.localStorage?.clear === 'function') {
+      return;
+    }
+  } catch {
+    // Fall through and redefine storage with a stable test double.
   }
 
   const storage = new Map<string, string>();
@@ -42,11 +46,31 @@ function renderLoginPage() {
   );
 }
 
+function renderSignupPage() {
+  return render(
+    <AuthProvider>
+      <SignupPage />
+    </AuthProvider>,
+  );
+}
+
 describe('auth pages', () => {
   beforeEach(() => {
     ensureClearableLocalStorage();
     window.localStorage.clear();
     replace.mockReset();
+  });
+
+  it('redefines localStorage when accessing it throws', () => {
+    Object.defineProperty(window, 'localStorage', {
+      configurable: true,
+      get() {
+        throw new Error('blocked storage');
+      },
+    });
+
+    expect(() => ensureClearableLocalStorage()).not.toThrow();
+    expect(typeof window.localStorage.clear).toBe('function');
   });
 
   it('renders login demo helper copy and secondary auth actions', () => {
@@ -107,11 +131,82 @@ describe('auth pages', () => {
     });
   });
 
-  it('renders signup form fields and submit button', () => {
-    render(<SignupPage />);
+  it('shows signup helper copy and the login footer link', () => {
+    renderSignupPage();
+
+    expect(screen.getByText('aiBook')).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Create your account' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Start creating personalized keepsakes.'),
+    ).toBeInTheDocument();
     expect(screen.getByLabelText('Name')).toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
+    expect(
+      screen.getByText('Use at least 8 characters.'),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Log in' })).toHaveAttribute(
+      'href',
+      '/login',
+    );
     expect(screen.getByRole('button', { name: 'Create account' })).toBeInTheDocument();
+  });
+
+  it('shows inline validation when signup data is invalid', async () => {
+    renderSignupPage();
+
+    fireEvent.change(screen.getByLabelText('Name'), {
+      target: { value: 'Ava Parent' },
+    });
+    fireEvent.change(screen.getByLabelText('Email'), {
+      target: { value: 'ava.parent@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'short' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
+
+    expect(
+      await screen.findByText('Complete all fields with a valid password.'),
+    ).toBeInTheDocument();
+    expect(replace).not.toHaveBeenCalled();
+    expect(window.localStorage.getItem(MOCK_AUTH_STORAGE_KEY)).toBeNull();
+  });
+
+  it('shows loading state and completes demo signup', async () => {
+    renderSignupPage();
+
+    fireEvent.change(screen.getByLabelText('Name'), {
+      target: { value: 'Ava Parent' },
+    });
+    fireEvent.change(screen.getByLabelText('Email'), {
+      target: { value: 'ava.parent@example.com' },
+    });
+    fireEvent.change(screen.getByLabelText('Password'), {
+      target: { value: 'secret-passphrase' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
+
+    expect(
+      screen.getByRole('button', { name: 'Creating account...' }),
+    ).toBeDisabled();
+
+    await waitFor(() => {
+      expect(window.localStorage.getItem(MOCK_AUTH_STORAGE_KEY)).toContain(
+        '"email":"ava.parent@example.com"',
+      );
+    });
+
+    await waitFor(() => {
+      expect(window.localStorage.getItem(MOCK_AUTH_STORAGE_KEY)).toContain(
+        '"name":"Ava Parent"',
+      );
+    });
+
+    await waitFor(() => {
+      expect(replace).toHaveBeenCalledWith('/');
+    });
   });
 });
