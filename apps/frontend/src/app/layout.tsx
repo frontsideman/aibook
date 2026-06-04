@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Newsreader } from "next/font/google";
+import { Inter, Newsreader, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { MSWProvider } from "@/components/MSWProvider";
 import { AuthProvider } from "@/components/auth/AuthProvider";
@@ -16,6 +16,12 @@ const newsreader = Newsreader({
   variable: "--font-display",
 });
 
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-mono",
+});
+
 export const metadata: Metadata = {
   title: "aiBook - AI Generated Children's Books",
   description: "Create personalized AI-generated children's books",
@@ -30,7 +36,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.variable} ${newsreader.variable} font-sans`}
+      className={`${inter.variable} ${newsreader.variable} ${ibmPlexMono.variable} font-sans`}
     >
       <body>
         <ThemeProvider>
