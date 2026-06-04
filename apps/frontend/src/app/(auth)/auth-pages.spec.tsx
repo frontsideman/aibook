@@ -193,7 +193,7 @@ describe('auth pages', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
 
     expect(
-      screen.getByRole('button', { name: 'Creating account...' }),
+      screen.getByRole('button', { name: 'Continuing...' }),
     ).toBeDisabled();
 
     await waitFor(() => {

@@ -3,9 +3,12 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, type FormEvent } from 'react';
-import { Mail, Lock, User, X } from 'lucide-react';
+import { Lock, Mail, User, X } from 'lucide-react';
 
 import { useAuth } from '@/components/auth/AuthProvider';
+import { BrandMark } from '@/components/ui/brand-mark';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export function SignupForm() {
   const router = useRouter();
@@ -43,30 +46,25 @@ export function SignupForm() {
   }
 
   return (
-    <div className="w-full max-w-[430px] rounded-[22px] border border-[#E3D5C2] bg-[#FFFDF8] p-7 shadow-[0_16px_34px_-14px_#3A28141A]">
-      <div className="mb-[18px] flex items-center gap-2.5">
-        <div className="size-[34px] rounded-[9px] bg-[#9B5E1A]" />
-        <span className="font-display text-[27px] font-semibold text-[#2F261D]">
-          aiBook
-        </span>
-      </div>
+    <div className="w-full max-w-[430px] rounded-[22px] border border-border bg-card p-7 shadow-[0_16px_34px_-14px_#3A28141A]">
+      <BrandMark className="mb-[18px]" />
 
-      <h1 className="font-display text-[34px] font-semibold text-[#2F261D]">
+      <h1 className="font-display text-[34px] font-semibold text-foreground">
         Create your account
       </h1>
 
-      <p className="mt-1 text-sm text-[#75695B]">
+      <p className="mt-1 text-sm text-muted-foreground">
         Start creating personalized keepsakes.
       </p>
 
       <form className="mt-[18px] space-y-[14px]" onSubmit={handleSubmit}>
         <div className="space-y-1.5">
-          <label className="text-[13px] font-extrabold text-[#2F261D]">
+          <label className="text-[13px] font-extrabold text-foreground">
             Name
           </label>
-          <div className="flex h-[46px] items-center gap-2 rounded-[11px] border border-[#E3D5C2] bg-[#FFF9F0] px-3 focus-within:border-[#3D6C8D] focus-within:ring-1 focus-within:ring-[#3D6C8D]">
-            <User className="size-4 shrink-0 text-[#75695B]" />
-            <input
+          <div className="relative">
+            <User className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
               aria-label="Name"
               type="text"
               value={name}
@@ -75,7 +73,7 @@ export function SignupForm() {
                 if (error) setError('');
               }}
               placeholder="Jane Doe"
-              className="h-full flex-1 bg-transparent text-sm text-[#2F261D] placeholder:text-[#75695B] outline-none"
+              className="pl-9"
               autoComplete="name"
               disabled={isSubmitting}
             />
@@ -83,12 +81,12 @@ export function SignupForm() {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-[13px] font-extrabold text-[#2F261D]">
+          <label className="text-[13px] font-extrabold text-foreground">
             Email
           </label>
-          <div className="flex h-[46px] items-center gap-2 rounded-[11px] border border-[#E3D5C2] bg-[#FFF9F0] px-3 focus-within:border-[#3D6C8D] focus-within:ring-1 focus-within:ring-[#3D6C8D]">
-            <Mail className="size-4 shrink-0 text-[#75695B]" />
-            <input
+          <div className="relative">
+            <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
               aria-label="Email"
               type="email"
               value={email}
@@ -97,7 +95,7 @@ export function SignupForm() {
                 if (error) setError('');
               }}
               placeholder="parent@example.com"
-              className="h-full flex-1 bg-transparent text-sm text-[#2F261D] placeholder:text-[#75695B] outline-none"
+              className="pl-9"
               autoComplete="email"
               disabled={isSubmitting}
             />
@@ -105,12 +103,12 @@ export function SignupForm() {
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-[13px] font-extrabold text-[#2F261D]">
+          <label className="text-[13px] font-extrabold text-foreground">
             Password
           </label>
-          <div className="flex h-[46px] items-center gap-2 rounded-[11px] border border-[#E3D5C2] bg-[#FFF9F0] px-3 focus-within:border-[#3D6C8D] focus-within:ring-1 focus-within:ring-[#3D6C8D]">
-            <Lock className="size-4 shrink-0 text-[#75695B]" />
-            <input
+          <div className="relative">
+            <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
               aria-label="Password"
               type="password"
               value={password}
@@ -119,44 +117,35 @@ export function SignupForm() {
                 if (error) setError('');
               }}
               placeholder="Create a password"
-              className="h-full flex-1 bg-transparent text-sm text-[#2F261D] placeholder:text-[#75695B] outline-none"
+              className="pl-9"
               autoComplete="new-password"
               disabled={isSubmitting}
+              aria-invalid={!!error}
             />
           </div>
-          <p className="text-xs text-[#75695B]">Use at least 8 characters.</p>
+          <p className="text-xs text-muted-foreground">Use at least 8 characters.</p>
         </div>
 
         {error && (
-          <div className="flex items-center gap-2.5 rounded-[12px] border border-[#B6483D] bg-[#FFF1ED] p-3">
-            <X className="size-4 shrink-0 text-[#B6483D]" />
-            <span className="text-xs font-bold text-[#B6483D]" role="alert">
+          <div className="flex items-center gap-2.5 rounded-[12px] border border-destructive bg-destructive/10 p-3">
+            <X className="size-4 shrink-0 text-destructive" />
+            <span className="text-xs font-bold text-destructive" role="alert">
               {error}
             </span>
           </div>
         )}
 
-        {isSubmitting ? (
-          <button
-            type="submit"
-            disabled
-            className="flex h-[42px] w-full items-center justify-center gap-2 rounded-[11px] bg-[#9B5E1A] text-[13px] font-extrabold text-white opacity-85"
-          >
-            <span className="size-2.5 animate-pulse rounded-full bg-white/70" />
-            Creating account...
-          </button>
-        ) : (
-          <button
-            type="submit"
-            className="flex h-[46px] w-full items-center justify-center rounded-[12px] bg-[#9B5E1A] text-[15px] font-extrabold text-white"
-          >
-            Create account
-          </button>
-        )}
+        <Button
+          type="submit"
+          className="w-full"
+          loading={isSubmitting}
+        >
+          {isSubmitting ? undefined : 'Create account'}
+        </Button>
 
         <div className="flex items-center justify-center gap-1.5 text-[13px]">
-          <span className="text-[#75695B]">Already have an account?</span>
-          <Link href="/login" className="font-extrabold text-[#9B5E1A]">
+          <span className="text-muted-foreground">Already have an account?</span>
+          <Link href="/login" className="font-extrabold text-primary">
             Log in
           </Link>
         </div>
