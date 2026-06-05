@@ -11,6 +11,7 @@ import { ChildProfileModule } from './child-profile/child-profile.module';
 import { StoryLibraryModule } from './story-library/story-library.module';
 import { PrismaModule } from './prisma.module';
 import { validateEnv } from './config/env.validation';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { validateEnv } from './config/env.validation';
     PaymentModule,
     ChildProfileModule,
     StoryLibraryModule,
+    SettingsModule,
   ],
   controllers: [],
   providers: [],

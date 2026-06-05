@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
+import { Table, LayoutGrid } from 'lucide-react';
 
 type ViewMode = 'grid' | 'list';
 
@@ -21,25 +21,37 @@ export default function ViewModeToggle({ viewMode }: ViewModeToggleProps) {
   };
 
   return (
-    <div className="inline-flex rounded-xl border border-border/80 bg-card p-1" role="group" aria-label="View mode">
-      <Button
+    <div
+      className="inline-flex rounded-xl border border-border bg-card p-1"
+      role="group"
+      aria-label="View mode"
+    >
+      <button
         type="button"
-        variant={viewMode === 'grid' ? 'default' : 'ghost'}
-        size="sm"
         onClick={() => setViewMode('grid')}
         aria-pressed={viewMode === 'grid'}
+        className={`inline-flex h-9 items-center gap-[7px] rounded-[9px] px-3 text-[13px] font-extrabold transition ${
+          viewMode === 'grid'
+            ? 'border border-border bg-surface text-foreground'
+            : 'bg-transparent text-muted-foreground'
+        }`}
       >
-        Grid
-      </Button>
-      <Button
+        <Table className="h-4 w-4" aria-hidden="true" />
+        <span>Table</span>
+      </button>
+      <button
         type="button"
-        variant={viewMode === 'list' ? 'default' : 'ghost'}
-        size="sm"
         onClick={() => setViewMode('list')}
         aria-pressed={viewMode === 'list'}
+        className={`inline-flex h-9 items-center gap-[7px] rounded-[9px] px-3 text-[13px] font-extrabold transition ${
+          viewMode === 'list'
+            ? 'border border-border bg-surface text-foreground'
+            : 'bg-transparent text-muted-foreground'
+        }`}
       >
-        List
-      </Button>
+        <LayoutGrid className="h-4 w-4" aria-hidden="true" />
+        <span>Cards</span>
+      </button>
     </div>
   );
 }

@@ -10,6 +10,7 @@ describe('BookController', () => {
 
   const mockBookService = {
     findAll: jest.fn(),
+    getById: jest.fn(),
     createAndGenerate: jest.fn(),
     getPreview: jest.fn(),
     approveBook: jest.fn(),
@@ -85,6 +86,14 @@ describe('BookController', () => {
       const req = { user: { id: 'user-1' } };
       await controller.generate(dto, req);
       expect(service.createAndGenerate).toHaveBeenCalledWith(dto, 'user-1');
+    });
+  });
+
+  describe('findOne', () => {
+    it('should call getById with book id and userId', async () => {
+      const req = { user: { id: 'user-1' } };
+      await controller.findOne('book-1', req);
+      expect(service.getById).toHaveBeenCalledWith('book-1', 'user-1');
     });
   });
 

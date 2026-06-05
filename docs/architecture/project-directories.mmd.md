@@ -24,11 +24,13 @@ flowchart LR
     Browser["User Browser"]
 
     subgraph Frontend["apps/frontend - Next.js 16"]
-        Middleware["middleware.ts"]
-        AppRoutes["src/app\nApp Router pages"]
-        UIComponents["src/components\nApp shell, dashboard, books, auth, shadcn UI"]
+        Middleware["middleware.ts\n/book/new route guard"]
+        AuthSystem["src/lib/mock-auth.ts\nAuthProvider, AuthGuard\nlocalStorage-based session"]
+        RouteGroups["src/app\n(auth) guest pages\n(app) authenticated pages"]
+        AppShell["src/components/app-shell\nAppShell, AppSidebar, PageBreadcrumb"]
+        UIComponents["src/components\nDashboard, books, profiles,\nsettings, auth, shadcn UI"]
         FrontendLib["src/lib\nview models and utilities"]
-        MSW["src/mocks\nMSW handlers for frontend tests"]
+        MSW["src/mocks\nMSW handlers for dev and tests"]
         NextConfig["next.config.mjs\n/api rewrites to BACKEND_URL"]
     end
 
@@ -37,21 +39,22 @@ flowchart LR
         AppModule["AppModule\nConfig, BullMQ, domain modules"]
         Auth["MockAuthGuard\nrequest user injection in dev"]
         BookModule["BookModule\nBookController and BookService"]
-        ChildProfileModule["ChildProfileModule"]
-        StoryLibraryModule["StoryLibraryModule"]
-        PaymentModule["PaymentModule\nSubscriptionGuard"]
+        ChildProfileModule["ChildProfileModule\nCRUD for child profiles"]
+        StoryLibraryModule["StoryLibraryModule\nsearch story catalog"]
+        PaymentModule["PaymentModule\nStripe webhooks, SubscriptionGuard"]
         GenerationModule["BookGenerationModule\nBullMQ processor"]
         AiModule["AiModule\nAI story and image generation"]
-        PdfModule["PdfModule\nPDF generation"]
-        StorageModule["StorageModule\nobject storage integration"]
+        PdfModule["PdfModule\nPDF generation (not yet wired)"]
+        StorageModule["StorageModule\nS3/MinIO object storage"]
         QueueModule["QueueModule\nshared BullMQ registrations"]
+        SettingsModule["SettingsModule\nLLM model and reasoning preferences"]
         PrismaService["PrismaService\nconnects and disconnects Prisma client"]
     end
 
     subgraph DatabasePackage["packages/database - @repo/database"]
         PrismaFactory["index.ts\ncreatePrismaClient"]
-        PrismaSchema["prisma/schema.prisma\nmodels and enums"]
-        Seed["prisma/seed.ts"]
+        PrismaSchema["prisma/schema.prisma\n6 models, 5 enums"]
+        Seed["prisma/seed.ts\n100 classic fairy tales"]
         PrismaConfig["prisma.config.ts"]
     end
 
@@ -62,12 +65,14 @@ flowchart LR
         AIProvider["AI Provider\nstory and image APIs"]
     end
 
-    Browser --> AppRoutes
-    AppRoutes --> UIComponents
+    Browser --> AuthSystem
+    AuthSystem --> RouteGroups
+    RouteGroups --> AppShell
+    RouteGroups --> UIComponents
     UIComponents --> FrontendLib
-    AppRoutes --> NextConfig
+    RouteGroups --> NextConfig
     NextConfig -->|"/api/* rewrite"| Main
-    MSW -. "test-time API mocks" .-> AppRoutes
+    MSW -. "dev-time API mocks" .-> RouteGroups
 
     Main --> AppModule
     AppModule --> Auth
@@ -79,17 +84,20 @@ flowchart LR
     AppModule --> AiModule
     AppModule --> PdfModule
     AppModule --> StorageModule
+    AppModule --> SettingsModule
     AppModule --> PrismaService
     GenerationModule --> QueueModule
     GenerationModule --> Redis
     BookModule --> PaymentModule
+    BookModule --> PdfModule
+    BookModule --> StorageModule
     BookModule --> PrismaService
     ChildProfileModule --> PrismaService
     StoryLibraryModule --> PrismaService
+    SettingsModule --> PrismaService
     GenerationModule --> PrismaService
     GenerationModule --> AiModule
-    GenerationModule -->|creates pages and illustrations| PrismaService
-    PdfModule --> StorageModule
+    PdfModule -. "planned" .-> StorageModule
     StorageModule --> ObjectStorage
     AiModule --> AIProvider
 
@@ -113,40 +121,70 @@ sequenceDiagram
     participant Worker as BookProcessor
     participant AI as AiService
     participant DB as packages/database Prisma client
-    participant PDF as PdfService
-    participant Storage as StorageService
 
     User->>FE: Create book from UI
     FE->>API: POST /api/books/generate
     API->>Guard: Authenticate mock user and check subscription
     Guard-->>API: user id and access decision
     API->>Book: createAndGenerate(dto, userId)
-    Book->>DB: Create Book with GENERATING status
+    Note over Book: Sets llmModel and reasoningEffort<br/>from user preferences
+    Book->>DB: Create Book with DRAFT status
     Book->>Queue: Enqueue book-generation job
-    API-->>FE: Book response
+    API-->>FE: { bookId, status: 'DRAFT' }
 
-    Queue-->>Worker: Process bookId
+    Queue-->>Worker: Process { bookId, parentFeedback? }
     Worker->>DB: Load Book and ChildProfile
-    Worker->>AI: Generate story text
-    AI-->>Worker: Page text
+    Worker->>DB: Update Book status to GENERATING
+    Worker->>AI: generateStory(prompt, model, reasoningEffort)
+    AI-->>Worker: Page text (3-20 pages)
     loop For each page
-        Worker->>DB: Create Page
-        Worker->>AI: Generate illustration
-        AI-->>Worker: image URL
-        Worker->>DB: Create Illustration
+        Worker->>DB: Create Page (pageNumber, textContent)
+        Worker->>AI: generateImage(prompt)
+        AI-->>Worker: image URL (placeholder)
+        Worker->>DB: Create Illustration (url, prompt)
     end
     Worker->>DB: Update Book status to REVIEW
+
+    User->>FE: Review book
+    FE->>API: GET /api/books/:id/preview
+    API->>Book: getPreview(id)
+    Book-->>FE: Book with pages and illustrations
+
+    opt Edit a page
+        User->>FE: Edit page text
+        FE->>API: PATCH /api/books/:id/pages/:pageNumber
+        API->>Book: editPage(id, pageNumber, feedback)
+        Book->>DB: Append parent edit to textContent
+    end
+
+    opt Regenerate with feedback
+        User->>FE: Request regeneration
+        FE->>API: PATCH /api/books/:id/regenerate
+        API->>Book: regenerate(id, parentFeedback)
+        Book->>DB: Delete all pages, save feedback
+        Book->>Queue: Enqueue job with feedback
+    end
 
     User->>FE: Approve book
     FE->>API: POST /api/books/:id/approve
     API->>Guard: Check subscription
     API->>Book: approveBook(id, userId)
-    Book->>PDF: Generate PDF from pages and illustrations
-    PDF->>Storage: Store generated PDF
-    Storage-->>PDF: pdfUrl
-    Book->>DB: Save pdfUrl and approval data
-    API-->>FE: Approved book with PDF URL
+    Book->>DB: Set status COMPLETED, approvedAt
+    API-->>FE: Approved book
 ```
+
+## Book Endpoints
+
+| Endpoint | Method | Guards | Description |
+|----------|--------|--------|-------------|
+| `GET /books` | GET | MockAuthGuard | Paginated list with filters (title, style, status, childId) |
+| `POST /books/generate` | POST | MockAuthGuard + SubscriptionGuard | Create book and enqueue generation |
+| `GET /books/:id` | GET | MockAuthGuard | Book detail with child info and all pages |
+| `GET /books/:id/preview` | GET | MockAuthGuard | Book with pages and illustrations for review |
+| `PATCH /books/:id/pages/:pageNumber` | PATCH | MockAuthGuard | Edit a specific page's text |
+| `PATCH /books/:id/regenerate` | PATCH | MockAuthGuard | Delete pages, save feedback, re-enqueue |
+| `POST /books/:id/approve` | POST | MockAuthGuard + SubscriptionGuard | REVIEW -> COMPLETED |
+| `GET /books/:id/pdf` | GET | MockAuthGuard | Return stored pdfUrl |
 
 ## Database Model
 
@@ -162,6 +200,8 @@ erDiagram
         string id PK
         string email UK
         boolean subscriptionActive
+        string preferredLlmModel
+        ReasoningEffort preferredReasoningEffort
         datetime createdAt
         datetime updatedAt
     }
@@ -183,6 +223,8 @@ erDiagram
         BookStatus status
         BookType type
         BookStyle style
+        string llmModel
+        ReasoningEffort reasoningEffort
         Tone tone
         string parentComments
         json parentFeedback
@@ -222,6 +264,43 @@ erDiagram
     }
 ```
 
+### Enums
+
+| Enum | Values |
+|------|--------|
+| BookStatus | DRAFT, GENERATING, REVIEW, COMPLETED, FAILED |
+| BookType | AI_ADAPTED, MANUAL |
+| BookStyle | WATERCOLOR, CARTOON, REALISTIC, PIXAR, SKETCH, MANGA, COMIC |
+| Tone | WARM, EDUCATIONAL, PLAYFUL, MAGICAL, ADVENTUROUS |
+| ReasoningEffort | LOW, MEDIUM, HIGH |
+
+## Frontend Routes
+
+### Route Group: `(auth)` — Guest-only pages
+
+| Route | Component | Description |
+|-------|-----------|-------------|
+| `/login` | `LoginForm` | Email/password login with demo session |
+| `/signup` | `SignupForm` | Name/email/password registration |
+
+### Route Group: `(app)` — Authenticated pages
+
+| Route | Component | Description |
+|-------|-----------|-------------|
+| `/` | Dashboard | Book library with filters and status summary |
+| `/books/new` | CreateBookForm | Book creation with child profile selection |
+| `/books/:id` | BookDetail | Completed book view |
+| `/books/:id/generating` | GeneratingView | Polling generation status |
+| `/books/:id/preview` | PreviewView | Review, approve, edit, or regenerate |
+| `/profiles` | ProfilesPage | Child profile CRUD |
+| `/settings` | SettingsPage | LLM model and reasoning effort preferences |
+
+### Standalone
+
+| Route | Description |
+|-------|-------------|
+| `/logout` | Clears session, redirects to `/login` |
+
 ## Combined Export View
 
 Single Mermaid block for export in Mermaid Live Editor. This uses one `flowchart`
@@ -245,10 +324,12 @@ flowchart TD
 
     subgraph Frontend["apps/frontend - Next.js 16"]
         Middleware["middleware.ts"]
-        AppRoutes["src/app<br/>App Router pages"]
-        UIComponents["src/components<br/>App shell, dashboard, books, auth, shadcn UI"]
+        AuthSystem["mock-auth.ts<br/>AuthProvider, AuthGuard"]
+        RouteGroups["src/app<br/>(auth) guest pages<br/>(app) authenticated pages"]
+        AppShell["AppShell<br/>AppSidebar, PageBreadcrumb"]
+        UIComponents["src/components<br/>Dashboard, books, profiles,<br/>settings, auth, shadcn UI"]
         FrontendLib["src/lib<br/>View models and utilities"]
-        MSW["src/mocks<br/>MSW handlers for frontend tests"]
+        MSW["src/mocks<br/>MSW handlers for dev and tests"]
         NextConfig["next.config.mjs<br/>/api rewrites to BACKEND_URL"]
     end
 
@@ -257,21 +338,22 @@ flowchart TD
         AppModule["AppModule<br/>Config, BullMQ, domain modules"]
         Auth["MockAuthGuard<br/>Request user injection in dev"]
         BookModule["BookModule<br/>BookController and BookService"]
-        ChildProfileModule["ChildProfileModule"]
-        StoryLibraryModule["StoryLibraryModule"]
-        PaymentModule["PaymentModule<br/>SubscriptionGuard"]
+        ChildProfileModule["ChildProfileModule<br/>CRUD for child profiles"]
+        StoryLibraryModule["StoryLibraryModule<br/>Search story catalog"]
+        PaymentModule["PaymentModule<br/>Stripe webhooks, SubscriptionGuard"]
         GenerationModule["BookGenerationModule<br/>BullMQ processor"]
         AiModule["AiModule<br/>AI story and image generation"]
-        PdfModule["PdfModule<br/>PDF generation"]
-        StorageModule["StorageModule<br/>Object storage integration"]
+        PdfModule["PdfModule<br/>PDF generation (not yet wired)"]
+        StorageModule["StorageModule<br/>S3/MinIO object storage"]
         QueueModule["QueueModule<br/>Shared BullMQ registrations"]
+        SettingsModule["SettingsModule<br/>LLM model and reasoning preferences"]
         PrismaService["PrismaService<br/>Connects and disconnects Prisma client"]
     end
 
     subgraph DatabasePackage["packages/database - @repo/database"]
         PrismaFactory["index.ts<br/>createPrismaClient"]
-        PrismaSchema["prisma/schema.prisma<br/>Models and enums"]
-        Seed["prisma/seed.ts"]
+        PrismaSchema["prisma/schema.prisma<br/>6 models, 5 enums"]
+        Seed["prisma/seed.ts<br/>100 classic fairy tales"]
         PrismaConfig["prisma.config.ts"]
     end
 
@@ -286,34 +368,37 @@ flowchart TD
         FlowCreate["1. User creates book in UI"]
         FlowGenerate["2. POST /api/books/generate"]
         FlowGuard["3. MockAuthGuard and SubscriptionGuard<br/>authenticate and authorize"]
-        FlowCreateBook["4. BookService creates Book<br/>with GENERATING status"]
+        FlowCreateBook["4. BookService creates Book<br/>with DRAFT status"]
         FlowQueue["5. Enqueue book-generation job"]
         FlowWorker["6. BookProcessor loads Book and ChildProfile"]
-        FlowStory["7. AiService generates story text"]
-        FlowPages["8. For each page<br/>create Page, generate illustration, create Illustration"]
-        FlowReview["9. Update Book status to REVIEW"]
-        FlowApprove["10. User approves book<br/>POST /api/books/:id/approve"]
-        FlowPdf["11. PdfService generates PDF"]
-        FlowStore["12. StorageService stores PDF"]
-        FlowApproved["13. Save pdfUrl and approval data"]
+        FlowGenerating["7. Update status to GENERATING"]
+        FlowStory["8. AiService generates story text"]
+        FlowPages["9. For each page<br/>create Page, generate illustration,<br/>create Illustration"]
+        FlowReview["10. Update Book status to REVIEW"]
+        FlowPreview["11. User reviews book<br/>GET /api/books/:id/preview"]
+        FlowEdit["12. Optional: edit page text<br/>PATCH /api/books/:id/pages/:pageNumber"]
+        FlowRegen["13. Optional: regenerate with feedback<br/>PATCH /api/books/:id/regenerate"]
+        FlowApprove["14. User approves book<br/>POST /api/books/:id/approve"]
+        FlowComplete["15. Set status COMPLETED, save approvedAt"]
     end
 
     subgraph DataModel["Database Model"]
-        UserModel["USER<br/>id PK<br/>email UK<br/>subscriptionActive<br/>createdAt<br/>updatedAt"]
+        UserModel["USER<br/>id PK<br/>email UK<br/>subscriptionActive<br/>preferredLlmModel<br/>preferredReasoningEffort<br/>createdAt<br/>updatedAt"]
         ChildProfileModel["CHILD_PROFILE<br/>id PK<br/>name<br/>age<br/>gender<br/>interests<br/>userId FK"]
-        BookModel["BOOK<br/>id PK<br/>title<br/>status BookStatus<br/>type BookType<br/>style BookStyle<br/>tone<br/>parentComments<br/>parentFeedback<br/>pdfUrl<br/>approvedAt<br/>userId FK<br/>childId FK"]
+        BookModel["BOOK<br/>id PK<br/>title<br/>status BookStatus<br/>type BookType<br/>style BookStyle<br/>llmModel<br/>reasoningEffort<br/>tone<br/>parentComments<br/>parentFeedback<br/>pdfUrl<br/>approvedAt<br/>userId FK<br/>childId FK"]
         PageModel["PAGE<br/>id PK<br/>pageNumber<br/>textContent<br/>bookId FK"]
         IllustrationModel["ILLUSTRATION<br/>id PK<br/>url<br/>prompt<br/>pageId FK"]
         StoryLibraryModel["STORY_LIBRARY<br/>id PK<br/>title UK<br/>description<br/>promptHint"]
     end
 
-    Browser --> AppRoutes
-    Middleware --> AppRoutes
-    AppRoutes --> UIComponents
+    Browser --> AuthSystem
+    AuthSystem --> RouteGroups
+    RouteGroups --> AppShell
+    RouteGroups --> UIComponents
     UIComponents --> FrontendLib
-    AppRoutes --> NextConfig
+    RouteGroups --> NextConfig
     NextConfig -->|"/api/* rewrite"| Main
-    MSW -. "test-time API mocks" .-> AppRoutes
+    MSW -. "dev-time API mocks" .-> RouteGroups
 
     Main --> AppModule
     AppModule --> Auth
@@ -325,16 +410,20 @@ flowchart TD
     AppModule --> AiModule
     AppModule --> PdfModule
     AppModule --> StorageModule
+    AppModule --> SettingsModule
     AppModule --> PrismaService
     GenerationModule --> QueueModule
     GenerationModule --> Redis
     BookModule --> PaymentModule
+    BookModule --> PdfModule
+    BookModule --> StorageModule
     BookModule --> PrismaService
     ChildProfileModule --> PrismaService
     StoryLibraryModule --> PrismaService
+    SettingsModule --> PrismaService
     GenerationModule --> PrismaService
     GenerationModule --> AiModule
-    PdfModule --> StorageModule
+    PdfModule -. "planned" .-> StorageModule
     StorageModule --> ObjectStorage
     AiModule --> AIProvider
 
@@ -345,8 +434,11 @@ flowchart TD
     Seed --> PrismaFactory
 
     FlowCreate --> FlowGenerate --> FlowGuard --> FlowCreateBook --> FlowQueue
-    FlowQueue --> FlowWorker --> FlowStory --> FlowPages --> FlowReview
-    FlowReview --> FlowApprove --> FlowPdf --> FlowStore --> FlowApproved
+    FlowQueue --> FlowWorker --> FlowGenerating --> FlowStory --> FlowPages --> FlowReview
+    FlowReview --> FlowPreview
+    FlowPreview --> FlowApprove --> FlowComplete
+    FlowEdit -. "optional" .-> FlowPreview
+    FlowRegen -. "optional re-enqueue" .-> FlowQueue
 
     FlowGenerate -. "handled by" .-> BookModule
     FlowGuard -. "uses" .-> Auth
@@ -356,9 +448,7 @@ flowchart TD
     FlowStory -. "uses" .-> AiModule
     FlowPages -. "writes" .-> PageModel
     FlowPages -. "writes" .-> IllustrationModel
-    FlowPdf -. "uses" .-> PdfModule
-    FlowStore -. "uses" .-> StorageModule
-    FlowApproved -. "updates" .-> BookModel
+    FlowComplete -. "updates" .-> BookModel
 
     UserModel -->|owns| ChildProfileModel
     UserModel -->|creates| BookModel
@@ -371,6 +461,13 @@ flowchart TD
 ## Notes
 
 - `apps/frontend/next.config.mjs` rewrites `/api/:path*` to the backend URL, so browser-facing API calls stay relative.
-- `apps/backend/src/prisma.service.ts` imports `createPrismaClient()` from `@repo/database` and explicitly disconnects it during NestJS shutdown.
-- `packages/database/index.ts` creates Prisma with `@prisma/adapter-pg` and a `pg` pool; the schema is the source of the generated Prisma types and enums.
-- `StoryLibrary` is currently an independent lookup/catalog table in the schema, not a relation from `Book`.
+- Frontend auth uses a localStorage-based mock session (`mock-auth.ts`). `AuthProvider` manages session state; `AuthGuard` wraps route groups for guest-only (`mode="guest"`) and authenticated (`mode="authenticated"`) access.
+- MSW is initialized in dev mode via `MSWProvider` and provides comprehensive mock handlers for all API endpoints.
+- `apps/backend/src/prisma.service.ts` imports `createPrismaClient()` from `@repo/database` and explicitly disconnects it during NestJS shutdown via `OnModuleDestroy`.
+- `packages/database/index.ts` creates Prisma with `@prisma/adapter-pg` and a `pg` pool (driver adapters, not binary engine); the schema is the source of the generated Prisma types and enums.
+- `StoryLibrary` is an independent lookup/catalog table seeded with 100 classic fairy tales. It has no foreign key relation to `Book`.
+- `PdfModule` and `StorageModule` are imported by `BookModule` but PDF generation is **not yet wired** into the approval flow. `approveBook()` sets status to COMPLETED without generating a PDF.
+- `SettingsModule` lets users configure their preferred LLM model (validated against `/^[a-z0-9][a-z0-9-]*:[a-z0-9][a-z0-9.-]*$/i`) and reasoning effort. These preferences are stored on the `User` model and applied when creating new books.
+- The `BookProcessor` constructs a story prompt incorporating child profile data (age, gender, interests), tone, parent comments, and parent feedback for regeneration. It parses the AI response by splitting on `Page \d+:` patterns.
+- `SubscriptionGuard` reads `user-email` header, looks up the user in the database, and checks `subscriptionActive`. It is applied to `POST /books/generate` and `POST /books/:id/approve`.
+- `MockAuthGuard` injects a hardcoded mock user `{ id: 'mock-user-id', email: 'mock@example.com', name: 'Mock User' }` when `MOCK_AUTH='true'`. No real authentication is implemented yet.

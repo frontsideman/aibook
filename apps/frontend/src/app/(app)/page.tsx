@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Pagination from '@/components/Pagination';
 import DashboardFilters from '@/components/dashboard/DashboardFilters';
 import ViewModeToggle from '@/components/dashboard/ViewModeToggle';
+import StatusSummary from '@/components/dashboard/StatusSummary';
 import BooksListGrid from '@/components/dashboard/BooksListGrid';
 import {
   DashboardLoadingState,
@@ -15,6 +16,7 @@ import {
   applyDashboardBookFilterSort,
   toDashboardBookViewModel,
   type DashboardBookApiModel,
+  type DashboardBookStatus,
 } from '@/lib/books-view-model';
 
 type PaginatedResponse = {
@@ -35,6 +37,14 @@ const isPaginatedResponse = (value: unknown): value is PaginatedResponse => {
     typeof payload.page === 'number' &&
     typeof payload.totalPages === 'number'
   );
+};
+
+const EMPTY_COUNTS: Record<DashboardBookStatus, number> = {
+  DRAFT: 0,
+  GENERATING: 0,
+  REVIEW: 0,
+  COMPLETED: 0,
+  FAILED: 0,
 };
 
 export default function DashboardPage() {
@@ -123,19 +133,33 @@ export default function DashboardPage() {
     return [...names].sort((a, b) => a.localeCompare(b));
   }, [data]);
 
+  const statusCounts = useMemo(() => {
+    if (!data) return EMPTY_COUNTS;
+    const counts = { ...EMPTY_COUNTS };
+    for (const book of data.books) {
+      if (book.status in counts) {
+        counts[book.status as DashboardBookStatus]++;
+      }
+    }
+    return counts;
+  }, [data]);
+
   return (
-    <div>
-      <div className="mb-8">
-        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Your Library</p>
-        <h1 className="section-heading">My Books</h1>
-        <p className="section-subtitle">
-          Curate, review, and publish each story from draft to finished keepsake.
-        </p>
+    <div className="flex flex-col gap-5">
+      <div className="relative">
+        <div>
+          <p className="font-mono text-xs font-extrabold uppercase tracking-[0.18em] text-primary">Your Library</p>
+          <h1 className="mt-1 font-display text-4xl font-semibold text-foreground sm:text-5xl">My Books</h1>
+          <p className="mt-2 max-w-2xl text-base text-muted-foreground">
+            Curate, review, and publish each story from draft to finished keepsake.
+          </p>
+        </div>
+        <div className="absolute right-0 top-12">
+          <ViewModeToggle viewMode={viewMode} />
+        </div>
       </div>
 
-      <div className="mb-4 flex justify-end">
-        <ViewModeToggle viewMode={viewMode} />
-      </div>
+      <StatusSummary counts={statusCounts} />
 
       <DashboardFilters
         search={search}
@@ -175,7 +199,14 @@ export default function DashboardPage() {
       ) : visibleBooks.length > 0 ? (
         <>
           <BooksListGrid books={visibleBooks} viewMode={viewMode} />
-          {data ? <Pagination page={data.page} totalPages={data.totalPages} onPageChange={setPage} /> : null}
+          {data ? (
+            <Pagination
+              page={data.page}
+              totalPages={data.totalPages}
+              totalItems={data.total}
+              onPageChange={setPage}
+            />
+          ) : null}
         </>
       ) : (
         <DashboardEmptyState />

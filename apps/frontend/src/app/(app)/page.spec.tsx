@@ -46,56 +46,68 @@ describe('DashboardPage view modes', () => {
     global.fetch = originalFetch;
   });
 
-  it('defaults to grid mode when query is missing', async () => {
+  it('defaults to table mode when query is missing', async () => {
     render(<DashboardPage />);
 
     await waitFor(() => {
-      expect(screen.getByTestId('books-grid-mode')).toBeInTheDocument();
+      expect(screen.getByTestId('books-table-mode')).toBeInTheDocument();
     });
-    expect(screen.queryByTestId('books-list-mode')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('books-cards-mode')).not.toBeInTheDocument();
   });
 
-  it('renders list mode when view=list', async () => {
+  it('renders cards mode when view=list', async () => {
     viewParam = 'list';
     render(<DashboardPage />);
 
     await waitFor(() => {
-      expect(screen.getByTestId('books-list-mode')).toBeInTheDocument();
+      expect(screen.getByTestId('books-cards-mode')).toBeInTheDocument();
     });
-    expect(screen.queryByTestId('books-grid-mode')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('books-table-mode')).not.toBeInTheDocument();
   });
 
-  it('renders grid mode when view=grid', async () => {
+  it('renders table mode when view=grid', async () => {
     viewParam = 'grid';
     render(<DashboardPage />);
 
     await waitFor(() => {
-      expect(screen.getByTestId('books-grid-mode')).toBeInTheDocument();
+      expect(screen.getByTestId('books-table-mode')).toBeInTheDocument();
     });
-    expect(screen.queryByTestId('books-list-mode')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('books-cards-mode')).not.toBeInTheDocument();
   });
 
-  it('falls back to grid mode for invalid view values', async () => {
+  it('falls back to table mode for invalid view values', async () => {
     viewParam = 'cards';
     render(<DashboardPage />);
 
     await waitFor(() => {
-      expect(screen.getByTestId('books-grid-mode')).toBeInTheDocument();
+      expect(screen.getByTestId('books-table-mode')).toBeInTheDocument();
     });
-    expect(screen.queryByTestId('books-list-mode')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('books-cards-mode')).not.toBeInTheDocument();
   });
 
   it('updates URL query via replace when toggling mode', async () => {
     render(<DashboardPage />);
 
     await waitFor(() => {
-      expect(screen.getByTestId('books-grid-mode')).toBeInTheDocument();
+      expect(screen.getByTestId('books-table-mode')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole('button', { name: 'List' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Cards' }));
     expect(replace).toHaveBeenCalledWith('/?view=list');
 
-    fireEvent.click(screen.getByRole('button', { name: 'Grid' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Table' }));
     expect(replace).toHaveBeenCalledWith('/?view=grid');
+  });
+
+  it('renders the status summary with book counts', async () => {
+    render(<DashboardPage />);
+
+    await waitFor(() => {
+      expect(screen.getByTestId('status-summary')).toBeInTheDocument();
+    });
+    expect(screen.getByTestId('status-card-DRAFT')).toBeInTheDocument();
+    expect(screen.getByTestId('status-card-GENERATING')).toBeInTheDocument();
+    expect(screen.getByTestId('status-card-REVIEW')).toBeInTheDocument();
+    expect(screen.getByTestId('status-card-COMPLETED')).toBeInTheDocument();
   });
 });

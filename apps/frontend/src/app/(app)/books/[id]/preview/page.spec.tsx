@@ -2,15 +2,26 @@ import { render, screen, waitFor } from '@testing-library/react';
 import PreviewPage from './page';
 
 const replace = vi.fn();
+const push = vi.fn();
 
 vi.mock('next/navigation', () => ({
   useParams: () => ({ id: 'book-1' }),
-  useRouter: () => ({ replace, push: vi.fn() }),
+  useRouter: () => ({ replace, push }),
 }));
 
 describe('PreviewPage smoke', () => {
-  it('renders preview page and actions', async () => {
-    global.fetch = vi.fn().mockResolvedValue({
+  beforeEach(() => {
+    replace.mockReset();
+    push.mockReset();
+    vi.stubGlobal('fetch', vi.fn());
+  });
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it('renders preview page and actions for review books', async () => {
+    const reviewBookResponse = {
       ok: true,
       json: async () => ({
         book: {
@@ -22,7 +33,9 @@ describe('PreviewPage smoke', () => {
           pages: [{ id: 'p1', pageNumber: 1, textContent: 'Hello', illustrations: [] }],
         },
       }),
-    } as Response);
+    } as Response;
+
+    vi.mocked(fetch).mockImplementation(async () => reviewBookResponse);
 
     render(<PreviewPage />);
 
@@ -32,5 +45,26 @@ describe('PreviewPage smoke', () => {
     expect(screen.getByRole('button', { name: 'Submit Changes' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: '✅ Approve Book' })).toBeInTheDocument();
     expect(replace).not.toHaveBeenCalled();
+  });
+
+  it('redirects completed books to the detail route', async () => {
+    vi.mocked(fetch).mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        book: {
+          id: 'book-1',
+          title: 'Done Book',
+          status: 'COMPLETED',
+          style: 'CARTOON',
+          pages: [],
+        },
+      }),
+    } as Response);
+
+    render(<PreviewPage />);
+
+    await waitFor(() => {
+      expect(replace).toHaveBeenCalledWith('/books/book-1');
+    });
   });
 });

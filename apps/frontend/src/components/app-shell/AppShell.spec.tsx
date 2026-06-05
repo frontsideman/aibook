@@ -17,11 +17,10 @@ describe('AppShell', () => {
     );
 
     for (const item of navItems) {
-      expect(
-        screen.getByRole('link', {
-          name: item.label,
-        }),
-      ).toHaveAttribute('href', item.href);
+      const matchingLinks = screen.getAllByRole('link', {
+        name: item.label,
+      });
+      expect(matchingLinks.some((link) => link.getAttribute('href') === item.href)).toBe(true);
     }
   });
 });

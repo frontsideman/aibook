@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AiService } from './ai.service';
 import { AI_PROVIDER_TOKEN, AiProvider } from './ai.provider.interface';
+import { ReasoningEffort } from '@repo/database';
 
 describe('AiService', () => {
   let service: AiService;
@@ -31,9 +32,13 @@ describe('AiService', () => {
 
   it('should call generateStory on the provider', async () => {
     const prompt = 'a brave little cat';
-    const result = await service.generateStory(prompt);
+    const options = {
+      model: 'openai:gpt-5.4-mini',
+      reasoningEffort: ReasoningEffort.MEDIUM,
+    };
+    const result = await service.generateStory(prompt, options);
     expect(result).toBe('Once upon a time...');
-    expect(mockProvider.generateStory).toHaveBeenCalledWith(prompt);
+    expect(mockProvider.generateStory).toHaveBeenCalledWith(prompt, options);
   });
 
   it('should call generateImage on the provider', async () => {

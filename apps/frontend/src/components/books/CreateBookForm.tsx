@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { StateCard } from '@/components/ui/state-card';
 import { StoryCombobox } from './StoryCombobox';
 
 type ChildProfile = {
@@ -14,11 +15,12 @@ type ChildProfile = {
 
 type CreateBookFormProps = {
   profiles: ChildProfile[];
+  generationSettingsWarning?: string;
 };
 
 const STORIES_PAGE_SIZE = 10;
 
-export function CreateBookForm({ profiles }: CreateBookFormProps) {
+export function CreateBookForm({ profiles, generationSettingsWarning }: CreateBookFormProps) {
   const router = useRouter();
   const [selectedProfileId, setSelectedProfileId] = useState('');
   const [storyQuery, setStoryQuery] = useState('');
@@ -101,7 +103,7 @@ export function CreateBookForm({ profiles }: CreateBookFormProps) {
       }
 
       const { bookId } = (await response.json()) as { bookId: string };
-      router.push(`/books/${bookId}/preview`);
+      router.push(`/books/${bookId}/generating`);
     } catch (submitError) {
       const message = submitError instanceof Error ? submitError.message : 'Failed to create book';
       setError(message);
@@ -149,6 +151,14 @@ export function CreateBookForm({ profiles }: CreateBookFormProps) {
           onLoadMore={() => loadStories({ query: latestQueryRef.current, append: true })}
         />
       </section>
+
+      {generationSettingsWarning ? (
+        <StateCard
+          variant="generating"
+          title="Using default generation settings"
+          description={generationSettingsWarning}
+        />
+      ) : null}
 
       {error ? <p className="text-sm text-red-600">{error}</p> : null}
 

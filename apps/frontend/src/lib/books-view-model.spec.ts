@@ -77,4 +77,16 @@ describe('toDashboardBookViewModel', () => {
 
     expect(result.updatedAt).toBe('2026-01-05T00:00:00.000Z');
   });
+
+  it('preserves failed status for dashboard routing', () => {
+    const result = toDashboardBookViewModel({
+      id: 'book-2',
+      title: 'Broken Story',
+      style: 'SKETCH',
+      status: 'FAILED',
+      createdAt: '2026-01-06T00:00:00.000Z',
+    });
+
+    expect(result.status).toBe('FAILED');
+  });
 });

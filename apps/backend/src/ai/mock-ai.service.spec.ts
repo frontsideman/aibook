@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MockAiService } from './mock-ai.service';
+import { ReasoningEffort } from '@repo/database';
 
 describe('MockAiService', () => {
   let service: MockAiService;
@@ -18,7 +19,10 @@ describe('MockAiService', () => {
 
   it('should return a placeholder story', async () => {
     const prompt = 'any prompt';
-    const result = await service.generateStory(prompt);
+    const result = await service.generateStory(prompt, {
+      model: 'openai:gpt-5.4-mini',
+      reasoningEffort: ReasoningEffort.MEDIUM,
+    });
     expect(result).toContain('Once upon a time');
     expect(result).toContain(prompt);
   });
