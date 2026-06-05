@@ -20,8 +20,6 @@
   --color-ab-success: #2E7D55;
   --color-ab-warning: #B7791F;
   --color-ab-info: #5D7382;
-  --color-ab-sidebar-active: #EFE0C8;
-  --color-ab-sidebar-active-border: #D6BB91;
   --color-ab-avatar: #D9A456;
   --font-mono: var(--font-mono);
   --ab-radius-sm: 6px;
@@ -115,6 +113,15 @@
 }
 
 .dark {
+  --color-ab-bg: #171410;
+  --color-ab-card: #221D18;
+  --color-ab-surface: #221D18;
+  --color-ab-border: #4A3D31;
+  --color-ab-input: #211B16;
+  --color-ab-muted: #B8AA98;
+  --color-ab-text: #F8EFE3;
+  --color-ab-destructive: #F08B80;
+  --color-ab-avatar: #E2A85F;
   --background: #171410;
   --foreground: #F8EFE3;
   --card: #221D18;

@@ -21,33 +21,21 @@ describe('PreviewPage smoke', () => {
   });
 
   it('renders preview page and actions for review books', async () => {
-    vi.mocked(fetch)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          book: {
-            id: 'book-1',
-            title: 'Test Book',
-            status: 'REVIEW',
-            style: 'CARTOON',
-            tone: 'PLAYFUL',
-            pages: [{ id: 'p1', pageNumber: 1, textContent: 'Hello', illustrations: [] }],
-          },
-        }),
-      } as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({
-          book: {
-            id: 'book-1',
-            title: 'Test Book',
-            status: 'REVIEW',
-            style: 'CARTOON',
-            tone: 'PLAYFUL',
-            pages: [{ id: 'p1', pageNumber: 1, textContent: 'Hello', illustrations: [] }],
-          },
-        }),
-      } as Response);
+    const reviewBookResponse = {
+      ok: true,
+      json: async () => ({
+        book: {
+          id: 'book-1',
+          title: 'Test Book',
+          status: 'REVIEW',
+          style: 'CARTOON',
+          tone: 'PLAYFUL',
+          pages: [{ id: 'p1', pageNumber: 1, textContent: 'Hello', illustrations: [] }],
+        },
+      }),
+    } as Response;
+
+    vi.mocked(fetch).mockImplementation(async () => reviewBookResponse);
 
     render(<PreviewPage />);
 

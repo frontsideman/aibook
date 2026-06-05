@@ -5,11 +5,7 @@ import { usePathname } from "next/navigation";
 import * as React from "react";
 import { LogOut } from "lucide-react";
 
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarRail,
-} from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarRail } from "@/components/ui/sidebar";
 import { cn } from "@/lib/utils";
 
 import { navItems } from "./nav-items";
@@ -20,39 +16,42 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       {/* Brand */}
-      <div className="mb-6 flex items-center gap-3">
-        <div className="size-[44px] rounded-[11px] bg-primary" />
-        <span className="font-display text-[28px] font-semibold text-foreground">
+      <div className="mb-[18px] flex items-center gap-2.5">
+        <div className="size-9 rounded-[9px] bg-primary" />
+        <span className="font-display text-[27px] font-semibold text-foreground">
           aiBook
         </span>
       </div>
 
       {/* Navigation */}
       <SidebarContent>
-        <nav className="flex flex-col gap-3">
+        <nav className="flex flex-col gap-1">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
+            const isCreateBook = item.href === "/books/new";
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex flex-col items-center gap-1.5 rounded-xl py-3 transition-colors",
+                  "flex flex-row items-center gap-2.5 rounded-[10px] px-3 h-11 transition-colors border-transparent border-[1px]",
                   isActive
-                    ? "border border-sidebar-active-border text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
+                    : "text-muted-foreground hover:text-foreground hover:border-ab-border",
                 )}
               >
                 <item.icon
                   className={cn(
-                    "size-[22px]",
-                    isActive ? "text-foreground" : "text-muted-foreground"
+                    "size-[18px] shrink-0",
+                    isActive || isCreateBook
+                      ? "text-ab-primary"
+                      : "text-muted-foreground",
                   )}
                 />
                 <span
                   className={cn(
                     "text-sm leading-tight",
-                    isActive ? "font-extrabold" : "font-medium"
+                    isActive ? "font-bold" : "font-medium",
                   )}
                 >
                   {item.label}
@@ -67,7 +66,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <div className="mb-2 flex h-[68px] items-center gap-2.5 rounded-xl border border-border bg-secondary p-3">
         <div className="size-[34px] shrink-0 rounded-full bg-avatar" />
         <div className="flex flex-col gap-0.5">
-          <span className="text-sm font-extrabold text-foreground">
+          <span className="text-[13px] font-extrabold text-foreground">
             Sarah K.
           </span>
           <span className="text-xs leading-none text-muted-foreground">
