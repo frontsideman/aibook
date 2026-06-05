@@ -693,7 +693,7 @@ export function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-[430px] rounded-[22px] border border-border bg-surface p-7 shadow-[0_16px_34px_-14px_#3A28141A]">
+    <div className="w-full max-w-[430px] rounded-[22px] border border-border bg-ab-surface p-7 shadow-[0_16px_34px_-14px_#3A28141A]">
       <BrandMark className="mb-[18px]" />
 
       <h1 className="font-display text-[34px] font-semibold text-foreground">
@@ -872,7 +872,7 @@ export function SignupForm() {
   }
 
   return (
-    <div className="w-full max-w-[430px] rounded-[22px] border border-border bg-surface p-7 shadow-[0_16px_34px_-14px_#3A28141A]">
+    <div className="w-full max-w-[430px] rounded-[22px] border border-border bg-ab-surface p-7 shadow-[0_16px_34px_-14px_#3A28141A]">
       <BrandMark className="mb-[18px]" />
 
       <h1 className="font-display text-[34px] font-semibold text-foreground">

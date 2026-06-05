@@ -198,7 +198,7 @@ Props: `label: string`, `value: string`, `trend?: string`
 
 ### LoginForm.tsx
 
-- Replace all raw hex with semantic tokens (`bg-[#FFFDF8]` → `bg-surface`, etc.)
+- Replace all raw hex with semantic tokens (`bg-[#FFFDF8]` → `bg-ab-surface`, etc.)
 - Replace raw input wrappers with updated shadcn `Input` + lucide icon in `prefix` slot
 - Replace raw buttons with updated shadcn `Button` using `loading` state
 - Replace error div with `ErrorState` component

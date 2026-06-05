@@ -7403,9 +7403,9 @@
                   "name": "Dashboard Sidebar Item",
                   "width": "fill_container",
                   "height": 44,
-                  "fill": "#EFE0C8",
+                  "fill": "$ab-bg",
                   "cornerRadius": 10,
-                  "stroke": "#D6BB91",
+                  "stroke": "#00000000",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -7432,7 +7432,7 @@
                       "content": "Dashboard",
                       "fontFamily": "$ab-font-ui",
                       "fontSize": 14,
-                      "fontWeight": "800"
+                      "fontWeight": "700"
                     }
                   ]
                 },
@@ -7444,7 +7444,7 @@
                   "height": 44,
                   "fill": "#00000000",
                   "cornerRadius": 10,
-                  "stroke": "#00000000",
+                  "stroke": "$ab-border",
                   "strokeWidth": 1,
                   "gap": 10,
                   "padding": [
@@ -7461,7 +7461,7 @@
                       "height": 18,
                       "icon": "book-plus",
                       "library": "lucide",
-                      "fill": "$ab-muted"
+                      "fill": "$ab-primary"
                     },
                     {
                       "type": "text",
@@ -7471,7 +7471,7 @@
                       "content": "Create Book",
                       "fontFamily": "$ab-font-ui",
                       "fontSize": 14,
-                      "fontWeight": "650"
+                      "fontWeight": "500"
                     }
                   ]
                 },
@@ -7510,7 +7510,7 @@
                       "content": "Profiles",
                       "fontFamily": "$ab-font-ui",
                       "fontSize": 14,
-                      "fontWeight": "650"
+                      "fontWeight": "500"
                     }
                   ]
                 },
@@ -7549,7 +7549,107 @@
                       "content": "Settings",
                       "fontFamily": "$ab-font-ui",
                       "fontSize": 14,
-                      "fontWeight": "650"
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "cLpeB",
+              "name": "Library Sidebar Bottom Spacer",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical"
+            },
+            {
+              "type": "frame",
+              "id": "KxDqk",
+              "name": "Library Theme Toggle Row",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "$ab-card",
+              "cornerRadius": 12,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": [
+                0,
+                10
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "DIx8X",
+                  "name": "Library Theme Label",
+                  "fill": "$ab-text",
+                  "content": "Theme",
+                  "fontFamily": "$ab-font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "IsB7b",
+                  "name": "Library Light Dark Toggle",
+                  "width": 122,
+                  "height": 32,
+                  "fill": "$ab-surface",
+                  "cornerRadius": 10,
+                  "stroke": "$ab-border",
+                  "strokeWidth": 1,
+                  "gap": 3,
+                  "padding": 3,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "EAvOv",
+                      "name": "Library Light Selected",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "fill": "$ab-primary",
+                      "cornerRadius": 7,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "sDAzS",
+                          "name": "Library Light Label",
+                          "fill": "#FFFFFF",
+                          "content": "Light",
+                          "fontFamily": "$ab-font-ui",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "afVjC",
+                      "name": "Library Dark Option",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "fill": "#00000000",
+                      "cornerRadius": 7,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Az2Jw",
+                          "name": "Library Dark Label",
+                          "fill": "$ab-muted",
+                          "content": "Dark",
+                          "fontFamily": "$ab-font-ui",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
                     }
                   ]
                 }
@@ -7573,7 +7673,7 @@
                   "type": "ellipse",
                   "id": "ZsRik",
                   "name": "Account Avatar",
-                  "fill": "#D9A456",
+                  "fill": "$ab-accent",
                   "width": 34,
                   "height": 34
                 },
@@ -7607,6 +7707,45 @@
                       "fontWeight": "normal"
                     }
                   ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "LFvGH",
+              "name": "Library Logout Button",
+              "width": "fill_container",
+              "height": 42,
+              "fill": "$ab-surface",
+              "cornerRadius": 10,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 8,
+              "padding": [
+                0,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "Xy59B",
+                  "name": "Library Logout Icon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "log-out",
+                  "library": "lucide",
+                  "fill": "$ab-destructive"
+                },
+                {
+                  "type": "text",
+                  "id": "b738Dm",
+                  "name": "Library Logout Label",
+                  "fill": "$ab-destructive",
+                  "content": "Logout",
+                  "fontFamily": "$ab-font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "700"
                 }
               ]
             }
@@ -8384,7 +8523,7 @@
                                   "type": "frame",
                                   "id": "SZiRp",
                                   "name": "Title Header Cell",
-                                  "width": "fill_container",
+                                  "width": 392,
                                   "height": "fill_container",
                                   "padding": [
                                     0,
@@ -8408,7 +8547,7 @@
                                   "type": "frame",
                                   "id": "m8wnd",
                                   "name": "Profile Header Cell",
-                                  "width": 110,
+                                  "width": 120,
                                   "height": "fill_container",
                                   "padding": [
                                     0,
@@ -8432,7 +8571,7 @@
                                   "type": "frame",
                                   "id": "BXYG4",
                                   "name": "Type Header Cell",
-                                  "width": 96,
+                                  "width": 122,
                                   "height": "fill_container",
                                   "padding": [
                                     0,
@@ -8456,7 +8595,7 @@
                                   "type": "frame",
                                   "id": "z4eIy",
                                   "name": "Style Header Cell",
-                                  "width": 130,
+                                  "width": 150,
                                   "height": "fill_container",
                                   "padding": [
                                     0,
@@ -8480,7 +8619,7 @@
                                   "type": "frame",
                                   "id": "UhYvH",
                                   "name": "Status Header Cell",
-                                  "width": 122,
+                                  "width": 154,
                                   "height": "fill_container",
                                   "padding": [
                                     0,
@@ -8504,7 +8643,7 @@
                                   "type": "frame",
                                   "id": "b7vJL2",
                                   "name": "Updated Header Cell",
-                                  "width": 108,
+                                  "width": 104,
                                   "height": "fill_container",
                                   "padding": [
                                     0,
@@ -8528,12 +8667,13 @@
                                   "type": "frame",
                                   "id": "Z8pKS",
                                   "name": "Action Header Cell",
-                                  "width": 92,
+                                  "width": 98,
                                   "height": "fill_container",
                                   "padding": [
                                     0,
                                     12
                                   ],
+                                  "justifyContent": "end",
                                   "alignItems": "center",
                                   "children": [
                                     {
@@ -8567,7 +8707,7 @@
                                   "type": "frame",
                                   "id": "nHqox",
                                   "name": "Title Cell 1",
-                                  "width": "fill_container",
+                                  "width": 392,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -8576,17 +8716,6 @@
                                   ],
                                   "alignItems": "center",
                                   "children": [
-                                    {
-                                      "type": "rectangle",
-                                      "cornerRadius": 6,
-                                      "id": "A2JWW",
-                                      "name": "Book Thumb 1",
-                                      "fill": "#E9C989",
-                                      "width": 30,
-                                      "height": 42,
-                                      "stroke": "#C59B58",
-                                      "strokeWidth": 1
-                                    },
                                     {
                                       "type": "frame",
                                       "id": "tYPnL",
@@ -8623,7 +8752,7 @@
                                   "type": "frame",
                                   "id": "kgvJ2",
                                   "name": "Profile Cell 1",
-                                  "width": 110,
+                                  "width": 120,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -8648,7 +8777,7 @@
                                   "type": "frame",
                                   "id": "oCpUI",
                                   "name": "Type Cell 1",
-                                  "width": 96,
+                                  "width": 122,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -8673,7 +8802,7 @@
                                   "type": "frame",
                                   "id": "sE5rS",
                                   "name": "Style Cell 1",
-                                  "width": 130,
+                                  "width": 150,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -8698,7 +8827,7 @@
                                   "type": "frame",
                                   "id": "Ik71D",
                                   "name": "Status Cell 1",
-                                  "width": 122,
+                                  "width": 154,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -8740,7 +8869,7 @@
                                   "type": "frame",
                                   "id": "EN3jr",
                                   "name": "Updated Cell 1",
-                                  "width": 108,
+                                  "width": 104,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -8765,13 +8894,14 @@
                                   "type": "frame",
                                   "id": "i1BrQc",
                                   "name": "Action Cell 1",
-                                  "width": 92,
+                                  "width": 98,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
                                     0,
                                     12
                                   ],
+                                  "justifyContent": "end",
                                   "alignItems": "center",
                                   "children": [
                                     {
@@ -8822,7 +8952,7 @@
                                   "type": "frame",
                                   "id": "TTWJc",
                                   "name": "Title Cell 2",
-                                  "width": "fill_container",
+                                  "width": 392,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -8831,17 +8961,6 @@
                                   ],
                                   "alignItems": "center",
                                   "children": [
-                                    {
-                                      "type": "rectangle",
-                                      "cornerRadius": 6,
-                                      "id": "e40c2n",
-                                      "name": "Book Thumb 2",
-                                      "fill": "#CFC2A8",
-                                      "width": 30,
-                                      "height": 42,
-                                      "stroke": "#C59B58",
-                                      "strokeWidth": 1
-                                    },
                                     {
                                       "type": "frame",
                                       "id": "fM06z",
@@ -8878,7 +8997,7 @@
                                   "type": "frame",
                                   "id": "yeIDR",
                                   "name": "Profile Cell 2",
-                                  "width": 110,
+                                  "width": 120,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -8903,7 +9022,7 @@
                                   "type": "frame",
                                   "id": "QlUSy",
                                   "name": "Type Cell 2",
-                                  "width": 96,
+                                  "width": 122,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -8928,7 +9047,7 @@
                                   "type": "frame",
                                   "id": "Y3nSsq",
                                   "name": "Style Cell 2",
-                                  "width": 130,
+                                  "width": 150,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -8953,7 +9072,7 @@
                                   "type": "frame",
                                   "id": "g2fq9",
                                   "name": "Status Cell 2",
-                                  "width": 122,
+                                  "width": 154,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -8995,7 +9114,7 @@
                                   "type": "frame",
                                   "id": "ylJjL",
                                   "name": "Updated Cell 2",
-                                  "width": 108,
+                                  "width": 104,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9020,13 +9139,14 @@
                                   "type": "frame",
                                   "id": "X5KuiS",
                                   "name": "Action Cell 2",
-                                  "width": 92,
+                                  "width": 98,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
                                     0,
                                     12
                                   ],
+                                  "justifyContent": "end",
                                   "alignItems": "center",
                                   "children": [
                                     {
@@ -9077,7 +9197,7 @@
                                   "type": "frame",
                                   "id": "F1XPFD",
                                   "name": "Title Cell 3",
-                                  "width": "fill_container",
+                                  "width": 392,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9086,17 +9206,6 @@
                                   ],
                                   "alignItems": "center",
                                   "children": [
-                                    {
-                                      "type": "rectangle",
-                                      "cornerRadius": 6,
-                                      "id": "HY8YB",
-                                      "name": "Book Thumb 3",
-                                      "fill": "#D6B58A",
-                                      "width": 30,
-                                      "height": 42,
-                                      "stroke": "#C59B58",
-                                      "strokeWidth": 1
-                                    },
                                     {
                                       "type": "frame",
                                       "id": "p987L",
@@ -9133,7 +9242,7 @@
                                   "type": "frame",
                                   "id": "YwrOr",
                                   "name": "Profile Cell 3",
-                                  "width": 110,
+                                  "width": 120,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9158,7 +9267,7 @@
                                   "type": "frame",
                                   "id": "fWliR",
                                   "name": "Type Cell 3",
-                                  "width": 96,
+                                  "width": 122,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9183,7 +9292,7 @@
                                   "type": "frame",
                                   "id": "w1lT8v",
                                   "name": "Style Cell 3",
-                                  "width": 130,
+                                  "width": 150,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9208,7 +9317,7 @@
                                   "type": "frame",
                                   "id": "RmJma",
                                   "name": "Status Cell 3",
-                                  "width": 122,
+                                  "width": 154,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9250,7 +9359,7 @@
                                   "type": "frame",
                                   "id": "I4KGh0",
                                   "name": "Updated Cell 3",
-                                  "width": 108,
+                                  "width": 104,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9275,13 +9384,14 @@
                                   "type": "frame",
                                   "id": "oHU2L",
                                   "name": "Action Cell 3",
-                                  "width": 92,
+                                  "width": 98,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
                                     0,
                                     12
                                   ],
+                                  "justifyContent": "end",
                                   "alignItems": "center",
                                   "children": [
                                     {
@@ -9332,7 +9442,7 @@
                                   "type": "frame",
                                   "id": "KBJ94",
                                   "name": "Title Cell 4",
-                                  "width": "fill_container",
+                                  "width": 392,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9341,17 +9451,6 @@
                                   ],
                                   "alignItems": "center",
                                   "children": [
-                                    {
-                                      "type": "rectangle",
-                                      "cornerRadius": 6,
-                                      "id": "h0lNT6",
-                                      "name": "Book Thumb 4",
-                                      "fill": "#E9C989",
-                                      "width": 30,
-                                      "height": 42,
-                                      "stroke": "#C59B58",
-                                      "strokeWidth": 1
-                                    },
                                     {
                                       "type": "frame",
                                       "id": "EBgKr",
@@ -9388,7 +9487,7 @@
                                   "type": "frame",
                                   "id": "FGkVd",
                                   "name": "Profile Cell 4",
-                                  "width": 110,
+                                  "width": 120,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9413,7 +9512,7 @@
                                   "type": "frame",
                                   "id": "q1UL7J",
                                   "name": "Type Cell 4",
-                                  "width": 96,
+                                  "width": 122,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9438,7 +9537,7 @@
                                   "type": "frame",
                                   "id": "D8NZFa",
                                   "name": "Style Cell 4",
-                                  "width": 130,
+                                  "width": 150,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9463,7 +9562,7 @@
                                   "type": "frame",
                                   "id": "HLBoM",
                                   "name": "Status Cell 4",
-                                  "width": 122,
+                                  "width": 154,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9505,7 +9604,7 @@
                                   "type": "frame",
                                   "id": "T0wpHG",
                                   "name": "Updated Cell 4",
-                                  "width": 108,
+                                  "width": 104,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9530,13 +9629,14 @@
                                   "type": "frame",
                                   "id": "zhYCL",
                                   "name": "Action Cell 4",
-                                  "width": 92,
+                                  "width": 98,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
                                     0,
                                     12
                                   ],
+                                  "justifyContent": "end",
                                   "alignItems": "center",
                                   "children": [
                                     {
@@ -9587,7 +9687,7 @@
                                   "type": "frame",
                                   "id": "JVUqG",
                                   "name": "Title Cell 5",
-                                  "width": "fill_container",
+                                  "width": 392,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9596,17 +9696,6 @@
                                   ],
                                   "alignItems": "center",
                                   "children": [
-                                    {
-                                      "type": "rectangle",
-                                      "cornerRadius": 6,
-                                      "id": "e4wFkM",
-                                      "name": "Book Thumb 5",
-                                      "fill": "#CFC2A8",
-                                      "width": 30,
-                                      "height": 42,
-                                      "stroke": "#C59B58",
-                                      "strokeWidth": 1
-                                    },
                                     {
                                       "type": "frame",
                                       "id": "C2SiBY",
@@ -9643,7 +9732,7 @@
                                   "type": "frame",
                                   "id": "DSJyS",
                                   "name": "Profile Cell 5",
-                                  "width": 110,
+                                  "width": 120,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9668,7 +9757,7 @@
                                   "type": "frame",
                                   "id": "leHUx",
                                   "name": "Type Cell 5",
-                                  "width": 96,
+                                  "width": 122,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9693,7 +9782,7 @@
                                   "type": "frame",
                                   "id": "ZgNdB",
                                   "name": "Style Cell 5",
-                                  "width": 130,
+                                  "width": 150,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9718,7 +9807,7 @@
                                   "type": "frame",
                                   "id": "ZCtYJ",
                                   "name": "Status Cell 5",
-                                  "width": 122,
+                                  "width": 154,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9760,7 +9849,7 @@
                                   "type": "frame",
                                   "id": "FdZBD",
                                   "name": "Updated Cell 5",
-                                  "width": 108,
+                                  "width": 104,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9785,13 +9874,14 @@
                                   "type": "frame",
                                   "id": "mSubl",
                                   "name": "Action Cell 5",
-                                  "width": 92,
+                                  "width": 98,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
                                     0,
                                     12
                                   ],
+                                  "justifyContent": "end",
                                   "alignItems": "center",
                                   "children": [
                                     {
@@ -9839,7 +9929,7 @@
                                   "type": "frame",
                                   "id": "K7nrQf",
                                   "name": "Title Cell 6",
-                                  "width": "fill_container",
+                                  "width": 392,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9848,17 +9938,6 @@
                                   ],
                                   "alignItems": "center",
                                   "children": [
-                                    {
-                                      "type": "rectangle",
-                                      "cornerRadius": 6,
-                                      "id": "GAT4s",
-                                      "name": "Book Thumb 6",
-                                      "fill": "#D6B58A",
-                                      "width": 30,
-                                      "height": 42,
-                                      "stroke": "#C59B58",
-                                      "strokeWidth": 1
-                                    },
                                     {
                                       "type": "frame",
                                       "id": "eCUqB",
@@ -9895,7 +9974,7 @@
                                   "type": "frame",
                                   "id": "EiyUx",
                                   "name": "Profile Cell 6",
-                                  "width": 110,
+                                  "width": 120,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9920,7 +9999,7 @@
                                   "type": "frame",
                                   "id": "F81JGI",
                                   "name": "Type Cell 6",
-                                  "width": 96,
+                                  "width": 122,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9945,7 +10024,7 @@
                                   "type": "frame",
                                   "id": "Rwqbh",
                                   "name": "Style Cell 6",
-                                  "width": 130,
+                                  "width": 150,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -9970,7 +10049,7 @@
                                   "type": "frame",
                                   "id": "Kpu9H",
                                   "name": "Status Cell 6",
-                                  "width": 122,
+                                  "width": 154,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -10012,7 +10091,7 @@
                                   "type": "frame",
                                   "id": "FJpA9",
                                   "name": "Updated Cell 6",
-                                  "width": 108,
+                                  "width": 104,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
@@ -10037,13 +10116,14 @@
                                   "type": "frame",
                                   "id": "J1lwE",
                                   "name": "Action Cell 6",
-                                  "width": 92,
+                                  "width": 98,
                                   "height": "fill_container",
                                   "gap": 8,
                                   "padding": [
                                     0,
                                     12
                                   ],
+                                  "justifyContent": "end",
                                   "alignItems": "center",
                                   "children": [
                                     {
@@ -10236,407 +10316,6 @@
                                       "content": "Next",
                                       "fontFamily": "$ab-font-ui",
                                       "fontSize": 13,
-                                      "fontWeight": "800"
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "xhxyC",
-                      "name": "Card Browsing Panel",
-                      "width": 360,
-                      "height": "fill_container",
-                      "layout": "vertical",
-                      "gap": 14,
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "I4452P",
-                          "name": "Card View Header",
-                          "width": "fill_container",
-                          "layout": "vertical",
-                          "gap": 4,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "qTbU8",
-                              "name": "Card View Title",
-                              "fill": "$ab-text",
-                              "content": "Card browsing",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 15,
-                              "fontWeight": "850"
-                            },
-                            {
-                              "type": "text",
-                              "id": "wEIjc",
-                              "name": "Card View Helper",
-                              "fill": "$ab-muted",
-                              "content": "Visual scan of covers and review state",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "YXXDI",
-                          "name": "Moonlit Orchard Book Card",
-                          "width": "fill_container",
-                          "height": 150,
-                          "fill": "$ab-surface",
-                          "cornerRadius": 16,
-                          "stroke": "$ab-border",
-                          "strokeWidth": 1,
-                          "gap": 14,
-                          "padding": 14,
-                          "children": [
-                            {
-                              "type": "rectangle",
-                              "cornerRadius": 12,
-                              "id": "VRkBy",
-                              "name": "Moonlit Orchard Cover",
-                              "fill": "#E9C989",
-                              "width": 80,
-                              "height": 118,
-                              "stroke": "#C59B58",
-                              "strokeWidth": 1
-                            },
-                            {
-                              "type": "frame",
-                              "id": "T9Qpb9",
-                              "name": "Moonlit Orchard Card Copy",
-                              "width": "fill_container",
-                              "layout": "vertical",
-                              "gap": 8,
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "y14bR",
-                                  "name": "Moonlit Orchard Card Title",
-                                  "fill": "$ab-text",
-                                  "content": "Moonlit Orchard",
-                                  "fontFamily": "$ab-font-display",
-                                  "fontSize": 24,
-                                  "fontWeight": "600"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "SIHkR",
-                                  "name": "Moonlit Orchard Card Profile",
-                                  "fill": "$ab-muted",
-                                  "content": "Mila • Watercolor",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 13,
-                                  "fontWeight": "normal"
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "ww3Pw",
-                                  "name": "REVIEW Card Badge",
-                                  "height": 28,
-                                  "fill": "#FFF7E8",
-                                  "cornerRadius": 14,
-                                  "stroke": "$ab-warning",
-                                  "strokeWidth": 1,
-                                  "padding": [
-                                    0,
-                                    9
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "bkqCh",
-                                      "name": "REVIEW Card Badge Text",
-                                      "fill": "$ab-warning",
-                                      "content": "REVIEW",
-                                      "fontFamily": "$ab-font-ui",
-                                      "fontSize": 11,
-                                      "fontWeight": "850"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "Lwddg",
-                                  "name": "Moonlit Orchard Card Date",
-                                  "fill": "$ab-muted",
-                                  "content": "Today",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "M26U0",
-                                  "name": "Moonlit Orchard Open Action",
-                                  "height": 32,
-                                  "fill": "$ab-primary",
-                                  "cornerRadius": 9,
-                                  "stroke": "#00000000",
-                                  "strokeWidth": 1,
-                                  "padding": [
-                                    0,
-                                    10
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "OKIJn",
-                                      "name": "Moonlit Orchard Open Action Text",
-                                      "fill": "#FFFFFF",
-                                      "content": "Review",
-                                      "fontFamily": "$ab-font-ui",
-                                      "fontSize": 12,
-                                      "fontWeight": "800"
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "aVljt",
-                          "name": "Kind Map Book Card",
-                          "width": "fill_container",
-                          "height": 150,
-                          "fill": "$ab-surface",
-                          "cornerRadius": 16,
-                          "stroke": "$ab-border",
-                          "strokeWidth": 1,
-                          "gap": 14,
-                          "padding": 14,
-                          "children": [
-                            {
-                              "type": "rectangle",
-                              "cornerRadius": 12,
-                              "id": "eNVXu",
-                              "name": "Kind Map Cover",
-                              "fill": "#CFC2A8",
-                              "width": 80,
-                              "height": 118,
-                              "stroke": "#C59B58",
-                              "strokeWidth": 1
-                            },
-                            {
-                              "type": "frame",
-                              "id": "NEQaX",
-                              "name": "Kind Map Card Copy",
-                              "width": "fill_container",
-                              "layout": "vertical",
-                              "gap": 8,
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "z5n1dr",
-                                  "name": "Kind Map Card Title",
-                                  "fill": "$ab-text",
-                                  "content": "Kind Map",
-                                  "fontFamily": "$ab-font-display",
-                                  "fontSize": 24,
-                                  "fontWeight": "600"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "eGf91",
-                                  "name": "Kind Map Card Profile",
-                                  "fill": "$ab-muted",
-                                  "content": "Noah • Ink wash",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 13,
-                                  "fontWeight": "normal"
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "P8facO",
-                                  "name": "GENERATING Card Badge",
-                                  "height": 28,
-                                  "fill": "#FFF7E8",
-                                  "cornerRadius": 14,
-                                  "stroke": "$ab-info",
-                                  "strokeWidth": 1,
-                                  "padding": [
-                                    0,
-                                    9
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "qD7N5",
-                                      "name": "GENERATING Card Badge Text",
-                                      "fill": "$ab-info",
-                                      "content": "GENERATING",
-                                      "fontFamily": "$ab-font-ui",
-                                      "fontSize": 11,
-                                      "fontWeight": "850"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "dK2jy",
-                                  "name": "Kind Map Card Date",
-                                  "fill": "$ab-muted",
-                                  "content": "2h ago",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "PsUZr",
-                                  "name": "Kind Map Open Action",
-                                  "height": 32,
-                                  "fill": "#00000000",
-                                  "cornerRadius": 9,
-                                  "stroke": "$ab-border",
-                                  "strokeWidth": 1,
-                                  "padding": [
-                                    0,
-                                    10
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "tJTmV",
-                                      "name": "Kind Map Open Action Text",
-                                      "fill": "$ab-text",
-                                      "content": "Open",
-                                      "fontFamily": "$ab-font-ui",
-                                      "fontSize": 12,
-                                      "fontWeight": "800"
-                                    }
-                                  ]
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "MHKsx",
-                          "name": "Lantern Library Book Card",
-                          "width": "fill_container",
-                          "height": 150,
-                          "fill": "$ab-surface",
-                          "cornerRadius": 16,
-                          "stroke": "$ab-border",
-                          "strokeWidth": 1,
-                          "gap": 14,
-                          "padding": 14,
-                          "children": [
-                            {
-                              "type": "rectangle",
-                              "cornerRadius": 12,
-                              "id": "EEZbU",
-                              "name": "Lantern Library Cover",
-                              "fill": "#D6B58A",
-                              "width": 80,
-                              "height": 118,
-                              "stroke": "#C59B58",
-                              "strokeWidth": 1
-                            },
-                            {
-                              "type": "frame",
-                              "id": "exWbf",
-                              "name": "Lantern Library Card Copy",
-                              "width": "fill_container",
-                              "layout": "vertical",
-                              "gap": 8,
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "x3Kkju",
-                                  "name": "Lantern Library Card Title",
-                                  "fill": "$ab-text",
-                                  "content": "Lantern Library",
-                                  "fontFamily": "$ab-font-display",
-                                  "fontSize": 24,
-                                  "fontWeight": "600"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "wTqk6",
-                                  "name": "Lantern Library Card Profile",
-                                  "fill": "$ab-muted",
-                                  "content": "Ava • Soft pastel",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 13,
-                                  "fontWeight": "normal"
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "E0ngZf",
-                                  "name": "COMPLETED Card Badge",
-                                  "height": 28,
-                                  "fill": "#FFF7E8",
-                                  "cornerRadius": 14,
-                                  "stroke": "$ab-success",
-                                  "strokeWidth": 1,
-                                  "padding": [
-                                    0,
-                                    9
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "bSGG9",
-                                      "name": "COMPLETED Card Badge Text",
-                                      "fill": "$ab-success",
-                                      "content": "COMPLETED",
-                                      "fontFamily": "$ab-font-ui",
-                                      "fontSize": 11,
-                                      "fontWeight": "850"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "ECFkQ",
-                                  "name": "Lantern Library Card Date",
-                                  "fill": "$ab-muted",
-                                  "content": "May 28",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "l5XiY",
-                                  "name": "Lantern Library Open Action",
-                                  "height": 32,
-                                  "fill": "#00000000",
-                                  "cornerRadius": 9,
-                                  "stroke": "$ab-border",
-                                  "strokeWidth": 1,
-                                  "padding": [
-                                    0,
-                                    10
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "sLWUB",
-                                      "name": "Lantern Library Open Action Text",
-                                      "fill": "$ab-text",
-                                      "content": "Open",
-                                      "fontFamily": "$ab-font-ui",
-                                      "fontSize": 12,
                                       "fontWeight": "800"
                                     }
                                   ]
@@ -11067,6 +10746,201 @@
                   "fontWeight": "normal"
                 }
               ]
+            },
+            {
+              "type": "frame",
+              "id": "J9pUPp",
+              "name": "Create Sidebar Bottom Spacer",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical"
+            },
+            {
+              "type": "frame",
+              "id": "CWGoe",
+              "name": "Create Theme Toggle Row",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "$ab-card",
+              "cornerRadius": 12,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": [
+                0,
+                10
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "PK9wp",
+                  "name": "Create Theme Label",
+                  "fill": "$ab-text",
+                  "content": "Theme",
+                  "fontFamily": "$ab-font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "PhxPF",
+                  "name": "Create Light Dark Toggle",
+                  "width": 122,
+                  "height": 32,
+                  "fill": "$ab-surface",
+                  "cornerRadius": 10,
+                  "stroke": "$ab-border",
+                  "strokeWidth": 1,
+                  "gap": 3,
+                  "padding": 3,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "L6ZxIe",
+                      "name": "Create Light Selected",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "fill": "$ab-primary",
+                      "cornerRadius": 7,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "mCOlF",
+                          "name": "Create Light Label",
+                          "fill": "#FFFFFF",
+                          "content": "Light",
+                          "fontFamily": "$ab-font-ui",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "EfsSQ",
+                      "name": "Create Dark Option",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "fill": "#00000000",
+                      "cornerRadius": 7,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "b0KGb7",
+                          "name": "Create Dark Label",
+                          "fill": "$ab-muted",
+                          "content": "Dark",
+                          "fontFamily": "$ab-font-ui",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "WTpmQ",
+              "name": "Create Current User",
+              "width": "fill_container",
+              "height": 62,
+              "fill": "$ab-card",
+              "cornerRadius": 12,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "EiW4B",
+                  "name": "Create User Avatar",
+                  "fill": "$ab-accent",
+                  "width": 34,
+                  "height": 34,
+                  "stroke": "$ab-border",
+                  "strokeWidth": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "f31Hf",
+                  "name": "Create Current User Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "E29eg",
+                      "name": "Create Current User Name",
+                      "fill": "$ab-text",
+                      "content": "Sarah K.",
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "y4N9L",
+                      "name": "Create Current User Plan",
+                      "fill": "$ab-muted",
+                      "content": "Family plan",
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "i9znFY",
+              "name": "Create Logout Button",
+              "width": "fill_container",
+              "height": 42,
+              "fill": "$ab-surface",
+              "cornerRadius": 10,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 8,
+              "padding": [
+                0,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "KI1bw",
+                  "name": "Create Logout Icon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "log-out",
+                  "library": "lucide",
+                  "fill": "$ab-destructive"
+                },
+                {
+                  "type": "text",
+                  "id": "J1RRS8",
+                  "name": "Create Logout Label",
+                  "fill": "$ab-destructive",
+                  "content": "Logout",
+                  "fontFamily": "$ab-font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                }
+              ]
             }
           ]
         },
@@ -11238,214 +11112,100 @@
                 },
                 {
                   "type": "frame",
-                  "id": "ct6e8",
-                  "name": "Create Step Indicator",
+                  "id": "bhOB1",
+                  "name": "Create Progress Bar",
                   "width": "fill_container",
                   "height": 82,
-                  "fill": "$ab-surface",
+                  "fill": "$ab-card",
                   "cornerRadius": 16,
                   "stroke": "$ab-border",
                   "strokeWidth": 1,
+                  "layout": "vertical",
                   "gap": 10,
                   "padding": 14,
                   "children": [
                     {
                       "type": "frame",
-                      "id": "e8P4F",
-                      "name": "Select child profile Step",
+                      "id": "TXj1B",
+                      "name": "Create Progress Header",
                       "width": "fill_container",
-                      "gap": 10,
+                      "height": 18,
+                      "justifyContent": "space_between",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "ellipse",
-                          "id": "M0jBq2",
-                          "name": "Select child profile Step Number",
+                          "type": "text",
+                          "id": "BEZpa",
+                          "name": "Create Progress Label",
+                          "fill": "$ab-text",
+                          "content": "Book creation progress",
+                          "fontFamily": "$ab-font-ui",
+                          "fontSize": 13,
+                          "fontWeight": "800"
+                        },
+                        {
+                          "type": "text",
+                          "id": "g6MTw",
+                          "name": "Create Progress Count",
                           "fill": "$ab-primary",
-                          "width": 34,
-                          "height": 34,
-                          "stroke": "$ab-primary",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "frame",
-                          "id": "R4owuB",
-                          "name": "Select child profile Step Copy",
-                          "width": "fill_container",
-                          "layout": "vertical",
-                          "gap": 2,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "SDc5R",
-                              "name": "Select child profile Step Label",
-                              "fill": "$ab-text",
-                              "content": "1. Select child profile",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 13,
-                              "fontWeight": "800"
-                            },
-                            {
-                              "type": "text",
-                              "id": "ygaSF",
-                              "name": "Select child profile Step State",
-                              "fill": "$ab-primary",
-                              "content": "Current step",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 11,
-                              "fontWeight": "normal"
-                            }
-                          ]
+                          "content": "25%",
+                          "fontFamily": "$ab-font-ui",
+                          "fontSize": 12,
+                          "fontWeight": "750"
                         }
                       ]
                     },
                     {
                       "type": "frame",
-                      "id": "U0FlHj",
-                      "name": "Choose story Step",
+                      "id": "RUxOy",
+                      "name": "Create Progress Track",
+                      "clip": true,
                       "width": "fill_container",
-                      "gap": 10,
-                      "alignItems": "center",
+                      "height": 12,
+                      "fill": "$ab-surface",
+                      "cornerRadius": 8,
+                      "stroke": "$ab-border",
+                      "strokeWidth": 1,
                       "children": [
                         {
-                          "type": "ellipse",
-                          "id": "nLhv6",
-                          "name": "Choose story Step Number",
-                          "fill": "#F2E6D6",
-                          "width": 34,
-                          "height": 34,
-                          "stroke": "$ab-border",
-                          "strokeWidth": 1
-                        },
-                        {
                           "type": "frame",
-                          "id": "VgnL0",
-                          "name": "Choose story Step Copy",
-                          "width": "fill_container",
-                          "layout": "vertical",
-                          "gap": 2,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "zg6Mk",
-                              "name": "Choose story Step Label",
-                              "fill": "$ab-muted",
-                              "content": "2. Choose story",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 13,
-                              "fontWeight": "800"
-                            },
-                            {
-                              "type": "text",
-                              "id": "sXhJH",
-                              "name": "Choose story Step State",
-                              "fill": "$ab-muted",
-                              "content": "Ready",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 11,
-                              "fontWeight": "normal"
-                            }
-                          ]
+                          "id": "M0Olk",
+                          "name": "Create Progress Fill",
+                          "width": 268,
+                          "height": "fill_container",
+                          "fill": "$ab-primary",
+                          "cornerRadius": 8
                         }
                       ]
                     },
                     {
                       "type": "frame",
-                      "id": "V5kNVW",
-                      "name": "Select style and tone Step",
+                      "id": "avfkP",
+                      "name": "Create Progress Footer",
                       "width": "fill_container",
-                      "gap": 10,
+                      "height": 16,
+                      "justifyContent": "space_between",
                       "alignItems": "center",
                       "children": [
                         {
-                          "type": "ellipse",
-                          "id": "ElPlA",
-                          "name": "Select style and tone Step Number",
-                          "fill": "#F2E6D6",
-                          "width": 34,
-                          "height": 34,
-                          "stroke": "$ab-border",
-                          "strokeWidth": 1
+                          "type": "text",
+                          "id": "bnmHk",
+                          "name": "Create Progress Current Step",
+                          "fill": "$ab-muted",
+                          "content": "Current: Select child profile",
+                          "fontFamily": "$ab-font-ui",
+                          "fontSize": 11,
+                          "fontWeight": "700"
                         },
                         {
-                          "type": "frame",
-                          "id": "c5nnO1",
-                          "name": "Select style and tone Step Copy",
-                          "width": "fill_container",
-                          "layout": "vertical",
-                          "gap": 2,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "zOwDy",
-                              "name": "Select style and tone Step Label",
-                              "fill": "$ab-muted",
-                              "content": "3. Select style and tone",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 13,
-                              "fontWeight": "800"
-                            },
-                            {
-                              "type": "text",
-                              "id": "zyzNz",
-                              "name": "Select style and tone Step State",
-                              "fill": "$ab-muted",
-                              "content": "Ready",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 11,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "SW721",
-                      "name": "Confirm generation Step",
-                      "width": "fill_container",
-                      "gap": 10,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "ellipse",
-                          "id": "uZl9o",
-                          "name": "Confirm generation Step Number",
-                          "fill": "#F2E6D6",
-                          "width": 34,
-                          "height": 34,
-                          "stroke": "$ab-border",
-                          "strokeWidth": 1
-                        },
-                        {
-                          "type": "frame",
-                          "id": "YmN9i",
-                          "name": "Confirm generation Step Copy",
-                          "width": "fill_container",
-                          "layout": "vertical",
-                          "gap": 2,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "hrM3r",
-                              "name": "Confirm generation Step Label",
-                              "fill": "$ab-muted",
-                              "content": "4. Confirm generation",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 13,
-                              "fontWeight": "800"
-                            },
-                            {
-                              "type": "text",
-                              "id": "NmTOi",
-                              "name": "Confirm generation Step State",
-                              "fill": "$ab-muted",
-                              "content": "Ready",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 11,
-                              "fontWeight": "normal"
-                            }
-                          ]
+                          "type": "text",
+                          "id": "xsBDP",
+                          "name": "Create Progress Remaining",
+                          "fill": "$ab-muted",
+                          "content": "1 of 4",
+                          "fontFamily": "$ab-font-ui",
+                          "fontSize": 11,
+                          "fontWeight": "700"
                         }
                       ]
                     }
@@ -13236,6 +12996,201 @@
                   "fontWeight": "normal"
                 }
               ]
+            },
+            {
+              "type": "frame",
+              "id": "XyzQF",
+              "name": "Review Sidebar Bottom Spacer",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical"
+            },
+            {
+              "type": "frame",
+              "id": "KvN6P",
+              "name": "Review Theme Toggle Row",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "$ab-card",
+              "cornerRadius": 12,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": [
+                0,
+                10
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "u0lnL",
+                  "name": "Review Theme Label",
+                  "fill": "$ab-text",
+                  "content": "Theme",
+                  "fontFamily": "$ab-font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "veG15",
+                  "name": "Review Light Dark Toggle",
+                  "width": 122,
+                  "height": 32,
+                  "fill": "$ab-surface",
+                  "cornerRadius": 10,
+                  "stroke": "$ab-border",
+                  "strokeWidth": 1,
+                  "gap": 3,
+                  "padding": 3,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "vYU29",
+                      "name": "Review Light Selected",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "fill": "$ab-primary",
+                      "cornerRadius": 7,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "iFVXI",
+                          "name": "Review Light Label",
+                          "fill": "#FFFFFF",
+                          "content": "Light",
+                          "fontFamily": "$ab-font-ui",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "K7PVx4",
+                      "name": "Review Dark Option",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "fill": "#00000000",
+                      "cornerRadius": 7,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "I3j33",
+                          "name": "Review Dark Label",
+                          "fill": "$ab-muted",
+                          "content": "Dark",
+                          "fontFamily": "$ab-font-ui",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "bRgH3",
+              "name": "Review Current User",
+              "width": "fill_container",
+              "height": 62,
+              "fill": "$ab-card",
+              "cornerRadius": 12,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "mliNM",
+                  "name": "Review User Avatar",
+                  "fill": "$ab-accent",
+                  "width": 34,
+                  "height": 34,
+                  "stroke": "$ab-border",
+                  "strokeWidth": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "kUZB7",
+                  "name": "Review Current User Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "iuwQJ",
+                      "name": "Review Current User Name",
+                      "fill": "$ab-text",
+                      "content": "Sarah K.",
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ng0H3",
+                      "name": "Review Current User Plan",
+                      "fill": "$ab-muted",
+                      "content": "Family plan",
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "TNp45",
+              "name": "Review Logout Button",
+              "width": "fill_container",
+              "height": 42,
+              "fill": "$ab-surface",
+              "cornerRadius": 10,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 8,
+              "padding": [
+                0,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "W08M9",
+                  "name": "Review Logout Icon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "log-out",
+                  "library": "lucide",
+                  "fill": "$ab-destructive"
+                },
+                {
+                  "type": "text",
+                  "id": "a1FQXl",
+                  "name": "Review Logout Label",
+                  "fill": "$ab-destructive",
+                  "content": "Logout",
+                  "fontFamily": "$ab-font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                }
+              ]
             }
           ]
         },
@@ -14702,6 +14657,201 @@
                   "fontWeight": "normal"
                 }
               ]
+            },
+            {
+              "type": "frame",
+              "id": "c39c9M",
+              "name": "Completed Sidebar Bottom Spacer",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical"
+            },
+            {
+              "type": "frame",
+              "id": "rTrRI",
+              "name": "Completed Theme Toggle Row",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "$ab-card",
+              "cornerRadius": 12,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": [
+                0,
+                10
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "FYkVG",
+                  "name": "Completed Theme Label",
+                  "fill": "$ab-text",
+                  "content": "Theme",
+                  "fontFamily": "$ab-font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "QR7jL",
+                  "name": "Completed Light Dark Toggle",
+                  "width": 122,
+                  "height": 32,
+                  "fill": "$ab-surface",
+                  "cornerRadius": 10,
+                  "stroke": "$ab-border",
+                  "strokeWidth": 1,
+                  "gap": 3,
+                  "padding": 3,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "R1oqqR",
+                      "name": "Completed Light Selected",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "fill": "$ab-primary",
+                      "cornerRadius": 7,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "MtCGB",
+                          "name": "Completed Light Label",
+                          "fill": "#FFFFFF",
+                          "content": "Light",
+                          "fontFamily": "$ab-font-ui",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "Zc42G",
+                      "name": "Completed Dark Option",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "fill": "#00000000",
+                      "cornerRadius": 7,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "hkRqU",
+                          "name": "Completed Dark Label",
+                          "fill": "$ab-muted",
+                          "content": "Dark",
+                          "fontFamily": "$ab-font-ui",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "RwadW",
+              "name": "Completed Current User",
+              "width": "fill_container",
+              "height": 62,
+              "fill": "$ab-card",
+              "cornerRadius": 12,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "Y3Sobs",
+                  "name": "Completed User Avatar",
+                  "fill": "$ab-accent",
+                  "width": 34,
+                  "height": 34,
+                  "stroke": "$ab-border",
+                  "strokeWidth": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "s84xft",
+                  "name": "Completed Current User Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "KriS4",
+                      "name": "Completed Current User Name",
+                      "fill": "$ab-text",
+                      "content": "Sarah K.",
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "vtAVe",
+                      "name": "Completed Current User Plan",
+                      "fill": "$ab-muted",
+                      "content": "Family plan",
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "SVWMI",
+              "name": "Completed Logout Button",
+              "width": "fill_container",
+              "height": 42,
+              "fill": "$ab-surface",
+              "cornerRadius": 10,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 8,
+              "padding": [
+                0,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "A1sKC",
+                  "name": "Completed Logout Icon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "log-out",
+                  "library": "lucide",
+                  "fill": "$ab-destructive"
+                },
+                {
+                  "type": "text",
+                  "id": "M6qbn",
+                  "name": "Completed Logout Label",
+                  "fill": "$ab-destructive",
+                  "content": "Logout",
+                  "fontFamily": "$ab-font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "700"
+                }
+              ]
             }
           ]
         },
@@ -16156,6 +16306,201 @@
                   "fontFamily": "$ab-font-ui",
                   "fontSize": 12,
                   "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "NZ7eO",
+              "name": "Profiles Sidebar Bottom Spacer",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical"
+            },
+            {
+              "type": "frame",
+              "id": "g9SgK",
+              "name": "Profiles Theme Toggle Row",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "$ab-card",
+              "cornerRadius": 12,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": [
+                0,
+                10
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "vbk87",
+                  "name": "Profiles Theme Label",
+                  "fill": "$ab-text",
+                  "content": "Theme",
+                  "fontFamily": "$ab-font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "rSEma",
+                  "name": "Profiles Light Dark Toggle",
+                  "width": 122,
+                  "height": 32,
+                  "fill": "$ab-surface",
+                  "cornerRadius": 10,
+                  "stroke": "$ab-border",
+                  "strokeWidth": 1,
+                  "gap": 3,
+                  "padding": 3,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "v5khn",
+                      "name": "Profiles Light Selected",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "fill": "$ab-primary",
+                      "cornerRadius": 7,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Tpxs5",
+                          "name": "Profiles Light Label",
+                          "fill": "#FFFFFF",
+                          "content": "Light",
+                          "fontFamily": "$ab-font-ui",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "wgd3L",
+                      "name": "Profiles Dark Option",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "fill": "#00000000",
+                      "cornerRadius": 7,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "O4uXa5",
+                          "name": "Profiles Dark Label",
+                          "fill": "$ab-muted",
+                          "content": "Dark",
+                          "fontFamily": "$ab-font-ui",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "z3Jmfb",
+              "name": "Profiles Current User",
+              "width": "fill_container",
+              "height": 62,
+              "fill": "$ab-card",
+              "cornerRadius": 12,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "O5RKZc",
+                  "name": "Profiles User Avatar",
+                  "fill": "$ab-accent",
+                  "width": 34,
+                  "height": 34,
+                  "stroke": "$ab-border",
+                  "strokeWidth": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "OzsPr",
+                  "name": "Profiles Current User Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "jgyVw",
+                      "name": "Profiles Current User Name",
+                      "fill": "$ab-text",
+                      "content": "Sarah K.",
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "kyN7z",
+                      "name": "Profiles Current User Plan",
+                      "fill": "$ab-muted",
+                      "content": "Family plan",
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FpG4R",
+              "name": "Profiles Logout Button",
+              "width": "fill_container",
+              "height": 42,
+              "fill": "$ab-surface",
+              "cornerRadius": 10,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 8,
+              "padding": [
+                0,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "AfIB7",
+                  "name": "Profiles Logout Icon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "log-out",
+                  "library": "lucide",
+                  "fill": "$ab-destructive"
+                },
+                {
+                  "type": "text",
+                  "id": "M9V0uA",
+                  "name": "Profiles Logout Label",
+                  "fill": "$ab-destructive",
+                  "content": "Logout",
+                  "fontFamily": "$ab-font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "700"
                 }
               ]
             }
@@ -17921,33 +18266,6 @@
                               "children": [
                                 {
                                   "type": "frame",
-                                  "id": "iAzDy",
-                                  "name": "Keep Profile Action",
-                                  "height": 34,
-                                  "fill": "$ab-surface",
-                                  "cornerRadius": 9,
-                                  "stroke": "$ab-border",
-                                  "strokeWidth": 1,
-                                  "padding": [
-                                    0,
-                                    10
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "eEBCP",
-                                      "name": "Keep Profile Text",
-                                      "fill": "$ab-text",
-                                      "content": "Keep",
-                                      "fontFamily": "$ab-font-ui",
-                                      "fontSize": 12,
-                                      "fontWeight": "850"
-                                    }
-                                  ]
-                                },
-                                {
-                                  "type": "frame",
                                   "id": "BcgA4",
                                   "name": "Confirm Delete Profile Action",
                                   "height": 34,
@@ -18242,6 +18560,201 @@
                   "fontFamily": "$ab-font-ui",
                   "fontSize": 12,
                   "fontWeight": "normal"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "RZupc",
+              "name": "Settings Sidebar Bottom Spacer",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical"
+            },
+            {
+              "type": "frame",
+              "id": "G0wNC",
+              "name": "Settings Theme Toggle Row",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "$ab-card",
+              "cornerRadius": 12,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": [
+                0,
+                10
+              ],
+              "justifyContent": "space_between",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "text",
+                  "id": "G9M6gG",
+                  "name": "Settings Theme Label",
+                  "fill": "$ab-text",
+                  "content": "Theme",
+                  "fontFamily": "$ab-font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "600"
+                },
+                {
+                  "type": "frame",
+                  "id": "YHfdt",
+                  "name": "Settings Light Dark Toggle",
+                  "width": 122,
+                  "height": 32,
+                  "fill": "$ab-surface",
+                  "cornerRadius": 10,
+                  "stroke": "$ab-border",
+                  "strokeWidth": 1,
+                  "gap": 3,
+                  "padding": 3,
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "lPoRJ",
+                      "name": "Settings Light Selected",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "fill": "$ab-primary",
+                      "cornerRadius": 7,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "xNtUo",
+                          "name": "Settings Light Label",
+                          "fill": "#FFFFFF",
+                          "content": "Light",
+                          "fontFamily": "$ab-font-ui",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "frame",
+                      "id": "YMiKA",
+                      "name": "Settings Dark Option",
+                      "width": "fill_container",
+                      "height": "fill_container",
+                      "fill": "#00000000",
+                      "cornerRadius": 7,
+                      "justifyContent": "center",
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "dvN4F",
+                          "name": "Settings Dark Label",
+                          "fill": "$ab-muted",
+                          "content": "Dark",
+                          "fontFamily": "$ab-font-ui",
+                          "fontSize": 11,
+                          "fontWeight": "700"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "KSTAZ",
+              "name": "Settings Current User",
+              "width": "fill_container",
+              "height": 62,
+              "fill": "$ab-card",
+              "cornerRadius": 12,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 10,
+              "padding": 12,
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "ellipse",
+                  "id": "O1FjXn",
+                  "name": "Settings User Avatar",
+                  "fill": "$ab-accent",
+                  "width": 34,
+                  "height": 34,
+                  "stroke": "$ab-border",
+                  "strokeWidth": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "eaT9P",
+                  "name": "Settings Current User Copy",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 2,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "z9gkpk",
+                      "name": "Settings Current User Name",
+                      "fill": "$ab-text",
+                      "content": "Sarah K.",
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 13,
+                      "fontWeight": "700"
+                    },
+                    {
+                      "type": "text",
+                      "id": "xjb6z",
+                      "name": "Settings Current User Plan",
+                      "fill": "$ab-muted",
+                      "content": "Family plan",
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 11,
+                      "fontWeight": "500"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "AkG6G",
+              "name": "Settings Logout Button",
+              "width": "fill_container",
+              "height": 42,
+              "fill": "$ab-surface",
+              "cornerRadius": 10,
+              "stroke": "$ab-border",
+              "strokeWidth": 1,
+              "gap": 8,
+              "padding": [
+                0,
+                12
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "Pem27",
+                  "name": "Settings Logout Icon",
+                  "width": 16,
+                  "height": 16,
+                  "icon": "log-out",
+                  "library": "lucide",
+                  "fill": "$ab-destructive"
+                },
+                {
+                  "type": "text",
+                  "id": "o1ZSH",
+                  "name": "Settings Logout Label",
+                  "fill": "$ab-destructive",
+                  "content": "Logout",
+                  "fontFamily": "$ab-font-ui",
+                  "fontSize": 13,
+                  "fontWeight": "700"
                 }
               ]
             }
