@@ -1,0 +1,30 @@
+# Secrets and credentials
+.env
+.env.*
+*.pem
+credentials.json
+config/secrets.yml
+api-keys.txt
+
+# Sensitive directories
+secrets/
+private/
+
+# Ignore logs and temporary files
+*.log
+*.tmp
+temp/
+
+# Ignore system-specific files
+.DS_Store
+Thumbs.db
+
+# Large files that shouldn't be in context
+node_modules/
+backend/dist/
+backend/.turbo
+backend/node_modules
+
+frontend/dist/
+frontend/.turbo
+frontend/node_modules

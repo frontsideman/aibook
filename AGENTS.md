@@ -2,78 +2,199 @@
 
 ## Architecture
 
-Monorepo (npm workspaces + Turbo):
+Monorepo with npm workspaces and Turbo:
 
-- `apps/backend` — NestJS (ESM source/CJS build, port 3001)
-- `apps/frontend` — Next.js 16 (ESM, port 3000, `output: "standalone"`)
-- `packages/database` — Prisma 7.x (`@repo/database`, ESM/TS)
+- `apps/backend` — NestJS API on port `3001`
+- `apps/frontend` — Next.js 16 app on port `3000` with `output: "standalone"`
+- `packages/database` — shared Prisma package published internally as `@repo/database`
 
-`next.config.mjs` rewrites `/api/*` to `BACKEND_URL`. Frontend calls e.g. `/api/books`.
-
-## Database (`packages/database`)
-
-Prisma 7.x uses **driver adapters** (`@prisma/adapter-pg` + `pg` pool), not the legacy binary/query engine. Client is created via `createPrismaClient()` factory in `index.ts`. Undici polyfills fetch for Prisma.
-
-Run `npm run generate` (alias for `prisma generate`) from `packages/database/` after schema changes. Backend imports `@repo/database` via tsconfig paths.
-
-Schema enums: `BookStatus`, `BookType`, `BookStyle` — use these, not raw strings.
+Frontend API calls go through `apps/frontend/next.config.mjs`, which rewrites `/api/:path*` to `BACKEND_URL`.
 
 ## Commands
 
 | Scope | Command | Notes |
 |-------|---------|-------|
+| Root | `npm run dev` | `turbo run dev` |
 | Root | `npm run build` | `turbo run build` |
-| Root | `npm run dev` | `turbo run dev` (persistent, hot-reloading in Docker dev) |
 | Root | `npm run lint` | `turbo run lint` |
+| Root | `npm run typecheck` | `turbo run typecheck` |
+| Root | `npm run test` | `turbo run test` |
+| Root | `npm run db:generate` | Runs Prisma generate in `packages/database` |
+| Root | `npm run db:migrate:dev` | Runs `prisma migrate dev` in `packages/database` |
+| Root | `npm run db:push` | Runs `prisma db push` in `packages/database` |
 | Root | `npm run format` | Prettier on `*.{ts,tsx,md}` |
-| `apps/backend` | `npm run test` | Jest, `*.spec.ts` in `src/` |
-| `apps/backend` | `npm run start:dev` | `nest start --watch` |
+| `apps/backend` | `npm run start:dev` | Nest watch mode |
+| `apps/backend` | `npm run test` | Jest, `src/**/*.spec.ts` |
+| `apps/frontend` | `npm run test` | Vitest |
+| `apps/frontend` | `npm run test:e2e` | Playwright |
 | `packages/database` | `npm run generate` | `prisma generate` |
+| `packages/database` | `npm run migrate:dev` | Prisma dev migration |
+| `packages/database` | `npm run db:push` | Push schema without migration |
 
-Turbo builds run `build` on dependencies first (e.g., database → backend).
+Turbo `build` depends on upstream package builds first.
 
-## Key Features & Hardening
+## Database
 
-- **Mock Auth**: Backend has `MockAuthGuard` enabled via `MOCK_AUTH='true'`. It injects a mock user into requests for development.
-- **Queue Management**: Shared `QueueModule` (`apps/backend/src/queue/`) centralizes BullMQ registrations.
-- **Database Integrity**: Prisma schema includes `@@unique([bookId, pageNumber])` and mandatory `onDelete: Cascade` on all relations.
-- **PDF Generation**: Sequential async loop in `PdfService` handles image fetching and streaming safely.
-- **Docker Dev Mode**: `docker-compose.dev.yml` supports hot-reloading with host volumes.
+Prisma lives in `packages/database/prisma/schema.prisma`.
+
+- Prisma 7 uses the `@prisma/adapter-pg` driver adapter, not the legacy query engine flow.
+- The shared client is created via `createPrismaClient()` in `packages/database/index.ts`.
+- Run `npm run generate` in `packages/database` after schema changes.
+- Backend code imports Prisma types and enums from `@repo/database`.
+
+Current schema enums used across the app:
+
+- `BookStatus`
+- `BookType`
+- `BookStyle`
+- `ReasoningEffort`
+- `Tone`
+
+Use Prisma enums instead of raw strings whenever types are available.
+
+Important data rules already encoded in schema:
+
+- `Page` has `@@unique([bookId, pageNumber])`
+- All core relations use `onDelete: Cascade`
+- `User` stores default generation preferences via `preferredLlmModel` and `preferredReasoningEffort`
+
+## Frontend Routes
+
+Authenticated app routes live under `apps/frontend/src/app/(app)/`:
+
+- `/` — dashboard and library filters
+- `/books/new` — create flow
+- `/books/[id]` — detail route that redirects by book status
+- `/books/[id]/generating` — polling/loading state
+- `/books/[id]/preview` — review and approval flow
+- `/profiles` — child profiles
+- `/settings` — generation settings
+
+Auth-facing routes live under `apps/frontend/src/app/(auth)/`:
+
+- `/login`
+- `/signup`
+
+There is also `/logout`, which clears the current frontend mock session.
+
+## Routing Rules
+
+Breadcrumbs are generated from `navItems` plus pathname fallback in `PageBreadcrumb.tsx`.
+
+When adding a page under `apps/frontend/src/app/(app)/`:
+
+- add a matching `navItems` entry in `apps/frontend/src/components/app-shell/nav-items.ts` if it belongs in sidebar navigation
+- keep breadcrumb labels aligned with the `navItems` label when possible
+- preserve the existing status-based routing for `/books/[id]`
+
+`/books/[id]` is not a normal detail page entry point. It redirects:
+
+- `DRAFT`, `GENERATING`, `FAILED` -> `/books/[id]/generating`
+- `REVIEW` -> `/books/[id]/preview`
+- completed books stay on the detail page
+
+If you touch this flow, update the corresponding route tests.
+
+## Backend Features
+
+Current backend modules include:
+
+- `book` — list, create, preview, edit, regenerate, approve, PDF lookup
+- `book-generation` — BullMQ worker/processor for generation jobs
+- `settings` — generation defaults for new books
+- `child-profile`
+- `story-library`
+- `payment`
+- `pdf`
+- `storage`
+- `queue`
+- `ai`
+
+Current book HTTP surface in `BookController`:
+
+- `GET /books`
+- `POST /books/generate`
+- `GET /books/:id`
+- `GET /books/:id/preview`
+- `PATCH /books/:id/pages/:pageNumber`
+- `PATCH /books/:id/regenerate`
+- `POST /books/:id/approve`
+- `GET /books/:id/pdf`
+
+Generation settings HTTP surface:
+
+- `GET /settings/generation`
+- `PATCH /settings/generation`
+
+## Current Product State
+
+The app is still a prototype, but the current flow is more advanced than the original scaffold:
+
+- New books are created with user-level generation defaults and queued for background generation.
+- The frontend has explicit generating, review, failed, and completed states in the book flow.
+- Review/approval is part of the main flow before a book becomes `COMPLETED`.
+- PDF access is a separate backend lookup once a completed book has a stored `pdfUrl`.
+
+## Auth State
+
+Auth is transitional and split between backend and frontend concerns:
+
+- Backend development mode relies on `MockAuthGuard`, which injects a mock user for protected controllers.
+- Frontend still has a local mock auth/session layer in `AuthProvider`, `AuthGuard`, and `src/lib/mock-auth.ts`.
+- `(auth)` and `(app)` route groups are currently enforced by that frontend mock session state.
+
+Do not document auth as finished or real-session-backed. The intended direction is tracked in `backlog.md`: remove frontend mock auth and make the backend the source of truth.
 
 ## Key Quirks
 
-- `storage.service.ts` falls back to `'minioadmin'` credentials when env vars unset (local dev only)
-- `child-profile.controller.ts` and `BookController` are protected by `MockAuthGuard`.
-- `PrismaClient` must be explicitly disconnected on application shutdown via `onModuleDestroy` in `PrismaService`.
+- `StorageService` falls back to `minioadmin` credentials when related env vars are unset. Treat that as local-dev-only behavior.
+- `MockAuthGuard` currently protects books, child profiles, story library, and settings endpoints.
+- `SubscriptionGuard` currently checks a `user-email` request header for prototype subscription gating.
+- `PrismaService` must disconnect explicitly on shutdown via `onModuleDestroy`.
+
+## Styling
+
+Frontend global styles are in `apps/frontend/src/app/globals.css`.
+
+- Tailwind v4-style `@import "tailwindcss";` is already in use.
+- Design tokens and theme variables are defined directly in `globals.css`.
+- The app uses `next/font` with `Inter`, `Newsreader`, and `IBM Plex Mono`.
+
+Preserve the established visual language unless the task is explicitly a redesign.
+
+## Testing
+
+- Backend uses Jest with `ts-jest`
+- Frontend uses Vitest and Testing Library
+- Frontend API mocking uses MSW from `apps/frontend/src/mocks/`
+- Playwright is installed and exposed through `apps/frontend` via `npm run test:e2e`
+
+When changing route behavior, auth flow, or dashboard/book lifecycle logic, update or add frontend specs near the affected route/component.
 
 ## Docker
 
 ```bash
-docker compose up               # Production-like build (standalone)
-docker compose -f docker-compose.dev.yml up  # Dev mode with hot-reloading
+docker compose up
+docker compose -f docker-compose.dev.yml up
 ```
 
-`Dockerfile.backend`: Node 24 Alpine, `turbo run build --filter=backend...`
-`Dockerfile.frontend`: Node 24 Alpine, Next.js `standalone` output.
+- `docker-compose.yml` is the production-like standalone build path
+- `docker-compose.dev.yml` is the hot-reload development path
+- `Dockerfile.backend` and `Dockerfile.frontend` target Node 24 Alpine
 
-## Tailwind CSS
+## Docs
 
-`globals.css` uses `@tailwind` directives (v3 syntax), but no `tailwindcss`/`postcss` packages are installed. Next.js 16 ships with built-in Tailwind v4 support, which uses `@import "tailwindcss"`. This is a known mismatch — fix if CSS changes are needed.
+Planning and design artifacts live under `docs/superpowers/`.
 
-## Testing
+- `specs/` holds design docs
+- `plans/` holds implementation plans
 
-- Backend: Jest with `ts-jest`. Tests in `src/`. MSW not used in backend.
-- Frontend: Vitest + Testing Library are configured. Tests live in `src/**/*.spec.ts(x)`.
-- Frontend: Uses MSW (`src/mocks/`) for API mocking.
-- Frontend auth flow currently has coverage for mock session storage, provider state, route guards, and auth pages.
-- No committed e2e suite yet, but Playwright is installed and can be used for local smoke-checks.
-
-## Project State
-
-Prototype stage. Mock Auth implemented, Core generation logic stable, Docker setup complete. Prisma migration flow requires `prisma db push` or manual migrations.
-
-Frontend auth currently uses a local mock session in `localStorage` with guarded `(auth)` and `(app)` route groups. Follow-up auth work is tracked in `backlog.md`.
+Recent docs already cover the current auth and book-creation direction. Check those before inventing new patterns for the same area.
 
 ## Git
 
-Use git naming convention https://www.conventionalcommits.org/en/v1.0.0/ for every commit
+Use Conventional Commits for every commit:
+
+- https://www.conventionalcommits.org/en/v1.0.0/
+
+Group logically related changes together. Avoid mixing unrelated frontend, backend, and docs work in the same commit unless they are part of one cohesive change.
