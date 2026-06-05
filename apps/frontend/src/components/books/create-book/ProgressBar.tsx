@@ -1,7 +1,5 @@
 'use client';
 
-import { cn } from '@/lib/utils';
-
 type ProgressBarProps = {
   currentStep: number;
   totalSteps: number;
@@ -16,32 +14,21 @@ export function ProgressBar({
   percent,
 }: ProgressBarProps) {
   return (
-    <div className="rounded-2xl border border-ab-border bg-ab-card p-3.5">
+    <div className="rounded-2xl border border-border bg-card p-3.5 h-[82px]">
       <div className="flex items-center justify-between">
-        <span
-          className="font-mono text-[13px] font-extrabold tracking-wide text-ab-text"
-        >
+        <span className="font-sans text-[13px] font-extrabold text-foreground">
           Book creation progress
         </span>
-        <span className="text-[12px] font-bold text-ab-primary">
+        <span className="font-sans text-[12px] font-bold text-primary">
           {percent}%
         </span>
       </div>
 
-      <div className="mt-2.5 h-3 rounded-lg bg-ab-surface ring-1 ring-ab-border overflow-hidden">
+      <div className="mt-2.5 h-3 rounded-lg bg-input ring-1 ring-border overflow-hidden">
         <div
-          className="h-full rounded-lg bg-ab-primary transition-all duration-500 ease-in-out"
+          className="h-full rounded-lg bg-primary transition-all duration-500 ease-in-out"
           style={{ width: `${Math.min(Math.max(percent, 0), 100)}%` }}
         />
-      </div>
-
-      <div className="mt-2 flex items-center justify-between">
-        <span className="text-[11px] font-bold text-ab-muted">
-          Current: {stepLabel}
-        </span>
-        <span className="text-[11px] font-bold text-ab-muted">
-          {currentStep} of {totalSteps}
-        </span>
       </div>
     </div>
   );

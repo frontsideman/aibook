@@ -1,6 +1,4 @@
-'use client';
-
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+"use client";
 
 type PaginationProps = {
   page: number;
@@ -23,7 +21,10 @@ export default function Pagination({
   const end = Math.min(page * itemsPerPage, totalItems ?? page * itemsPerPage);
 
   return (
-    <div className="mt-4 flex items-center justify-between" data-testid="pagination">
+    <div
+      className="flex h-12 items-center justify-between"
+      data-testid="pagination"
+    >
       <p className="text-[13px] text-muted-foreground">
         {totalItems != null
           ? `Showing ${start}-${end} of ${totalItems} books`
@@ -34,10 +35,9 @@ export default function Pagination({
           type="button"
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
-          className="inline-flex h-9 items-center gap-1 rounded-[9px] border border-border bg-surface px-[11px] text-sm font-bold text-foreground transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-30"
+          className="inline-flex h-9 items-center rounded-[9px] border border-border bg-card px-[11px] text-[13px] font-bold text-foreground transition hover:bg-[var(--dashboard-table-header)] disabled:cursor-not-allowed disabled:opacity-30"
         >
-          <ChevronLeft className="h-4 w-4" aria-hidden="true" />
-          <span className="sr-only">Previous</span>
+          Prev
         </button>
         {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
           <button
@@ -46,8 +46,8 @@ export default function Pagination({
             onClick={() => onPageChange(p)}
             className={`inline-flex h-9 items-center rounded-[9px] px-[11px] text-sm font-bold transition ${
               p === page
-                ? 'bg-primary text-primary-foreground'
-                : 'border border-border bg-surface text-foreground hover:bg-secondary'
+                ? "bg-primary text-primary-foreground"
+                : "border border-border bg-surface text-foreground hover:bg-[var(--dashboard-table-header)]"
             }`}
           >
             {p}
@@ -57,10 +57,9 @@ export default function Pagination({
           type="button"
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages}
-          className="inline-flex h-9 items-center gap-1 rounded-[9px] border border-border bg-surface px-[11px] text-sm font-bold text-foreground transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-30"
+          className="inline-flex h-9 items-center rounded-[9px] border border-border bg-card px-[11px] text-[13px] font-bold text-foreground transition hover:bg-[var(--dashboard-table-header)] disabled:cursor-not-allowed disabled:opacity-30"
         >
-          <ChevronRight className="h-4 w-4" aria-hidden="true" />
-          <span className="sr-only">Next</span>
+          Next
         </button>
       </div>
     </div>

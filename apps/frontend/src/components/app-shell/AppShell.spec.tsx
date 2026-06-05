@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
 import { AppShell } from './AppShell';
+import { HeaderProvider } from './HeaderContext';
 import { navItems } from './nav-items';
 
 vi.mock('next/navigation', () => ({
@@ -11,9 +12,11 @@ vi.mock('next/navigation', () => ({
 describe('AppShell', () => {
   it('renders MVP navigation links', () => {
     render(
-      <AppShell>
-        <div>content</div>
-      </AppShell>,
+      <HeaderProvider>
+        <AppShell>
+          <div>content</div>
+        </AppShell>
+      </HeaderProvider>,
     );
 
     for (const item of navItems) {

@@ -245,3 +245,51 @@ describe("ProfilesPage — side panel", () => {
     expect(screen.queryByText(/Delete.*profile\?/)).not.toBeInTheDocument();
   });
 });
+
+describe("ProfilesPage — layout copy", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+    global.fetch = originalFetch;
+  });
+
+  it("renders the Pencil-aligned page heading copy", async () => {
+    mockFetch((url) => {
+      if (url === "/api/child-profiles" || url.startsWith("/api/child-profiles?")) {
+        return {
+          ok: true,
+          json: async () => mockProfiles,
+        } as Response;
+      }
+      return { ok: true, json: async () => ({}) } as Response;
+    });
+
+    render(<ProfilesPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("PERSONALIZATION")).toBeInTheDocument();
+    });
+    expect(
+      screen.getByText("Manage reusable child details for personalized book generation."),
+    ).toBeInTheDocument();
+    expect(screen.getByTestId("profiles-grid")).toBeInTheDocument();
+  });
+
+  it("renders the Pencil-aligned empty state copy", async () => {
+    mockFetch((url) => {
+      if (url === "/api/child-profiles" || url.startsWith("/api/child-profiles?")) {
+        return {
+          ok: true,
+          json: async () => [],
+        } as Response;
+      }
+      return { ok: true, json: async () => ({}) } as Response;
+    });
+
+    render(<ProfilesPage />);
+
+    expect(await screen.findByText("No profiles yet")).toBeInTheDocument();
+    expect(
+      screen.getByText("Create a child profile to reuse details across book generation."),
+    ).toBeInTheDocument();
+  });
+});

@@ -9,13 +9,9 @@ type GenerationSettings = {
   reasoningEffort: string;
 };
 
-const MODEL_OPTIONS = [
-  { value: "openai:gpt-5.4-mini", label: "GPT-5.4 Mini" },
-];
+const MODEL_OPTIONS = [{ value: "openai:gpt-5.4-mini", label: "GPT-5.4 Mini" }];
 
-const REASONING_EFFORT_OPTIONS = [
-  { value: "MEDIUM", label: "Medium" },
-];
+const REASONING_EFFORT_OPTIONS = [{ value: "MEDIUM", label: "Medium" }];
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<GenerationSettings>({
@@ -38,7 +34,8 @@ export default function SettingsPage() {
         const data = (await response.json()) as Partial<GenerationSettings>;
         setSettings({
           llmModel: data.llmModel || MODEL_OPTIONS[0].value,
-          reasoningEffort: data.reasoningEffort || REASONING_EFFORT_OPTIONS[0].value,
+          reasoningEffort:
+            data.reasoningEffort || REASONING_EFFORT_OPTIONS[0].value,
         });
       })
       .catch(() => {
@@ -76,8 +73,12 @@ export default function SettingsPage() {
 
   return (
     <div className="max-w-3xl">
-      <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">Workspace</p>
-      <h1 className="section-heading !text-3xl mb-6">Settings</h1>
+      <p className="font-mono text-xs font-extrabold uppercase text-muted-foreground">
+        Workspace
+      </p>
+      <h1 className="mt-1 mb-6 font-display text-5xl font-semibold text-foreground">
+        Settings
+      </h1>
 
       <div className="paper-card p-6">
         <h2 className="mb-2 text-xl font-semibold">Generation Settings</h2>
@@ -85,10 +86,20 @@ export default function SettingsPage() {
           Set the model and reasoning effort used for new books.
         </p>
 
-        {loading ? <p className="text-sm text-muted-foreground">Loading generation settings...</p> : null}
-        {loadError ? <p className="mb-4 text-sm text-red-600">{loadError}</p> : null}
-        {saveError ? <p className="mb-4 text-sm text-red-600">{saveError}</p> : null}
-        {saveSuccess ? <p className="mb-4 text-sm text-emerald-700">{saveSuccess}</p> : null}
+        {loading ? (
+          <p className="text-sm text-muted-foreground">
+            Loading generation settings...
+          </p>
+        ) : null}
+        {loadError ? (
+          <p className="mb-4 text-sm text-red-600">{loadError}</p>
+        ) : null}
+        {saveError ? (
+          <p className="mb-4 text-sm text-red-600">{saveError}</p>
+        ) : null}
+        {saveSuccess ? (
+          <p className="mb-4 text-sm text-emerald-700">{saveSuccess}</p>
+        ) : null}
 
         {!loading ? (
           <form className="space-y-5" onSubmit={handleSave}>
@@ -101,7 +112,10 @@ export default function SettingsPage() {
                 className="h-[44px] w-full rounded-[10px] border border-input bg-input-bg px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input-bg/30"
                 value={settings.llmModel}
                 onChange={(event) =>
-                  setSettings((current) => ({ ...current, llmModel: event.target.value }))
+                  setSettings((current) => ({
+                    ...current,
+                    llmModel: event.target.value,
+                  }))
                 }
               >
                 {MODEL_OPTIONS.map((option) => (
@@ -121,7 +135,10 @@ export default function SettingsPage() {
                 className="h-[44px] w-full rounded-[10px] border border-input bg-input-bg px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input-bg/30"
                 value={settings.reasoningEffort}
                 onChange={(event) =>
-                  setSettings((current) => ({ ...current, reasoningEffort: event.target.value }))
+                  setSettings((current) => ({
+                    ...current,
+                    reasoningEffort: event.target.value,
+                  }))
                 }
               >
                 {REASONING_EFFORT_OPTIONS.map((option) => (

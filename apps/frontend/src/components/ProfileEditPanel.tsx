@@ -70,12 +70,14 @@ export default function ProfileEditPanel({
     setInterestsError(null);
     setSubmitting(true);
     try {
-      onSave({
-        name,
-        age: parseInt(age),
-        gender,
-        interests: parsedInterests,
-      });
+      await Promise.resolve(
+        onSave({
+          name,
+          age: parseInt(age),
+          gender,
+          interests: parsedInterests,
+        }),
+      );
     } finally {
       setSubmitting(false);
     }
@@ -90,14 +92,14 @@ export default function ProfileEditPanel({
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className="relative flex w-full max-w-[420px] flex-col overflow-y-auto bg-card shadow-xl">
-        <div className="flex items-center justify-between p-5 pb-0">
+      <div className="relative flex w-full max-w-[380px] flex-col overflow-y-auto border-l border-border bg-ab-surface shadow-2xl">
+        <div className="flex items-start justify-between gap-4 p-5 pb-0">
           <div>
-            <h2 className="font-display text-[28px] font-semibold text-foreground">
+            <h2 className="font-display text-[32px] font-semibold text-foreground">
               Edit profile
             </h2>
-            <p className="mt-1 text-[13px] text-muted-foreground">
-              Keep details concise and useful for story personalization
+            <p className="mt-1 text-[13px] leading-[1.35] text-muted-foreground">
+              Keep details concise and useful for story personalization.
             </p>
           </div>
           <button
@@ -113,7 +115,7 @@ export default function ProfileEditPanel({
         <form onSubmit={handleSubmit} className="flex flex-1 flex-col p-5">
           <div className="flex flex-1 flex-col gap-4">
             <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-bold text-foreground">
+              <label className="text-[13px] font-extrabold text-foreground">
                 Name
               </label>
               <Input
@@ -121,11 +123,12 @@ export default function ProfileEditPanel({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+                className="h-[44px]"
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-bold text-foreground">
+              <label className="text-[13px] font-extrabold text-foreground">
                 Age
               </label>
               <Input
@@ -136,17 +139,18 @@ export default function ProfileEditPanel({
                 required
                 min={1}
                 max={18}
+                className="h-[44px]"
               />
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-bold text-foreground">
+              <label className="text-[13px] font-extrabold text-foreground">
                 Gender
               </label>
               <select
                 value={gender}
                 onChange={(e) => setGender(e.target.value)}
-                className="h-[44px] w-full min-w-0 rounded-[10px] border border-input bg-input-bg px-3 text-base transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 md:text-sm"
+                className="h-[44px] w-full min-w-0 rounded-[10px] border border-input bg-input-bg px-3 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
               >
                 <option value="male">Boy</option>
                 <option value="female">Girl</option>
@@ -154,12 +158,12 @@ export default function ProfileEditPanel({
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <label className="text-[13px] font-bold text-foreground">
+              <label className="text-[13px] font-extrabold text-foreground">
                 Interests
               </label>
-              <Input
+              <textarea
                 data-testid="interests-input"
-                placeholder="Interests (comma separated)"
+                placeholder="gardens, moon stories, blue cars"
                 value={interests}
                 onChange={(e) => {
                   setInterests(e.target.value);
@@ -170,6 +174,7 @@ export default function ProfileEditPanel({
                   interestsError ? "panel-interests-error" : undefined
                 }
                 className={cn(
+                  "min-h-[82px] w-full resize-none rounded-[10px] border border-input bg-input-bg px-3 py-3 text-sm transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50",
                   interestsError && "border-destructive",
                 )}
               />
@@ -185,18 +190,18 @@ export default function ProfileEditPanel({
             </div>
           </div>
 
-          <div className="mt-6 flex gap-3">
+          <div className="mt-4 flex justify-end gap-2.5">
             <Button
               type="button"
               variant="outline"
-              className="flex-1"
+              className="h-10 rounded-[10px] px-[14px]"
               onClick={onClose}
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="flex-1"
+              className="h-10 rounded-[10px] px-[14px]"
               disabled={submitting}
             >
               Save
@@ -205,22 +210,26 @@ export default function ProfileEditPanel({
         </form>
 
         {isEditing && (
-          <div className="border-t border-border p-5">
-            <h3 className="text-[15px] font-bold text-destructive">
-              Delete {profile.name}&apos;s profile?
-            </h3>
-            <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
-              Once deleted, this profile is unreachable. Future generations will
-              no longer use this profile.
-            </p>
-            <Button
-              type="button"
-              variant="destructive"
-              className="mt-3"
-              onClick={() => onDelete(profile.id)}
-            >
-              Delete
-            </Button>
+          <div className="p-5 pt-0">
+            <div className="rounded-[14px] border border-destructive bg-[#FFF1ED] p-[14px] dark:bg-destructive/10">
+              <h3 className="text-[14px] font-extrabold text-destructive">
+                Delete {profile.name}&apos;s profile?
+              </h3>
+              <p className="mt-1 text-[12px] leading-[1.35] text-foreground">
+                Existing books remain available. Future generations will no
+                longer use this profile.
+              </p>
+              <div className="mt-3 flex justify-end">
+                <Button
+                  type="button"
+                  variant="destructive"
+                  className="h-9 rounded-[10px] px-3"
+                  onClick={() => onDelete(profile.id)}
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
           </div>
         )}
       </div>

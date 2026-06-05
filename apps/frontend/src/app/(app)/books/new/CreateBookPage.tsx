@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { ProgressBar } from '@/components/books/create-book/ProgressBar';
-import { ProfileSelector } from '@/components/books/create-book/ProfileSelector';
-import { StoryStep } from '@/components/books/create-book/StoryStep';
-import { StyleToneSelector } from '@/components/books/create-book/StyleToneSelector';
-import { SummaryPanel } from '@/components/books/create-book/SummaryPanel';
+import { useEffect, useState } from "react";
+import { ProgressBar } from "@/components/books/create-book/ProgressBar";
+import { ProfileSelector } from "@/components/books/create-book/ProfileSelector";
+import { StoryStep } from "@/components/books/create-book/StoryStep";
+import { StyleToneSelector } from "@/components/books/create-book/StyleToneSelector";
+import { SummaryPanel } from "@/components/books/create-book/SummaryPanel";
 
 type ChildProfile = {
   id: string;
@@ -13,19 +13,23 @@ type ChildProfile = {
   age: number;
 };
 
-const STEP_LABELS = ['Select child profile', 'Choose story', 'Select style & tone'];
+const STEP_LABELS = [
+  "Select child profile",
+  "Choose story",
+  "Select style & tone",
+];
 
 export default function CreateBookPage() {
   const [profiles, setProfiles] = useState<ChildProfile[]>([]);
-  const [selectedProfileId, setSelectedProfileId] = useState('');
-  const [storyQuery, setStoryQuery] = useState('');
-  const [selectedStyle, setSelectedStyle] = useState('');
-  const [selectedTone, setSelectedTone] = useState('');
+  const [selectedProfileId, setSelectedProfileId] = useState("");
+  const [storyQuery, setStoryQuery] = useState("");
+  const [selectedStyle, setSelectedStyle] = useState("");
+  const [selectedTone, setSelectedTone] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch('/api/child-profiles')
+    fetch("/api/child-profiles")
       .then((r) => r.json())
       .then((data) => setProfiles(data))
       .catch(() => setProfiles([]));
@@ -35,44 +39,50 @@ export default function CreateBookPage() {
   const currentStep = selectedProfileId ? (storyQuery ? 3 : 2) : 1;
   const percent = Math.round(((currentStep - 1) / 3) * 100);
 
-  const canSubmit = Boolean(selectedProfileId && storyQuery.trim() && !isSubmitting);
+  const canSubmit = Boolean(
+    selectedProfileId && storyQuery.trim() && !isSubmitting,
+  );
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
     setIsSubmitting(true);
-    setError('');
+    setError("");
     try {
-      const response = await fetch('/api/books/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/books/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           childId: selectedProfileId,
-          type: 'AI_ADAPTED',
+          type: "AI_ADAPTED",
           storyTitle: storyQuery.trim(),
           style: selectedStyle || undefined,
           tone: selectedTone || undefined,
         }),
       });
-      if (!response.ok) throw new Error('Failed to create book');
+      if (!response.ok) throw new Error("Failed to create book");
       const { bookId } = (await response.json()) as { bookId: string };
       window.location.href = `/books/${bookId}/generating`;
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : 'Failed to create book');
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : "Failed to create book",
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="mx-auto flex max-w-6xl flex-col gap-5 p-7">
+    <div className="mx-auto flex flex-col gap-5">
       <header className="space-y-2">
-        <span className="font-mono text-xs font-extrabold uppercase text-ab-primary">
-          Book creation
-        </span>
-        <h1 className="font-[var(--font-display)] text-[48px] font-semibold leading-tight text-ab-text">
+        <p className="font-mono text-xs font-extrabold uppercase tracking-[0.18em] text-primary">
+          BOOK CREATION
+        </p>
+        <h1 className="font-display text-[48px] font-semibold text-foreground">
           Create New Book
         </h1>
-        <p className="max-w-2xl text-base text-ab-muted">
+        <p className="max-w-2xl text-base text-muted-foreground">
           Choose the essentials, then generate a first draft for review.
         </p>
       </header>
@@ -105,7 +115,7 @@ export default function CreateBookPage() {
         </main>
 
         <SummaryPanel
-          profileName={selectedProfile?.name ?? '—'}
+          profileName={selectedProfile?.name ?? "—"}
           profileAge={selectedProfile?.age ?? 0}
           storyTitle={storyQuery}
           style={selectedStyle}

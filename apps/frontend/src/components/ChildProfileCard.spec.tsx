@@ -36,10 +36,10 @@ describe("ChildProfileCard", () => {
     expect(screen.getByText("?")).toBeInTheDocument();
   });
 
-  it("renders the Interests label and all chips", () => {
+  it("renders all interest chips without a separate section label", () => {
     render(<ChildProfileCard profile={baseProfile} />);
 
-    expect(screen.getByText("Interests")).toBeInTheDocument();
+    expect(screen.queryByText("Interests")).not.toBeInTheDocument();
     const chips = screen.getByTestId("interest-chips");
     expect(chips).toHaveTextContent("maps");
     expect(chips).toHaveTextContent("kindness");

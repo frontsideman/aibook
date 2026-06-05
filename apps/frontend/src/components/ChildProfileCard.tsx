@@ -40,17 +40,17 @@ export default function ChildProfileCard({
   return (
     <div
       data-testid="child-profile-card"
-      className="paper-card flex h-full flex-col gap-[14px] rounded-[18px] p-[18px]"
+      className="paper-card flex min-h-[220px] flex-col gap-[14px] rounded-[18px] p-[18px]"
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-start gap-3">
         <div
           aria-hidden="true"
-          className="flex h-[54px] w-[54px] shrink-0 items-center justify-center rounded-full bg-primary font-display text-xl font-semibold text-primary-foreground"
+          className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-full bg-accent text-[13px] font-extrabold text-primary-foreground"
         >
           {initials}
         </div>
         <div className="flex min-w-0 flex-1 flex-col gap-[3px]">
-          <h3 className="truncate font-display text-[28px] font-semibold leading-tight text-foreground">
+          <h3 className="truncate font-display text-[26px] font-semibold leading-tight text-foreground">
             {profile.name}
           </h3>
           <p className="text-[13px] text-muted-foreground">{meta}</p>
@@ -58,20 +58,15 @@ export default function ChildProfileCard({
       </div>
 
       {hasInterests && (
-        <div className="flex flex-col gap-2">
-          <span className="text-[13px] font-bold text-muted-foreground">
-            Interests
-          </span>
-          <div className="flex flex-wrap gap-2" data-testid="interest-chips">
-            {profile.interests.map((interest) => (
-              <span
-                key={interest}
-                className="inline-flex h-7 items-center rounded-[14px] border border-border bg-secondary px-[9px] text-[12px] font-bold text-muted-foreground"
-              >
-                {interest}
-              </span>
-            ))}
-          </div>
+        <div className="flex flex-wrap gap-2" data-testid="interest-chips">
+          {profile.interests.map((interest) => (
+            <span
+              key={interest}
+              className="inline-flex h-6 items-center rounded-full border border-border bg-secondary px-[8px] text-[11px] font-extrabold uppercase tracking-[0.03em] text-muted-foreground"
+            >
+              {interest}
+            </span>
+          ))}
         </div>
       )}
 
@@ -80,18 +75,24 @@ export default function ChildProfileCard({
           type="button"
           onClick={onEdit}
           aria-label={`Edit ${profile.name}`}
-          className="inline-flex h-9 items-center gap-[7px] rounded-[9px] border border-border bg-card px-3 text-[13px] font-extrabold text-foreground transition hover:bg-secondary"
+          className="inline-flex h-9 items-center gap-[7px] rounded-[9px] border border-border bg-ab-surface px-3 text-[13px] font-extrabold text-foreground transition hover:bg-secondary"
         >
-          <Pencil className="h-[14px] w-[14px] text-muted-foreground" aria-hidden="true" />
+          <Pencil
+            className="h-[14px] w-[14px] text-muted-foreground"
+            aria-hidden="true"
+          />
           <span>Edit</span>
         </button>
         <button
           type="button"
           onClick={onDelete}
           aria-label={`Delete ${profile.name}`}
-          className="inline-flex h-9 items-center gap-[7px] rounded-[9px] border border-border bg-transparent px-3 text-[13px] font-extrabold text-destructive transition hover:bg-secondary"
+          className="inline-flex h-9 items-center gap-[7px] rounded-[9px] border border-border bg-transparent px-3 text-[13px] font-extrabold text-destructive transition hover:bg-secondary/70"
         >
-          <Trash2 className="h-[14px] w-[14px] text-destructive" aria-hidden="true" />
+          <Trash2
+            className="h-[14px] w-[14px] text-destructive"
+            aria-hidden="true"
+          />
           <span>Delete</span>
         </button>
       </div>
