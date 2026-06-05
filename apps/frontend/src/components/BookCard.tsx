@@ -19,7 +19,12 @@ const statusColors: Record<string, string> = {
 };
 
 export default function BookCard({ id, title, style, status, childName, createdAt }: BookCardProps) {
-  const href = status === 'COMPLETED' ? `/books/${id}` : `/books/${id}/preview`;
+  const href =
+    status === 'COMPLETED'
+      ? `/books/${id}`
+      : status === 'REVIEW'
+        ? `/books/${id}/preview`
+        : `/books/${id}/generating`;
 
   return (
     <Link href={href} className="paper-card block overflow-hidden transition hover:-translate-y-0.5 hover:shadow-lg">

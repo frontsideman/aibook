@@ -8,6 +8,12 @@ type BooksDataTableProps = {
 };
 
 export default function BooksDataTable({ books }: BooksDataTableProps) {
+  const getBookHref = (status: string, id: string) => {
+    if (status === 'COMPLETED') return `/books/${id}`;
+    if (status === 'REVIEW') return `/books/${id}/preview`;
+    return `/books/${id}/generating`;
+  };
+
   return (
     <div className="overflow-x-auto" data-testid="books-grid-mode">
       <table className="w-full min-w-[680px] border-collapse text-sm">
@@ -25,7 +31,7 @@ export default function BooksDataTable({ books }: BooksDataTableProps) {
         </thead>
         <tbody>
           {books.map((book) => {
-            const href = book.status === 'COMPLETED' ? `/books/${book.id}` : `/books/${book.id}/preview`;
+            const href = getBookHref(book.status, book.id);
 
             return (
               <tr key={book.id} className="border-b border-border/60">

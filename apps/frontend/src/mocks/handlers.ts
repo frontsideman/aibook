@@ -55,15 +55,38 @@ export const handlers = [
     return HttpResponse.json({ books: paginated, total, page, totalPages });
   }),
 
-  http.get('/api/books/:id/preview', ({ params }) => {
+  http.get('/api/books/:id', ({ params }) => {
     const { id } = params;
     if (id === 'b1') {
       return HttpResponse.json({
         book: { id: 'b1', title: 'The Brave Little Lion', status: 'COMPLETED', style: 'CARTOON', tone: 'PLAYFUL', pages: mockBookPages },
-        pdfUrl: 'https://example.com/book.pdf',
-        redirectToDetail: true,
       });
     }
+    if (id === 'b2') {
+      return HttpResponse.json({
+        book: { id: 'b2', title: 'Space Adventure', status: 'GENERATING', style: 'PIXAR' },
+      });
+    }
+    if (id === 'b3') {
+      return HttpResponse.json({
+        book: { id: 'b3', title: 'The Magic Forest', status: 'REVIEW', style: 'WATERCOLOR', tone: 'MAGICAL', pages: mockBookPages },
+      });
+    }
+    if (id === 'b4') {
+      return HttpResponse.json({
+        book: { id: 'b4', title: 'Dinosaur Friends', status: 'DRAFT', style: 'CARTOON' },
+      });
+    }
+    if (id === 'b5') {
+      return HttpResponse.json({
+        book: { id: 'b5', title: 'Broken Story', status: 'FAILED', style: 'SKETCH' },
+      });
+    }
+    return new HttpResponse(null, { status: 404 });
+  }),
+
+  http.get('/api/books/:id/preview', ({ params }) => {
+    const { id } = params;
     if (id === 'b3') {
       return HttpResponse.json({
         book: { id: 'b3', title: 'The Magic Forest', status: 'REVIEW', style: 'WATERCOLOR', tone: 'MAGICAL', pages: mockBookPages },

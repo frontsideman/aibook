@@ -23,23 +23,40 @@ export default function PreviewPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch(`/api/books/${params.id}/preview`)
-      .then((r) => {
-        if (!r.ok) throw new Error('Preview not available');
-        return r.json();
-      })
-      .then((json) => {
-        if (json.redirectToDetail) {
+    const loadPreview = async () => {
+      try {
+        const bookResponse = await fetch(`/api/books/${params.id}`);
+        if (!bookResponse.ok) throw new Error('Book not found');
+        const bookJson = await bookResponse.json();
+        const currentBook = bookJson.book ?? bookJson;
+
+        if (currentBook.status !== 'REVIEW') {
+          if (currentBook.status === 'COMPLETED') {
+            router.replace(`/books/${params.id}`);
+            return;
+          }
+          router.replace(`/books/${params.id}/generating`);
+          return;
+        }
+
+        const previewResponse = await fetch(`/api/books/${params.id}/preview`);
+        if (!previewResponse.ok) throw new Error('Preview not available');
+        const previewJson = await previewResponse.json();
+
+        if (previewJson.redirectToDetail) {
           router.replace(`/books/${params.id}`);
           return;
         }
-        setData(json);
-        setLoading(false);
-      })
-      .catch((err) => {
+
+        setData(previewJson);
+      } catch (err: any) {
         setError(err.message);
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    void loadPreview();
   }, [params.id, router]);
 
   const handleSubmitChanges = async () => {
@@ -68,17 +85,30 @@ export default function PreviewPage() {
         setSubmitting(false);
         setTimeout(() => {
           setLoading(true);
-          fetch(`/api/books/${params.id}/preview`)
-            .then((r) => r.json())
-            .then((json) => {
-              if (json.redirectToDetail) {
+          void (async () => {
+            try {
+              const bookResponse = await fetch(`/api/books/${params.id}`);
+              const bookJson = await bookResponse.json();
+              const currentBook = bookJson.book ?? bookJson;
+              if (currentBook.status !== 'REVIEW') {
+                router.replace(`/books/${params.id}/generating`);
+                return;
+              }
+
+              const previewResponse = await fetch(`/api/books/${params.id}/preview`);
+              if (!previewResponse.ok) throw new Error('Preview not available');
+              const previewJson = await previewResponse.json();
+              if (previewJson.redirectToDetail) {
                 router.replace(`/books/${params.id}`);
                 return;
               }
-              setData(json);
+              setData(previewJson);
+            } catch {
+              // Leave the current preview in place if refresh fails.
+            } finally {
               setLoading(false);
-            })
-            .catch(() => setLoading(false));
+            }
+          })();
         }, 2000);
         return;
       }
@@ -116,7 +146,9 @@ export default function PreviewPage() {
             <span className="ml-2 rounded bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary">REVIEW</span>
           </p>
         </div>
-        <a href="/" className="text-sm text-muted-foreground hover:text-foreground">← Back to Dashboard</a>
+        <a href="/" className="text-sm text-muted-foreground hover:text-foreground">
+          ← Back to Dashboard
+        </a>
       </div>
 
       <SpreadViewer pages={data.book.pages} />
@@ -125,7 +157,7 @@ export default function PreviewPage() {
         <h2 className="text-xl font-semibold">Suggest Changes</h2>
         {data.book.pages.map((page) => (
           <div key={page.id} className="paper-card p-4">
-            <div className="flex items-center justify-between mb-2">
+            <div className="mb-2 flex items-center justify-between">
               <span className="text-sm font-medium">Page {page.pageNumber}</span>
               {pageFeedback[page.pageNumber]?.trim() && (
                 <span className="rounded bg-accent/40 px-2 py-0.5 text-xs text-foreground">Pending edit</span>
@@ -153,7 +185,7 @@ export default function PreviewPage() {
       </div>
 
       <div className="paper-card mt-6 p-4">
-        <h3 className="text-sm font-medium mb-2">✏️ Global Changes</h3>
+        <h3 className="mb-2 text-sm font-medium">✏️ Global Changes</h3>
         <textarea
           placeholder="Describe changes that affect the whole book..."
           value={globalFeedback}
@@ -163,7 +195,7 @@ export default function PreviewPage() {
         />
       </div>
 
-      {error && <p className="text-red-600 text-sm mt-4">{error}</p>}
+      {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
 
       <div className="mt-6 flex gap-4">
         <button

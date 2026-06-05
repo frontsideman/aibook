@@ -1,4 +1,4 @@
-export type DashboardBookStatus = 'DRAFT' | 'GENERATING' | 'REVIEW' | 'COMPLETED';
+export type DashboardBookStatus = 'DRAFT' | 'GENERATING' | 'REVIEW' | 'COMPLETED' | 'FAILED';
 export type DashboardBookStyle =
   | 'WATERCOLOR'
   | 'CARTOON'
