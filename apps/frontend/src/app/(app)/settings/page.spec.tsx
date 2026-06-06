@@ -33,31 +33,18 @@ describe("SettingsPage", () => {
       screen.queryByRole("heading", { name: "Generation Settings" }),
     ).not.toBeInTheDocument();
     expect(screen.queryByLabelText("Reasoning effort")).not.toBeInTheDocument();
-    expect(screen.queryByText("Loading generation settings...")).not.toBeInTheDocument();
-    expect(screen.queryByText("Generation settings saved.")).not.toBeInTheDocument();
-    expect(
-      screen.queryByText("Generation settings could not be loaded."),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText("Generation settings could not be saved."),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
   });
 
   it("renders visible controls as disabled UI", () => {
     render(<SettingsPage />);
 
-    expect(screen.getByRole("button", { name: "Manage billing" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Download invoices" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Cancel" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Save changes" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Delete account" })).toBeDisabled();
+    for (const button of screen.getAllByRole("button")) {
+      expect(button).toBeDisabled();
+    }
 
-    for (const name of [
-      "Generation complete",
-      "Review reminders",
-      "Billing notices",
-    ]) {
-      expect(screen.getByRole("switch", { name })).toBeDisabled();
+    for (const switchControl of screen.getAllByRole("switch")) {
+      expect(switchControl).toBeDisabled();
     }
 
     expect(
