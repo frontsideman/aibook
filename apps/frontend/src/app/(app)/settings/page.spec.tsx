@@ -1,75 +1,19 @@
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import SettingsPage from "./page";
 
 const originalFetch = global.fetch;
 
-const mockFetch = (
-  impl: (url: string, init?: RequestInit) => Promise<Response> | Response,
-) => {
-  global.fetch = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
-    const url = typeof input === "string" ? input : input.toString();
-    return Promise.resolve(impl(url, init));
-  }) as unknown as typeof fetch;
-};
-
 describe("SettingsPage", () => {
-  beforeEach(() => {
-    mockFetch((url, init) => {
-      if (url === "/api/settings/generation" && init?.method === "PATCH") {
-        return {
-          ok: true,
-          json: async () => ({}),
-        } as Response;
-      }
-
-      if (url === "/api/settings/generation") {
-        return {
-          ok: true,
-          json: async () => ({
-            llmModel: "openai:gpt-5.4-mini",
-            reasoningEffort: "LOW",
-          }),
-        } as Response;
-      }
-
-      return {
-        ok: true,
-        json: async () => ({}),
-      } as Response;
-    });
-  });
-
   afterEach(() => {
     vi.restoreAllMocks();
     global.fetch = originalFetch;
   });
 
-  it("renders the Pencil settings layout and saves reasoning effort only", async () => {
-    const patchSpy = vi.fn();
-
-    mockFetch((url, init) => {
-      if (url === "/api/settings/generation" && init?.method === "PATCH") {
-        patchSpy(init.body);
-        return {
-          ok: true,
-          json: async () => ({}),
-        } as Response;
-      }
-
-      if (url === "/api/settings/generation") {
-        return {
-          ok: true,
-          json: async () => ({
-            llmModel: "openai:gpt-5.4-mini",
-            reasoningEffort: "LOW",
-          }),
-        } as Response;
-      }
-
-      throw new Error(`Unexpected fetch request: ${url}`);
-    });
+  it("renders the Pencil-inspired static settings layout", () => {
+    const fetchSpy = vi.fn();
+    global.fetch = fetchSpy as unknown as typeof fetch;
 
     render(<SettingsPage />);
 
@@ -78,99 +22,42 @@ describe("SettingsPage", () => {
     expect(
       screen.getByText("Manage subscription, billing, and account preferences."),
     ).toBeInTheDocument();
-    expect(screen.getByText("Loading generation settings...")).toBeInTheDocument();
 
-    expect(await screen.findByText("openai:gpt-5.4-mini")).toBeInTheDocument();
-    expect(screen.getByLabelText("Reasoning effort")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Save changes" })).toBeInTheDocument();
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("does not render generation settings content from the old page", () => {
+    render(<SettingsPage />);
+
+    expect(
+      screen.queryByRole("heading", { name: "Generation Settings" }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("Reasoning effort")).not.toBeInTheDocument();
+    expect(screen.queryByText("Loading generation settings...")).not.toBeInTheDocument();
+    expect(screen.queryByText("Generation settings saved.")).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Generation settings could not be loaded."),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText("Generation settings could not be saved."),
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders visible controls as disabled UI", () => {
+    render(<SettingsPage />);
 
     expect(screen.getByRole("button", { name: "Manage billing" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Download invoices" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Cancel" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Save changes" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Delete account" })).toBeDisabled();
 
-    const accountPreferencesPanel = screen.getByRole("region", {
-      name: "Account preferences",
-    });
-    for (const toggle of within(accountPreferencesPanel).getAllByRole("switch")) {
+    for (const toggle of screen.getAllByRole("switch")) {
       expect(toggle).toBeDisabled();
     }
 
     expect(
-      screen.getByText("This model is managed by the backend environment."),
-    ).toBeInTheDocument();
-    expect(screen.queryByLabelText("Model")).not.toBeInTheDocument();
-
-    fireEvent.change(screen.getByLabelText("Reasoning effort"), {
-      target: { value: "MEDIUM" },
-    });
-
-    fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
-
-    await waitFor(() => {
-      expect(patchSpy).toHaveBeenCalledTimes(1);
-      expect(JSON.parse(String(patchSpy.mock.calls[0][0]))).toEqual({
-        reasoningEffort: "MEDIUM",
-      });
-      expect(screen.getByText("Generation settings saved.")).toBeInTheDocument();
-    });
-  });
-
-  it("keeps the Pencil page visible when loading generation settings fails", async () => {
-    mockFetch((url) => {
-      if (url === "/api/settings/generation") {
-        return {
-          ok: false,
-          json: async () => ({}),
-        } as Response;
-      }
-
-      throw new Error(`Unexpected fetch request: ${url}`);
-    });
-
-    render(<SettingsPage />);
-
-    expect(screen.getByText("ACCOUNT")).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: "Settings" })).toBeInTheDocument();
-    expect(screen.getByText("Loading generation settings...")).toBeInTheDocument();
-    expect(await screen.findByText("Generation settings could not be loaded.")).toBeInTheDocument();
-    expect(screen.getByText("Manage subscription, billing, and account preferences.")).toBeInTheDocument();
-  });
-
-  it("shows save errors inline in the account preferences panel", async () => {
-    mockFetch((url, init) => {
-      if (url === "/api/settings/generation" && init?.method === "PATCH") {
-        return {
-          ok: false,
-          json: async () => ({}),
-        } as Response;
-      }
-
-      if (url === "/api/settings/generation") {
-        return {
-          ok: true,
-          json: async () => ({
-            llmModel: "openai:gpt-5.4-mini",
-            reasoningEffort: "MEDIUM",
-          }),
-        } as Response;
-      }
-
-      throw new Error(`Unexpected fetch request: ${url}`);
-    });
-
-    render(<SettingsPage />);
-
-    await screen.findByText("openai:gpt-5.4-mini");
-    const accountPreferencesPanel = screen.getByRole("region", {
-      name: "Account preferences",
-    });
-    fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
-
-    expect(
-      await within(accountPreferencesPanel).findByText(
-        "Generation settings could not be saved.",
-      ),
-    ).toBeInTheDocument();
+      screen.getByRole("textbox", { name: "Confirm account deletion" }),
+    ).toBeDisabled();
   });
 });
