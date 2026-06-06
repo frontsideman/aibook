@@ -14,8 +14,4 @@ export class AiService {
   async generateStory(prompt: string, options: StoryGenerationOptions): Promise<string> {
     return this.aiProvider.generateStory(prompt, options);
   }
-
-  async generateImage(prompt: string): Promise<string> {
-    return this.aiProvider.generateImage(prompt);
-  }
 }

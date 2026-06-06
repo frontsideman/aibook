@@ -10,7 +10,6 @@ describe('AiService', () => {
   beforeEach(async () => {
     mockProvider = {
       generateStory: jest.fn().mockResolvedValue('Once upon a time...'),
-      generateImage: jest.fn().mockResolvedValue('https://placeholder.com/image.png'),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -39,12 +38,5 @@ describe('AiService', () => {
     const result = await service.generateStory(prompt, options);
     expect(result).toBe('Once upon a time...');
     expect(mockProvider.generateStory).toHaveBeenCalledWith(prompt, options);
-  });
-
-  it('should call generateImage on the provider', async () => {
-    const prompt = 'a brave little cat';
-    const result = await service.generateImage(prompt);
-    expect(result).toBe('https://placeholder.com/image.png');
-    expect(mockProvider.generateImage).toHaveBeenCalledWith(prompt);
   });
 });

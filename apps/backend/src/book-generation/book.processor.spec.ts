@@ -50,7 +50,7 @@ describe('BookProcessor', () => {
       id: bookId,
       title: 'Test Book',
       style: 'WATERCOLOR',
-      llmModel: 'openai:gpt-5.4-mini',
+      llmModel: 'provider:model-mini',
       reasoningEffort: ReasoningEffort.MEDIUM,
       child: { name: 'Alice', age: 5, gender: 'female', interests: ['dinosaurs'] },
     };
@@ -69,13 +69,32 @@ describe('BookProcessor', () => {
     expect(aiService.generateStory).toHaveBeenCalledWith(
       expect.stringContaining('Generate a children\'s book story titled "Test Book"'),
       {
-        model: 'openai:gpt-5.4-mini',
+        model: 'provider:model-mini',
         reasoningEffort: ReasoningEffort.MEDIUM,
       },
     );
-    expect(aiService.generateImage).not.toHaveBeenCalled();
-    expect(prisma.client.illustration.create).not.toHaveBeenCalled();
     expect(prisma.client.page.create).toHaveBeenCalledTimes(3);
+    expect(prisma.client.page.create).toHaveBeenNthCalledWith(1, {
+      data: {
+        bookId,
+        pageNumber: 1,
+        textContent: 'Content 1',
+      },
+    });
+    expect(prisma.client.page.create).toHaveBeenNthCalledWith(2, {
+      data: {
+        bookId,
+        pageNumber: 2,
+        textContent: 'Content 2',
+      },
+    });
+    expect(prisma.client.page.create).toHaveBeenNthCalledWith(3, {
+      data: {
+        bookId,
+        pageNumber: 3,
+        textContent: 'Content 3',
+      },
+    });
     expect(prisma.client.book.update).toHaveBeenNthCalledWith(2, {
       where: { id: bookId },
       data: { status: BookStatus.REVIEW },
@@ -90,7 +109,7 @@ describe('BookProcessor', () => {
       style: 'CARTOON',
       tone: 'PLAYFUL',
       parentComments: 'Make it very funny',
-      llmModel: 'openai:gpt-5.4',
+      llmModel: 'provider:model-standard',
       reasoningEffort: ReasoningEffort.HIGH,
       child: { name: 'Charlie', age: 4, gender: 'male', interests: ['dogs'] },
     };
@@ -105,7 +124,7 @@ describe('BookProcessor', () => {
     expect(aiService.generateStory).toHaveBeenCalledWith(
       expect.stringContaining('playful'),
       expect.objectContaining({
-        model: 'openai:gpt-5.4',
+        model: 'provider:model-standard',
         reasoningEffort: ReasoningEffort.HIGH,
       }),
     );
@@ -121,7 +140,7 @@ describe('BookProcessor', () => {
       id: bookId,
       title: 'Regen Test',
       style: 'CARTOON',
-      llmModel: 'openai:gpt-5.4-nano',
+      llmModel: 'provider:model-nano',
       reasoningEffort: ReasoningEffort.LOW,
       child: { name: 'Dana', age: 6, gender: 'female', interests: ['cats'] },
     };
@@ -136,7 +155,7 @@ describe('BookProcessor', () => {
     expect(aiService.generateStory).toHaveBeenCalledWith(
       expect.stringContaining('Make the ending happier'),
       {
-        model: 'openai:gpt-5.4-nano',
+        model: 'provider:model-nano',
         reasoningEffort: ReasoningEffort.LOW,
       },
     );
@@ -149,7 +168,7 @@ describe('BookProcessor', () => {
       id: bookId,
       title: 'Failure Test',
       style: 'CARTOON',
-      llmModel: 'openai:gpt-5.4-mini',
+      llmModel: 'provider:model-mini',
       reasoningEffort: ReasoningEffort.MEDIUM,
       child: { name: 'Eve', age: 8, gender: 'female', interests: ['space'] },
     };
@@ -170,8 +189,6 @@ describe('BookProcessor', () => {
       data: { status: BookStatus.FAILED },
     });
     expect(prisma.client.page.create).not.toHaveBeenCalled();
-    expect(aiService.generateImage).not.toHaveBeenCalled();
-    expect(prisma.client.illustration.create).not.toHaveBeenCalled();
   });
 
   it('should roll back page writes and mark the book as failed when review transition fails', async () => {
@@ -181,7 +198,7 @@ describe('BookProcessor', () => {
       id: bookId,
       title: 'Rollback Test',
       style: 'CARTOON',
-      llmModel: 'openai:gpt-5.4-mini',
+      llmModel: 'provider:model-mini',
       reasoningEffort: ReasoningEffort.MEDIUM,
       child: { name: 'Finn', age: 7, gender: 'male', interests: ['dragons'] },
     };
@@ -230,8 +247,6 @@ describe('BookProcessor', () => {
       where: { id: bookId },
       data: { status: BookStatus.FAILED },
     });
-    expect(aiService.generateImage).not.toHaveBeenCalled();
-    expect(prisma.client.illustration.create).not.toHaveBeenCalled();
   });
 
   it('should throw when book is not found', async () => {

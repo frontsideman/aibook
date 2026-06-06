@@ -5,6 +5,7 @@ import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { PdfService } from '../pdf/pdf.service';
 import { StorageService } from '../storage/storage.service';
+import { ConfigService } from '@nestjs/config';
 
 export class CreateBookDto {
   childId: string;
@@ -33,7 +34,6 @@ export class RegenerateDto {
   parentFeedback: string;
 }
 
-const DEFAULT_LLM_MODEL = 'openai:gpt-5.4-mini';
 const DEFAULT_REASONING_EFFORT = ReasoningEffort.MEDIUM;
 
 @Injectable()
@@ -43,6 +43,7 @@ export class BookService {
     @InjectQueue('book-generation') private bookQueue: Queue,
     private pdfService: PdfService,
     private storageService: StorageService,
+    private configService: ConfigService,
   ) {}
 
   async findAll(params: { skip?: number; take?: number; where?: any }) {
@@ -74,17 +75,17 @@ export class BookService {
     const user = await this.prisma.client.user.findUnique({
       where: { id: userId },
       select: {
-        preferredLlmModel: true,
         preferredReasoningEffort: true,
       },
     });
+    const activeModel = this.configService.getOrThrow('LLM_MODEL_NAME');
 
     const book = await this.prisma.client.book.create({
       data: {
         title: dto.storyTitle || (dto.userContent ? dto.userContent.slice(0, 50) : 'New Book'),
         type: dto.type,
         style: dto.style,
-        llmModel: user?.preferredLlmModel ?? DEFAULT_LLM_MODEL,
+        llmModel: activeModel,
         reasoningEffort: user?.preferredReasoningEffort ?? DEFAULT_REASONING_EFFORT,
         tone: dto.tone,
         parentComments: dto.parentComments,

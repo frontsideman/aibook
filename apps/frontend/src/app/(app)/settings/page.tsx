@@ -9,13 +9,11 @@ type GenerationSettings = {
   reasoningEffort: string;
 };
 
-const MODEL_OPTIONS = [{ value: "openai:gpt-5.4-mini", label: "GPT-5.4 Mini" }];
-
 const REASONING_EFFORT_OPTIONS = [{ value: "MEDIUM", label: "Medium" }];
 
 export default function SettingsPage() {
   const [settings, setSettings] = useState<GenerationSettings>({
-    llmModel: MODEL_OPTIONS[0].value,
+    llmModel: "",
     reasoningEffort: REASONING_EFFORT_OPTIONS[0].value,
   });
   const [loading, setLoading] = useState(true);
@@ -33,7 +31,7 @@ export default function SettingsPage() {
 
         const data = (await response.json()) as Partial<GenerationSettings>;
         setSettings({
-          llmModel: data.llmModel || MODEL_OPTIONS[0].value,
+          llmModel: data.llmModel || "Unknown",
           reasoningEffort:
             data.reasoningEffort || REASONING_EFFORT_OPTIONS[0].value,
         });
@@ -53,10 +51,11 @@ export default function SettingsPage() {
     setSaveSuccess("");
 
     try {
+      const payload = { reasoningEffort: settings.reasoningEffort };
       const response = await fetch("/api/settings/generation", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(settings),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
@@ -83,7 +82,8 @@ export default function SettingsPage() {
       <div className="paper-card p-6">
         <h2 className="mb-2 text-xl font-semibold">Generation Settings</h2>
         <p className="mb-6 text-sm text-muted-foreground">
-          Set the model and reasoning effort used for new books.
+          The model is set by the backend environment. Reasoning effort is
+          still user-configurable for new books.
         </p>
 
         {loading ? (
@@ -104,26 +104,14 @@ export default function SettingsPage() {
         {!loading ? (
           <form className="space-y-5" onSubmit={handleSave}>
             <div className="space-y-2">
-              <label htmlFor="llm-model" className="text-sm font-medium">
-                Model
-              </label>
-              <select
-                id="llm-model"
-                className="h-[44px] w-full rounded-[10px] border border-input bg-input-bg px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 dark:bg-input-bg/30"
-                value={settings.llmModel}
-                onChange={(event) =>
-                  setSettings((current) => ({
-                    ...current,
-                    llmModel: event.target.value,
-                  }))
-                }
-              >
-                {MODEL_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+              <p className="text-sm font-medium">Model</p>
+              <div className="rounded-[10px] border border-input bg-input-bg px-3 py-2 text-sm dark:bg-input-bg/30">
+                {settings.llmModel || "Unknown"}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                This value comes from `LLM_MODEL_NAME` and cannot be changed
+                here.
+              </p>
             </div>
 
             <div className="space-y-2">

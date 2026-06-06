@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { AiService } from './ai.service';
 import { AI_PROVIDER_TOKEN } from './ai.provider.interface';
-import { MockAiService } from './mock-ai.service';
+import { LlmGateway } from './llm.gateway';
 
 @Module({
   providers: [
     AiService,
     {
       provide: AI_PROVIDER_TOKEN,
-      useClass: MockAiService,
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => new LlmGateway(configService),
     },
   ],
   exports: [AiService],

@@ -1,20 +1,21 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { ReasoningEffort } from '@repo/database';
 import { PrismaService } from '../prisma.service';
 
-const DEFAULT_LLM_MODEL = 'openai:gpt-5.4-mini';
 const DEFAULT_REASONING_EFFORT = ReasoningEffort.MEDIUM;
-const LLM_MODEL_PATTERN = /^[a-z0-9][a-z0-9-]*:[a-z0-9][a-z0-9.-]*$/i;
 
 @Injectable()
 export class SettingsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async getGenerationSettings(userId: string) {
     const user = await this.prisma.client.user.findUnique({
       where: { id: userId },
       select: {
-        preferredLlmModel: true,
         preferredReasoningEffort: true,
       },
     });
@@ -24,27 +25,22 @@ export class SettingsService {
     }
 
     return {
-      llmModel: user.preferredLlmModel ?? DEFAULT_LLM_MODEL,
+      llmModel: this.getActiveLlmModel(),
       reasoningEffort: user.preferredReasoningEffort ?? DEFAULT_REASONING_EFFORT,
     };
   }
 
-  async updateGenerationSettings(
-    userId: string,
-    input: { llmModel: string; reasoningEffort: ReasoningEffort },
-  ) {
-    this.validateGenerationSettings(input);
+  async updateGenerationSettings(userId: string, input: { reasoningEffort: ReasoningEffort }) {
+    this.validateReasoningEffort(input.reasoningEffort);
 
     let user;
     try {
       user = await this.prisma.client.user.update({
         where: { id: userId },
         data: {
-          preferredLlmModel: input.llmModel.trim(),
           preferredReasoningEffort: input.reasoningEffort,
         },
         select: {
-          preferredLlmModel: true,
           preferredReasoningEffort: true,
         },
       });
@@ -57,20 +53,17 @@ export class SettingsService {
     }
 
     return {
-      llmModel: user.preferredLlmModel,
+      llmModel: this.getActiveLlmModel(),
       reasoningEffort: user.preferredReasoningEffort,
     };
   }
 
-  private validateGenerationSettings(input: {
-    llmModel: string;
-    reasoningEffort: ReasoningEffort;
-  }) {
-    if (typeof input.llmModel !== 'string' || !LLM_MODEL_PATTERN.test(input.llmModel.trim())) {
-      throw new BadRequestException('Invalid llmModel');
-    }
+  private getActiveLlmModel() {
+    return this.configService.getOrThrow<string>('LLM_MODEL_NAME');
+  }
 
-    if (!Object.values(ReasoningEffort).includes(input.reasoningEffort)) {
+  private validateReasoningEffort(reasoningEffort: ReasoningEffort) {
+    if (!Object.values(ReasoningEffort).includes(reasoningEffort)) {
       throw new BadRequestException('Invalid reasoningEffort');
     }
   }

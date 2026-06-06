@@ -6,6 +6,7 @@ import { StorageService } from '../storage/storage.service';
 import { BookStatus, ReasoningEffort } from '@repo/database';
 import { Queue } from 'bullmq';
 import { NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 
 describe('BookService', () => {
   let service: BookService;
@@ -13,6 +14,7 @@ describe('BookService', () => {
   let pdfService: PdfService;
   let storageService: StorageService;
   let queue: Queue;
+  let configService: ConfigService;
 
   const mockPrismaClient = {
     user: {
@@ -36,6 +38,9 @@ describe('BookService', () => {
   const mockPdfService = { generateBookPdf: jest.fn() };
   const mockStorageService = { upload: jest.fn() };
   const mockQueue = { add: jest.fn() };
+  const mockConfigService = {
+    getOrThrow: jest.fn(),
+  };
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -43,6 +48,7 @@ describe('BookService', () => {
       providers: [
         BookService,
         { provide: PrismaService, useValue: mockPrismaService },
+        { provide: ConfigService, useValue: mockConfigService },
         { provide: PdfService, useValue: mockPdfService },
         { provide: StorageService, useValue: mockStorageService },
         { provide: 'BullQueue_book-generation', useValue: mockQueue },
@@ -54,6 +60,7 @@ describe('BookService', () => {
     pdfService = module.get<PdfService>(PdfService);
     storageService = module.get<StorageService>(StorageService);
     queue = module.get<Queue>('BullQueue_book-generation');
+    configService = module.get<ConfigService>(ConfigService);
   });
 
   it('should be defined', () => {
@@ -94,14 +101,15 @@ describe('BookService', () => {
 
       mockPrismaClient.user.findUnique.mockResolvedValue({
         id: userId,
-        preferredLlmModel: 'openai:gpt-5.4',
         preferredReasoningEffort: ReasoningEffort.HIGH,
       });
+      mockConfigService.getOrThrow.mockReturnValue('openai:gpt-5.4.1');
       mockPrismaClient.book.create.mockResolvedValue({ id: 'book-1' });
       mockQueue.add.mockResolvedValue(undefined);
 
       await service.createAndGenerate(dto, userId);
 
+      expect(mockConfigService.getOrThrow).toHaveBeenCalledWith('LLM_MODEL_NAME');
       expect(mockPrismaClient.user.findUnique).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: userId },
@@ -111,7 +119,7 @@ describe('BookService', () => {
       expect(mockPrismaClient.book.create).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({
-            llmModel: 'openai:gpt-5.4',
+            llmModel: 'openai:gpt-5.4.1',
             reasoningEffort: ReasoningEffort.HIGH,
           }),
         }),
@@ -127,6 +135,7 @@ describe('BookService', () => {
       };
 
       mockPrismaClient.user.findUnique.mockResolvedValue(null);
+      mockConfigService.getOrThrow.mockReturnValue('openai:gpt-5.4.1');
       mockPrismaClient.book.create.mockResolvedValue({ id: 'book-1' });
       mockQueue.add.mockResolvedValue(undefined);
 
@@ -135,7 +144,7 @@ describe('BookService', () => {
       expect(mockPrismaClient.book.create).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({
-            llmModel: 'openai:gpt-5.4-mini',
+            llmModel: 'openai:gpt-5.4.1',
             reasoningEffort: ReasoningEffort.MEDIUM,
           }),
         }),

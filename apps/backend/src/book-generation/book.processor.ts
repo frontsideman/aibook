@@ -13,7 +13,7 @@ export class BookProcessor extends WorkerHost {
     super();
   }
 
-  async process(job: Job<{ bookId: string; parentFeedback?: string }>): Promise<any> {
+  async process(job: Job<{ bookId: string; parentFeedback?: string }>): Promise<{ success: true }> {
     const { bookId, parentFeedback } = job.data;
 
     const book = await this.prisma.client.book.findUnique({

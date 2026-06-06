@@ -80,9 +80,9 @@ describe("SettingsPage", () => {
       expect(screen.getByRole("button", { name: "Save settings" })).toBeInTheDocument();
     });
 
-    fireEvent.change(screen.getByLabelText("Model"), {
-      target: { value: "openai:gpt-5.4-mini" },
-    });
+    expect(screen.getByText("openai:gpt-5.4-mini")).toBeInTheDocument();
+    expect(screen.queryByLabelText("Model")).not.toBeInTheDocument();
+
     fireEvent.change(screen.getByLabelText("Reasoning effort"), {
       target: { value: "MEDIUM" },
     });
@@ -92,7 +92,6 @@ describe("SettingsPage", () => {
     await waitFor(() => {
       expect(patchSpy).toHaveBeenCalledTimes(1);
       expect(JSON.parse(String(patchSpy.mock.calls[0][0]))).toEqual({
-        llmModel: "openai:gpt-5.4-mini",
         reasoningEffort: "MEDIUM",
       });
       expect(screen.getByText("Generation settings saved.")).toBeInTheDocument();
