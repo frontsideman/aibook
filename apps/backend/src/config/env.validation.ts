@@ -6,12 +6,38 @@ function getString(value: unknown): string | undefined {
   return trimmed.length > 0 ? trimmed : undefined;
 }
 
+function isAbsoluteHttpUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 export function validateEnv(config: EnvInput): EnvInput {
   const errors: string[] = [];
 
   const databaseUrl = getString(config.DATABASE_URL);
   if (!databaseUrl) {
     errors.push('DATABASE_URL is required');
+  }
+
+  const llmApiUrl = getString(config.LLM_API_URL);
+  if (!llmApiUrl) {
+    errors.push('LLM_API_URL is required');
+  } else if (!isAbsoluteHttpUrl(llmApiUrl)) {
+    errors.push('LLM_API_URL must be a valid absolute http/https URL');
+  }
+
+  const llmApiKey = getString(config.LLM_API_KEY);
+  if (!llmApiKey) {
+    errors.push('LLM_API_KEY is required');
+  }
+
+  const llmModelName = getString(config.LLM_MODEL_NAME);
+  if (!llmModelName) {
+    errors.push('LLM_MODEL_NAME is required');
   }
 
   const redisPort = getString(config.REDIS_PORT);
