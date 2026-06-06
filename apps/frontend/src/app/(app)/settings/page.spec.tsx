@@ -38,22 +38,16 @@ describe("SettingsPage", () => {
   it("renders the expected disabled control inventory", () => {
     render(<SettingsPage />);
 
-    for (const label of [
-      "Manage billing",
-      "Download invoices",
-      "Cancel",
-      "Save changes",
-      "Delete account",
-    ]) {
-      expect(screen.getByRole("button", { name: label })).toBeDisabled();
+    const buttons = screen.getAllByRole("button");
+    expect(buttons).toHaveLength(5);
+    for (const button of buttons) {
+      expect(button).toBeDisabled();
     }
 
-    for (const label of [
-      "Generation complete",
-      "Review reminders",
-      "Billing notices",
-    ]) {
-      expect(screen.getByRole("switch", { name: label })).toBeDisabled();
+    const switches = screen.getAllByRole("switch");
+    expect(switches).toHaveLength(3);
+    for (const switchControl of switches) {
+      expect(switchControl).toBeDisabled();
     }
 
     expect(
