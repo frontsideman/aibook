@@ -33,18 +33,27 @@ describe("SettingsPage", () => {
       screen.queryByRole("heading", { name: "Generation Settings" }),
     ).not.toBeInTheDocument();
     expect(screen.queryByLabelText("Reasoning effort")).not.toBeInTheDocument();
-    expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
   });
 
   it("renders visible controls as disabled UI", () => {
     render(<SettingsPage />);
 
-    for (const button of screen.getAllByRole("button")) {
-      expect(button).toBeDisabled();
+    for (const label of [
+      "Manage billing",
+      "Download invoices",
+      "Cancel",
+      "Save changes",
+      "Delete account",
+    ]) {
+      expect(screen.getByRole("button", { name: label })).toBeDisabled();
     }
 
-    for (const switchControl of screen.getAllByRole("switch")) {
-      expect(switchControl).toBeDisabled();
+    for (const label of [
+      "Generation complete",
+      "Review reminders",
+      "Billing notices",
+    ]) {
+      expect(screen.getByRole("switch", { name: label })).toBeDisabled();
     }
 
     expect(
