@@ -52,9 +52,13 @@ describe("SettingsPage", () => {
     expect(screen.getByRole("button", { name: "Save changes" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Delete account" })).toBeDisabled();
 
-    expect(screen.getByRole("switch", { name: "Generation complete" })).toBeDisabled();
-    expect(screen.getByRole("switch", { name: "Review reminders" })).toBeDisabled();
-    expect(screen.getByRole("switch", { name: "Billing notices" })).toBeDisabled();
+    for (const name of [
+      "Generation complete",
+      "Review reminders",
+      "Billing notices",
+    ]) {
+      expect(screen.getByRole("switch", { name })).toBeDisabled();
+    }
 
     expect(
       screen.getByRole("textbox", { name: "Confirm account deletion" }),
