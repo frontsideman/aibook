@@ -19,7 +19,7 @@ export function StyleToneSelector({
   return (
     <div className="space-y-6">
       <div className="space-y-3">
-        <h2 className="text-[16px] font-extrabold text-ab-text">3. Select style</h2>
+        <h2 className="text-[16px] font-extrabold text-foreground">3. Select style</h2>
         <div className="flex flex-wrap gap-2">
           {STYLES.map((style) => {
             const isSelected = selectedStyle === style;
@@ -30,8 +30,8 @@ export function StyleToneSelector({
                 onClick={() => onStyleChange(style)}
                 className={`rounded-[18px] px-3 py-2 text-[13px] font-extrabold transition-colors ${
                   isSelected
-                    ? 'bg-ab-primary text-white ring-1 ring-ab-primary'
-                    : 'bg-ab-surface text-ab-text ring-1 ring-ab-border hover:ring-ab-primary/30'
+                    ? 'bg-primary text-primary-foreground ring-1 ring-primary'
+                    : 'bg-card text-foreground ring-1 ring-border hover:bg-secondary hover:ring-primary/30'
                 }`}
               >
                 {style}
@@ -42,7 +42,7 @@ export function StyleToneSelector({
       </div>
 
       <div className="space-y-3">
-        <h2 className="text-[16px] font-extrabold text-ab-text">3. Select tone</h2>
+        <h2 className="text-[16px] font-extrabold text-foreground">3. Select tone</h2>
         <div className="flex flex-wrap gap-2">
           {TONES.map((tone) => {
             const isSelected = selectedTone === tone;
@@ -53,8 +53,8 @@ export function StyleToneSelector({
                 onClick={() => onToneChange(tone)}
                 className={`rounded-[18px] px-3 py-2 text-[13px] font-extrabold transition-colors ${
                   isSelected
-                    ? 'bg-ab-primary text-white ring-1 ring-ab-primary'
-                    : 'bg-ab-surface text-ab-text ring-1 ring-ab-border hover:ring-ab-primary/30'
+                    ? 'bg-primary text-primary-foreground ring-1 ring-primary'
+                    : 'bg-card text-foreground ring-1 ring-border hover:bg-secondary hover:ring-primary/30'
                 }`}
               >
                 {tone}

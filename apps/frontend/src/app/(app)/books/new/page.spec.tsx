@@ -116,4 +116,30 @@ describe('CreateBookPage', () => {
 
     expect(await screen.findByText('Failed to create book')).toBeInTheDocument();
   });
+
+  it('uses semantic theme-safe surfaces for selectable cards, chips, and summary panel', async () => {
+    global.fetch = createFetchMock({
+      '/api/child-profiles': {
+        ok: true,
+        json: async () => [{ id: 'p1', name: 'Nina', age: 7 }],
+      } as Response,
+    });
+
+    render(<CreateBookPage />);
+
+    const profileButton = await screen.findByRole('button', { name: /Nina/ });
+    fireEvent.click(profileButton);
+    fireEvent.click(screen.getByRole('button', { name: 'Watercolor' }));
+
+    expect(profileButton).toHaveClass('bg-secondary', 'border-primary');
+    expect(screen.getByRole('button', { name: 'Cartoon' })).toHaveClass(
+      'bg-card',
+      'text-foreground',
+    );
+
+    const summaryHeading = screen.getByRole('heading', { name: 'Summary' });
+    const summaryPanel = summaryHeading.parentElement?.parentElement;
+    expect(summaryPanel).toHaveClass('paper-card');
+    expect(screen.getByText('First Draft').parentElement).toHaveClass('bg-secondary');
+  });
 });

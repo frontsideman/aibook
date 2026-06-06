@@ -13,11 +13,11 @@ export type SummaryPanelProps = {
 
 function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-col gap-1 border-b border-ab-border pb-3">
-      <span className="font-mono text-[11px] font-extrabold uppercase tracking-wide text-ab-muted">
+    <div className="flex flex-col gap-1 border-b border-border pb-3">
+      <span className="font-mono text-[11px] font-extrabold uppercase tracking-wide text-muted-foreground">
         {label}
       </span>
-      <span className="text-[15px] font-bold text-ab-text">{value}</span>
+      <span className="text-[15px] font-bold text-foreground">{value}</span>
     </div>
   );
 }
@@ -33,12 +33,12 @@ export function SummaryPanel({
   onSubmit,
 }: SummaryPanelProps) {
   return (
-    <div className="sticky top-6 flex w-[340px] flex-col gap-5 rounded-[18px] border border-ab-border bg-ab-surface p-5 shadow-[0_12px_24px_#3A281418]">
+    <div className="paper-card sticky top-6 flex w-[340px] flex-col gap-5 rounded-[18px] p-5">
       <div>
-        <h2 className="font-[var(--font-display)] text-[32px] font-semibold text-ab-text">
+        <h2 className="font-[var(--font-display)] text-[32px] font-semibold text-foreground">
           Summary
         </h2>
-        <p className="text-[13px] text-ab-muted">Confirm the choices before generation.</p>
+        <p className="text-[13px] text-muted-foreground">Confirm the choices before generation.</p>
       </div>
 
       <div className="flex flex-col gap-3">
@@ -48,14 +48,14 @@ export function SummaryPanel({
         <SummaryRow label="Tone" value={tone} />
       </div>
 
-      <div className="rounded-[14px] border border-ab-border bg-ab-card p-3.5">
-        <span className="font-mono text-[10px] font-extrabold uppercase tracking-wide text-ab-primary">
+      <div className="rounded-[14px] border border-border bg-secondary p-3.5">
+        <span className="font-mono text-[10px] font-extrabold uppercase tracking-wide text-primary">
           First Draft
         </span>
-        <h3 className="mt-1 font-[var(--font-display)] text-[25px] leading-tight font-semibold text-ab-text">
+        <h3 className="mt-1 font-[var(--font-display)] text-[25px] leading-tight font-semibold text-foreground">
           {storyTitle}
         </h3>
-        <div className="mt-2.5 h-[54px] rounded-[10px] bg-[#E9C989] ring-1 ring-[#C59B58]" />
+        <div className="mt-2.5 h-[54px] rounded-[10px] bg-accent/55 ring-1 ring-primary/35" />
       </div>
 
       <button
@@ -64,10 +64,10 @@ export function SummaryPanel({
         onClick={onSubmit}
         className={`flex items-center justify-center font-extrabold transition-colors ${
           isSubmitting
-            ? 'h-[38px] rounded-[10px] bg-ab-primary text-[14px] text-white'
+            ? 'h-[38px] rounded-[10px] bg-primary text-[14px] text-primary-foreground'
             : canSubmit
-              ? 'h-[46px] rounded-xl bg-ab-primary text-[15px] text-white hover:opacity-90'
-              : 'h-[38px] rounded-[10px] bg-[#E1D6C8] text-[14px] text-[#8D8172]'
+              ? 'h-[46px] rounded-xl bg-primary text-[15px] text-primary-foreground hover:opacity-90'
+              : 'h-[38px] rounded-[10px] bg-secondary text-[14px] text-muted-foreground'
         }`}
       >
         {isSubmitting ? (

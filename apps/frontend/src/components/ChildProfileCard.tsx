@@ -75,7 +75,7 @@ export default function ChildProfileCard({
           type="button"
           onClick={onEdit}
           aria-label={`Edit ${profile.name}`}
-          className="inline-flex h-9 items-center gap-[7px] rounded-[9px] border border-border bg-ab-surface px-3 text-[13px] font-extrabold text-foreground transition hover:bg-secondary"
+          className="inline-flex h-9 items-center gap-[7px] rounded-[9px] border border-border bg-secondary px-3 text-[13px] font-extrabold text-secondary-foreground transition hover:bg-secondary/80"
         >
           <Pencil
             className="h-[14px] w-[14px] text-muted-foreground"

@@ -86,4 +86,14 @@ describe("ChildProfileCard", () => {
       screen.getByRole("button", { name: "Delete Noah" }),
     ).toBeInTheDocument();
   });
+
+  it("uses theme-safe semantic colors for the edit action", () => {
+    render(<ChildProfileCard profile={baseProfile} />);
+
+    expect(screen.getByRole("button", { name: "Edit Noah" })).toHaveClass(
+      "bg-secondary",
+      "text-secondary-foreground",
+      "hover:bg-secondary/80",
+    );
+  });
 });
