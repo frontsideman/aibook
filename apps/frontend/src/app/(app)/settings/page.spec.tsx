@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import SettingsPage from "./page";
@@ -29,7 +29,7 @@ describe("SettingsPage", () => {
           ok: true,
           json: async () => ({
             llmModel: "openai:gpt-5.4-mini",
-            reasoningEffort: "MEDIUM",
+            reasoningEffort: "LOW",
           }),
         } as Response;
       }
@@ -46,7 +46,7 @@ describe("SettingsPage", () => {
     global.fetch = originalFetch;
   });
 
-  it("loads generation settings and saves changes", async () => {
+  it("renders the Pencil settings layout and saves reasoning effort only", async () => {
     const patchSpy = vi.fn();
 
     mockFetch((url, init) => {
@@ -63,7 +63,7 @@ describe("SettingsPage", () => {
           ok: true,
           json: async () => ({
             llmModel: "openai:gpt-5.4-mini",
-            reasoningEffort: "MEDIUM",
+            reasoningEffort: "LOW",
           }),
         } as Response;
       }
@@ -73,21 +73,39 @@ describe("SettingsPage", () => {
 
     render(<SettingsPage />);
 
+    expect(screen.getByText("ACCOUNT")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Settings" })).toBeInTheDocument();
+    expect(
+      screen.getByText("Manage subscription, billing, and account preferences."),
+    ).toBeInTheDocument();
     expect(screen.getByText("Loading generation settings...")).toBeInTheDocument();
-    expect(await screen.findByText("Generation Settings")).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(screen.getByRole("button", { name: "Save settings" })).toBeInTheDocument();
+    expect(await screen.findByText("openai:gpt-5.4-mini")).toBeInTheDocument();
+    expect(screen.getByLabelText("Reasoning effort")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Save changes" })).toBeInTheDocument();
+
+    expect(screen.getByRole("button", { name: "Manage billing" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Download invoices" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Cancel" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Delete account" })).toBeDisabled();
+
+    const accountPreferencesPanel = screen.getByRole("region", {
+      name: "Account preferences",
     });
+    for (const toggle of within(accountPreferencesPanel).getAllByRole("switch")) {
+      expect(toggle).toBeDisabled();
+    }
 
-    expect(screen.getByText("openai:gpt-5.4-mini")).toBeInTheDocument();
+    expect(
+      screen.getByText("This model is managed by the backend environment."),
+    ).toBeInTheDocument();
     expect(screen.queryByLabelText("Model")).not.toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText("Reasoning effort"), {
       target: { value: "MEDIUM" },
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Save settings" }));
+    fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
 
     await waitFor(() => {
       expect(patchSpy).toHaveBeenCalledTimes(1);
@@ -98,7 +116,7 @@ describe("SettingsPage", () => {
     });
   });
 
-  it("shows an error when loading generation settings fails", async () => {
+  it("keeps the Pencil page visible when loading generation settings fails", async () => {
     mockFetch((url) => {
       if (url === "/api/settings/generation") {
         return {
@@ -112,10 +130,14 @@ describe("SettingsPage", () => {
 
     render(<SettingsPage />);
 
+    expect(screen.getByText("ACCOUNT")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Settings" })).toBeInTheDocument();
+    expect(screen.getByText("Loading generation settings...")).toBeInTheDocument();
     expect(await screen.findByText("Generation settings could not be loaded.")).toBeInTheDocument();
+    expect(screen.getByText("Manage subscription, billing, and account preferences.")).toBeInTheDocument();
   });
 
-  it("shows an error when saving generation settings fails", async () => {
+  it("shows save errors inline in the account preferences panel", async () => {
     mockFetch((url, init) => {
       if (url === "/api/settings/generation" && init?.method === "PATCH") {
         return {
@@ -139,12 +161,16 @@ describe("SettingsPage", () => {
 
     render(<SettingsPage />);
 
-    await waitFor(() => {
-      expect(screen.getByRole("button", { name: "Save settings" })).toBeInTheDocument();
+    await screen.findByText("openai:gpt-5.4-mini");
+    const accountPreferencesPanel = screen.getByRole("region", {
+      name: "Account preferences",
     });
+    fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
 
-    fireEvent.click(screen.getByRole("button", { name: "Save settings" }));
-
-    expect(await screen.findByText("Generation settings could not be saved.")).toBeInTheDocument();
+    expect(
+      await within(accountPreferencesPanel).findByText(
+        "Generation settings could not be saved.",
+      ),
+    ).toBeInTheDocument();
   });
 });
