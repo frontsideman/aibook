@@ -24,6 +24,8 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+    env_file:
+      - ./apps/backend/.env
     environment:
       DATABASE_URL: postgresql://user:password@db:5432/aibook?schema=public
       REDIS_HOST: redis

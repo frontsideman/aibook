@@ -10,6 +10,7 @@ import { PaymentModule } from './payment/payment.module';
 import { ChildProfileModule } from './child-profile/child-profile.module';
 import { StoryLibraryModule } from './story-library/story-library.module';
 import { PrismaModule } from './prisma.module';
+import { BACKEND_ENV_FILE_PATH } from './config/env-file-path';
 import { validateEnv } from './config/env.validation';
 import { SettingsModule } from './settings/settings.module';
 
@@ -17,6 +18,7 @@ import { SettingsModule } from './settings/settings.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: BACKEND_ENV_FILE_PATH,
       validate: validateEnv,
     }),
     BullModule.forRoot({
