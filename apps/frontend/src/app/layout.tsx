@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Newsreader, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
-import { MSWProvider } from "@/components/MSWProvider";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -41,10 +40,8 @@ export default function RootLayout({
       <body>
         <ThemeProvider>
           <AuthProvider>
-            <MSWProvider>
-              {children}
-              <Toaster />
-            </MSWProvider>
+            {children}
+            <Toaster />
           </AuthProvider>
         </ThemeProvider>
       </body>
