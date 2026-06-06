@@ -52,9 +52,9 @@ describe("SettingsPage", () => {
     expect(screen.getByRole("button", { name: "Save changes" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Delete account" })).toBeDisabled();
 
-    for (const toggle of screen.getAllByRole("switch")) {
-      expect(toggle).toBeDisabled();
-    }
+    expect(screen.getByRole("switch", { name: "Generation complete" })).toBeDisabled();
+    expect(screen.getByRole("switch", { name: "Review reminders" })).toBeDisabled();
+    expect(screen.getByRole("switch", { name: "Billing notices" })).toBeDisabled();
 
     expect(
       screen.getByRole("textbox", { name: "Confirm account deletion" }),
