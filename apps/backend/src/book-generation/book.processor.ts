@@ -2,6 +2,7 @@ import { Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { PrismaService } from '../prisma.service';
 import { AiService } from '../ai/ai.service';
+import { PromptBuilderService } from './prompt-builder.service';
 import { BookStatus, Prisma } from '@repo/database';
 
 @Processor('book-generation')
@@ -9,6 +10,7 @@ export class BookProcessor extends WorkerHost {
   constructor(
     private readonly prisma: PrismaService,
     private readonly aiService: AiService,
+    private readonly promptBuilder: PromptBuilderService,
   ) {
     super();
   }
@@ -31,24 +33,7 @@ export class BookProcessor extends WorkerHost {
     });
 
     try {
-      const childInterests = (book.child.interests || []).join(', ') || 'no specific interests listed';
-      const storyPrompt = [
-        'You are writing an original children\'s book adaptation.',
-        `Use the classic story titled "${book.title}" as the source tale and rely on your knowledge of that story to recreate its key characters and plot beats.`,
-        `Child profile: ${book.child.name}, a ${book.child.age}-year-old ${book.child.gender} child who likes ${childInterests}.`,
-        `Style: ${book.style.toLowerCase()}.`,
-        book.tone ? `Tone: ${book.tone.toLowerCase()}.` : null,
-        book.parentComments ? `Parent instructions: ${book.parentComments}.` : null,
-        parentFeedback ? `Parent requested changes: ${parentFeedback}. Revise the story accordingly.` : null,
-        'Write a fresh, age-appropriate adaptation that follows the original story structure, but do not copy the source text verbatim.',
-        'Return 3 to 20 pages.',
-        'Format the output strictly as:',
-        'Page 1: ...',
-        'Page 2: ...',
-        'Page 3: ...',
-      ]
-        .filter(Boolean)
-        .join(' ');
+      const storyPrompt = this.promptBuilder.buildPrompt(book, parentFeedback);
 
       const storyText = await this.aiService.generateStory(storyPrompt, {
         model: book.llmModel,

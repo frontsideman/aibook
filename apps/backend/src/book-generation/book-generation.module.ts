@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { BookProcessor } from './book.processor';
+import { PromptBuilderService } from './prompt-builder.service';
 import { AiModule } from '../ai/ai.module';
 import { QueueModule } from '../queue/queue.module';
 
@@ -8,7 +9,7 @@ import { QueueModule } from '../queue/queue.module';
     QueueModule,
     AiModule,
   ],
-  providers: [BookProcessor],
+  providers: [BookProcessor, PromptBuilderService],
   exports: [QueueModule],
 })
 export class BookGenerationModule {}

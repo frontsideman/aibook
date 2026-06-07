@@ -1,11 +1,13 @@
-import { ConfigService } from '@nestjs/config';
 import { ReasoningEffort } from '@repo/database';
 import { LlmGateway } from './llm.gateway';
+import { LlmConfig } from './llm.config';
 
 describe('LlmGateway', () => {
-  const configService = {
-    get: jest.fn(),
-  } as unknown as ConfigService;
+  const config: LlmConfig = {
+    apiUrl: 'https://provider.example.com/chat/completions',
+    apiKey: 'secret-key',
+    modelName: 'storybook-model',
+  };
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -16,18 +18,11 @@ describe('LlmGateway', () => {
       ok: true,
       json: jest.fn().mockResolvedValue({ storyText: 'Once upon a time...' }),
     });
-    const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
+    const gateway = new LlmGateway(config, fetchMock as typeof fetch);
     const options = {
       model: 'openai:gpt-5.4-mini',
       reasoningEffort: ReasoningEffort.MEDIUM,
     };
-
-    jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-      if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
-      if (key === 'LLM_API_KEY') return 'secret-key';
-      if (key === 'LLM_MODEL_NAME') return 'storybook-model';
-      return undefined;
-    });
 
     await gateway.generateStory('A brave little cat', options);
 
@@ -70,14 +65,7 @@ describe('LlmGateway', () => {
           );
         });
       });
-      const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
-
-      jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-        if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
-        if (key === 'LLM_API_KEY') return 'secret-key';
-        if (key === 'LLM_MODEL_NAME') return 'storybook-model';
-        return undefined;
-      });
+      const gateway = new LlmGateway(config, fetchMock as typeof fetch);
 
       const requestPromise = gateway.generateStory('A brave little cat', {
         model: 'storybook-model',
@@ -107,14 +95,7 @@ describe('LlmGateway', () => {
       ok: true,
       json: jest.fn().mockResolvedValue({ storyText: 'Once upon a time...' }),
     });
-    const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
-
-    jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-      if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
-      if (key === 'LLM_API_KEY') return 'secret-key';
-      if (key === 'LLM_MODEL_NAME') return 'storybook-model';
-      return undefined;
-    });
+    const gateway = new LlmGateway(config, fetchMock as typeof fetch);
 
     await gateway.generateStory('A brave little cat', {
       model: 'different-requested-model',
@@ -139,14 +120,7 @@ describe('LlmGateway', () => {
       ok: true,
       json: jest.fn().mockResolvedValue({ storyText: 'Once upon a time...' }),
     });
-    const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
-
-    jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-      if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
-      if (key === 'LLM_API_KEY') return 'secret-key';
-      if (key === 'LLM_MODEL_NAME') return 'storybook-model';
-      return undefined;
-    });
+    const gateway = new LlmGateway(config, fetchMock as typeof fetch);
 
     await expect(
       gateway.generateStory('A brave little cat', {
@@ -165,14 +139,7 @@ describe('LlmGateway', () => {
       statusText: 'Internal Server Error',
       json: jest.fn(),
     });
-    const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
-
-    jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-      if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
-      if (key === 'LLM_API_KEY') return 'secret-key';
-      if (key === 'LLM_MODEL_NAME') return 'storybook-model';
-      return undefined;
-    });
+    const gateway = new LlmGateway(config, fetchMock as typeof fetch);
 
     await expect(
       gateway.generateStory('A brave little cat', {
@@ -189,14 +156,7 @@ describe('LlmGateway', () => {
       ok: true,
       json: jest.fn().mockResolvedValue({}),
     });
-    const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
-
-    jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-      if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
-      if (key === 'LLM_API_KEY') return 'secret-key';
-      if (key === 'LLM_MODEL_NAME') return 'storybook-model';
-      return undefined;
-    });
+    const gateway = new LlmGateway(config, fetchMock as typeof fetch);
 
     await expect(
       gateway.generateStory('A brave little cat', {
@@ -213,14 +173,7 @@ describe('LlmGateway', () => {
       ok: true,
       json: jest.fn().mockResolvedValue({ storyText: '   \n\t  ' }),
     });
-    const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
-
-    jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-      if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
-      if (key === 'LLM_API_KEY') return 'secret-key';
-      if (key === 'LLM_MODEL_NAME') return 'storybook-model';
-      return undefined;
-    });
+    const gateway = new LlmGateway(config, fetchMock as typeof fetch);
 
     await expect(
       gateway.generateStory('A brave little cat', {
@@ -237,14 +190,7 @@ describe('LlmGateway', () => {
       ok: true,
       json: jest.fn().mockResolvedValue({ storyText: 123 }),
     });
-    const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
-
-    jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-      if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
-      if (key === 'LLM_API_KEY') return 'secret-key';
-      if (key === 'LLM_MODEL_NAME') return 'storybook-model';
-      return undefined;
-    });
+    const gateway = new LlmGateway(config, fetchMock as typeof fetch);
 
     await expect(
       gateway.generateStory('A brave little cat', {
@@ -261,14 +207,7 @@ describe('LlmGateway', () => {
       ok: true,
       json: jest.fn().mockRejectedValue(new Error('Unexpected token < in JSON')),
     });
-    const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
-
-    jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-      if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
-      if (key === 'LLM_API_KEY') return 'secret-key';
-      if (key === 'LLM_MODEL_NAME') return 'storybook-model';
-      return undefined;
-    });
+    const gateway = new LlmGateway(config, fetchMock as typeof fetch);
 
     await expect(
       gateway.generateStory('A brave little cat', {
@@ -279,5 +218,4 @@ describe('LlmGateway', () => {
       'LLM provider response invalid: failed to parse JSON response',
     );
   });
-
 });

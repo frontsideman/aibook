@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { BookProcessor } from './book.processor';
+import { PromptBuilderService } from './prompt-builder.service';
 import { PrismaService } from '../prisma.service';
 import { AiService } from '../ai/ai.service';
 import { Job } from 'bullmq';
@@ -23,16 +24,21 @@ describe('BookProcessor', () => {
     generateStory: jest.fn(),
     generateImage: jest.fn(),
   };
+  const mockPromptBuilder = {
+    buildPrompt: jest.fn(),
+  };
 
   beforeEach(async () => {
     jest.clearAllMocks();
     mockPrismaClient.$transaction.mockImplementation(async callback => callback(mockPrismaClient));
+    mockPromptBuilder.buildPrompt.mockReturnValue('test prompt');
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BookProcessor,
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: AiService, useValue: mockAiService },
+        { provide: PromptBuilderService, useValue: mockPromptBuilder },
       ],
     }).compile();
 
@@ -67,16 +73,13 @@ describe('BookProcessor', () => {
       where: { id: bookId },
       data: { status: BookStatus.GENERATING },
     });
+    expect(mockPromptBuilder.buildPrompt).toHaveBeenCalledWith(mockBook, undefined);
     expect(aiService.generateStory).toHaveBeenCalledWith(
-      expect.stringContaining('Use the classic story titled "Test Book" as the source tale'),
+      'test prompt',
       {
         model: 'provider:model-mini',
         reasoningEffort: ReasoningEffort.MEDIUM,
       },
-    );
-    expect(aiService.generateStory).toHaveBeenCalledWith(
-      expect.stringContaining('Style: watercolor.'),
-      expect.any(Object),
     );
     expect(prisma.client.page.create).toHaveBeenCalledTimes(3);
     expect(prisma.client.page.create).toHaveBeenNthCalledWith(1, {
@@ -126,16 +129,13 @@ describe('BookProcessor', () => {
     const job = { data: { bookId } } as Job;
     await processor.process(job);
 
+    expect(mockPromptBuilder.buildPrompt).toHaveBeenCalledWith(mockBook, undefined);
     expect(aiService.generateStory).toHaveBeenCalledWith(
-      expect.stringContaining('playful'),
+      'test prompt',
       expect.objectContaining({
         model: 'provider:model-standard',
         reasoningEffort: ReasoningEffort.HIGH,
       }),
-    );
-    expect(aiService.generateStory).toHaveBeenCalledWith(
-      expect.stringContaining('Make it very funny'),
-      expect.any(Object),
     );
   });
 
@@ -154,11 +154,13 @@ describe('BookProcessor', () => {
     mockAiService.generateStory.mockResolvedValue('Page 1: New content');
     mockPrismaClient.page.create.mockResolvedValue({ id: 'page-1' });
 
-    const job = { data: { bookId, parentFeedback: 'Make the ending happier' } } as Job;
+    const parentFeedback = 'Make the ending happier';
+    const job = { data: { bookId, parentFeedback } } as Job;
     await processor.process(job);
 
+    expect(mockPromptBuilder.buildPrompt).toHaveBeenCalledWith(mockBook, parentFeedback);
     expect(aiService.generateStory).toHaveBeenCalledWith(
-      expect.stringContaining('Make the ending happier'),
+      'test prompt',
       {
         model: 'provider:model-nano',
         reasoningEffort: ReasoningEffort.LOW,
@@ -259,5 +261,7 @@ describe('BookProcessor', () => {
 
     const job = { data: { bookId: 'missing-book' } } as Job;
     await expect(processor.process(job)).rejects.toThrow('Book with id missing-book not found');
+
+    expect(mockPrismaClient.book.update).not.toHaveBeenCalled();
   });
 });

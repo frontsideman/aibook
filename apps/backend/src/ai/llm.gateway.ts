@@ -1,6 +1,5 @@
-import { ConfigService } from '@nestjs/config';
 import { StoryGenerationOptions } from './ai.provider.interface';
-import { getLlmConfig } from './llm.config';
+import { LlmConfig } from './llm.config';
 
 type ProviderResponse = {
   storyText?: string;
@@ -38,7 +37,7 @@ function buildRequestUrl(apiUrl: string) {
 
 export class LlmGateway {
   constructor(
-    private readonly configService: ConfigService,
+    private readonly config: LlmConfig,
     private readonly fetchImpl: typeof fetch = fetch,
   ) {}
 
@@ -46,7 +45,7 @@ export class LlmGateway {
     prompt: string,
     options: StoryGenerationOptions,
   ): Promise<string> {
-    const { apiUrl, apiKey, modelName } = getLlmConfig(this.configService);
+    const { apiUrl, apiKey, modelName } = this.config;
     const requestUrl = buildRequestUrl(apiUrl);
     const abortController = new AbortController();
     const timeoutId = setTimeout(() => abortController.abort(), LLM_REQUEST_TIMEOUT_MS);

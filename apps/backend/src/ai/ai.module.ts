@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { AiService } from './ai.service';
 import { AI_PROVIDER_TOKEN } from './ai.provider.interface';
 import { LlmGateway } from './llm.gateway';
+import { getLlmConfig } from './llm.config';
 
 @Module({
   providers: [
@@ -10,7 +11,10 @@ import { LlmGateway } from './llm.gateway';
     {
       provide: AI_PROVIDER_TOKEN,
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => new LlmGateway(configService),
+      useFactory: (configService: ConfigService) => {
+        const config = getLlmConfig(configService);
+        return new LlmGateway(config);
+      },
     },
   ],
   exports: [AiService],
