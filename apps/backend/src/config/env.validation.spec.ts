@@ -8,6 +8,7 @@ describe('validateEnv', () => {
         LLM_API_URL: 'https://api.example.com',
         LLM_API_KEY: 'secret',
         LLM_MODEL_NAME: 'model',
+        LLM_DEFAULT_PROMPT: 'Write a story',
       }),
     ).not.toThrow();
   });

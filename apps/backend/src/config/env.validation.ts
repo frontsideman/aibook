@@ -40,6 +40,11 @@ export function validateEnv(config: EnvInput): EnvInput {
     errors.push('LLM_MODEL_NAME is required');
   }
 
+  const llmDefaultPrompt = getString(config.LLM_DEFAULT_PROMPT);
+  if (!llmDefaultPrompt) {
+    errors.push('LLM_DEFAULT_PROMPT is required');
+  }
+
   const redisPort = getString(config.REDIS_PORT);
   if (redisPort && Number.isNaN(Number.parseInt(redisPort, 10))) {
     errors.push('REDIS_PORT must be a valid integer');
