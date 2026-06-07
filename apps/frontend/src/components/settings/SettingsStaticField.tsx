@@ -19,20 +19,20 @@ export default function SettingsStaticField({
 
   return (
     <div className={cn("space-y-2", className)}>
-      <p className={cn("text-sm font-medium", isDanger && "text-destructive")}>
+      <label className={cn("text-sm font-medium", isDanger && "text-destructive")}>
         {label}
-      </p>
-      <div
-        role="textbox"
-        aria-readonly="true"
-        aria-disabled="true"
+      </label>
+      <input
+        type="text"
+        disabled
+        readOnly
+        value={value}
+        aria-label={label}
         className={cn(
-          "flex min-h-[44px] items-center rounded-[10px] border border-input bg-input-bg px-3 text-sm text-foreground opacity-80 dark:bg-input-bg/30",
+          "h-[44px] w-full rounded-[10px] border border-input bg-input-bg px-3 text-sm text-foreground opacity-80 outline-none disabled:cursor-not-allowed disabled:opacity-80 dark:bg-input-bg/30",
           isDanger && "border-destructive/30 bg-destructive/5 text-destructive/90",
         )}
-      >
-        {value}
-      </div>
+      />
       {detail ? (
         <p className="text-xs text-muted-foreground">{detail}</p>
       ) : null}

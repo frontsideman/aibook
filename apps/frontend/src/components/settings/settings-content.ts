@@ -1,54 +1,53 @@
 export const subscriptionContent = {
-  label: "Subscription",
-  planName: "Story Starter",
-  detail: "Billed monthly and ready for small teams.",
+  label: "Current plan",
+  planName: "Family Keepsake",
+  detail:
+    "40 generated books per month • final PDF downloads included • renews July 1, 2026",
 } as const;
 
 export const billingContent = {
   title: "Billing",
-  body: "Billing details are shown here as read-only static copy.",
+  body: "Visa ending 4242 • next invoice $19.00 on July 1.",
 } as const;
 
 export const accountFields = [
   {
     label: "Parent name",
-    value: "Avery Reader",
-    detail: "Shown on invoices and account communication.",
+    value: "Alicia Hall",
   },
   {
     label: "Email",
-    value: "avery@example.com",
-    detail: "Used for login and billing notices.",
+    value: "alicia.hall@example.com",
   },
   {
     label: "Default language",
     value: "English",
-    detail: "Applies to new books and alerts.",
   },
 ] as const;
 
 export const notificationRows = [
   {
     title: "Generation complete",
-    description: "Notify me when a book is ready to review.",
+    body: "Email me when a book is ready to review.",
     enabled: true,
   },
   {
     title: "Review reminders",
-    description: "Send reminders when a draft is waiting on feedback.",
+    body: "Send follow-ups when a draft waits too long for approval.",
     enabled: true,
   },
   {
     title: "Billing notices",
-    description: "Alert me when payment receipts or invoice updates are available.",
+    body: "Warn me about renewals, receipts, and payment issues.",
     enabled: false,
   },
 ] as const;
 
 export const dangerZoneContent = {
   title: "Danger zone",
-  body: "Account deletion is presented as disabled static UI in this prototype.",
+  body:
+    "Account deletion removes profiles, generated drafts, review history, and billing access. Final downloaded PDFs remain on your device only.",
   confirmationTitle: "Confirm account deletion",
-  confirmationBody: "Type the confirmation value below before continuing.",
+  confirmationBody: "Type DELETE to confirm. This cannot be undone.",
   confirmationValue: "DELETE",
 } as const;
