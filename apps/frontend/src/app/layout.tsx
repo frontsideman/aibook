@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Newsreader, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import ServiceWorkerCleanup from "@/components/ServiceWorkerCleanup";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -36,10 +37,11 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       className={`${inter.variable} ${newsreader.variable} ${ibmPlexMono.variable} font-sans`}
-    >
+      >
       <body>
         <ThemeProvider>
           <AuthProvider>
+            <ServiceWorkerCleanup />
             {children}
             <Toaster />
           </AuthProvider>

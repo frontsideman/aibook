@@ -18,13 +18,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar
       {...props}
       className={cn(
-        "w-[244px] border-r border-border bg-card",
+        "w-[244px] border-r border-border bg-card md:sticky md:top-0 md:h-screen",
         props.className,
       )}
     >
-      <div className="p-[18px] flex flex-col gap-[18px] h-full">
+      <div className="flex h-full min-h-0 flex-col p-[18px]">
         {/* Brand */}
-        <div className="flex items-center gap-[10px]">
+        <div className="flex shrink-0 items-center gap-[10px]">
           <div className="size-9 rounded-[9px] bg-primary" />
           <span className="font-display text-[27px] font-semibold text-foreground">
             aiBook
@@ -32,11 +32,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </div>
 
         {/* Navigation */}
-        <SidebarContent>
+        <SidebarContent className="min-h-0">
           <nav className="flex flex-col gap-[4px]">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
-              const isCreateBook = item.href === "/books/new";
               return (
                 <Link
                   key={item.href}
@@ -68,33 +67,38 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           </nav>
         </SidebarContent>
 
-        {/* Theme Toggle */}
-        <ThemeToggle />
-
-        {/* Account */}
-        <div className="flex h-[68px] items-center gap-[10px] rounded-xl border border-border bg-secondary p-[12px]">
-          <div className="size-[34px] shrink-0 rounded-full bg-accent" />
-          <div className="flex flex-col gap-[2px]">
-            <span className="text-[13px] font-extrabold text-foreground">
-              Sarah K.
-            </span>
-            <span className="text-[12px] leading-none text-muted-foreground">
-              Family plan
-            </span>
-          </div>
-        </div>
-
-        {/* Logout */}
-        <Link
-          href="/logout"
-          className={cn(
-            "flex h-[42px] w-full items-center gap-[8px] rounded-[10px] border border-border bg-background px-[12px] text-[13px] font-bold text-destructive transition-colors hover:bg-secondary",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-          )}
+        <div
+          data-slot="sidebar-footer"
+          className="mt-auto flex shrink-0 flex-col gap-[18px] pt-[18px]"
         >
-          <LogOut className="size-4 shrink-0" />
-          <span>Logout</span>
-        </Link>
+          {/* Theme Toggle */}
+          <ThemeToggle />
+
+          {/* Account */}
+          <div className="flex h-[68px] items-center gap-[10px] rounded-xl border border-border bg-secondary p-[12px]">
+            <div className="size-[34px] shrink-0 rounded-full bg-accent" />
+            <div className="flex flex-col gap-[2px]">
+              <span className="text-[13px] font-extrabold text-foreground">
+                Sarah K.
+              </span>
+              <span className="text-[12px] leading-none text-muted-foreground">
+                Family plan
+              </span>
+            </div>
+          </div>
+
+          {/* Logout */}
+          <Link
+            href="/logout"
+            className={cn(
+              "flex h-[42px] w-full items-center gap-[8px] rounded-[10px] border border-border bg-background px-[12px] text-[13px] font-bold text-destructive transition-colors hover:bg-secondary",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+            )}
+          >
+            <LogOut className="size-4 shrink-0" />
+            <span>Logout</span>
+          </Link>
+        </div>
 
         <SidebarRail />
       </div>

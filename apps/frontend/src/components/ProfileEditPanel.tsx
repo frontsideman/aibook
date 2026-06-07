@@ -92,11 +92,11 @@ export default function ProfileEditPanel({
         onClick={onClose}
         aria-hidden="true"
       />
-      <div className="relative flex w-full max-w-[380px] flex-col overflow-y-auto border-l border-border bg-ab-surface shadow-2xl">
+      <div className="relative flex w-full max-w-[380px] flex-col overflow-y-auto border-l border-border bg-card shadow-2xl">
         <div className="flex items-start justify-between gap-4 p-5 pb-0">
           <div>
             <h2 className="font-display text-[32px] font-semibold text-foreground">
-              Edit profile
+              {isEditing ? "Edit profile" : "Create profile"}
             </h2>
             <p className="mt-1 text-[13px] leading-[1.35] text-muted-foreground">
               Keep details concise and useful for story personalization.
