@@ -166,7 +166,7 @@ Preserve the established visual language unless the task is explicitly a redesig
 
 - Backend uses Jest with `ts-jest`
 - Frontend uses Vitest and Testing Library
-- Frontend API mocking uses MSW from `apps/frontend/src/mocks/`
+- Runtime MSW-backed API mocking has been removed; the frontend talks to the backend directly via `/api/*` rewrites, and tests mock `fetch` or exercise the backend responses explicitly
 - Playwright is installed and exposed through `apps/frontend` via `npm run test:e2e`
 
 When changing route behavior, auth flow, or dashboard/book lifecycle logic, update or add frontend specs near the affected route/component.
