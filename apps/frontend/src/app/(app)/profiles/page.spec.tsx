@@ -4,9 +4,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import ProfilesPage from "./page";
 
 let searchParamNew: string | null = null;
+const replace = vi.fn();
 vi.mock("next/navigation", () => ({
   useSearchParams: () => ({
     get: (key: string) => (key === "new" ? searchParamNew : null),
+  }),
+  useRouter: () => ({
+    replace,
   }),
 }));
 
@@ -46,6 +50,7 @@ describe("ProfilesPage — form validation", () => {
     vi.restoreAllMocks();
     global.fetch = originalFetch;
     searchParamNew = null;
+    replace.mockReset();
   });
 
   const openForm = () => {
@@ -128,16 +133,27 @@ describe("ProfilesPage — form validation", () => {
 
   it("submits when at least one interest is provided", async () => {
     const postSpy = vi.fn();
+    let profiles = [...mockProfiles];
     mockFetch((url, init) => {
       if (init?.method === "POST" && url === "/api/child-profiles") {
         postSpy(url);
+        profiles = [
+          ...profiles,
+          {
+            id: "new",
+            name: "Sam",
+            age: 6,
+            gender: "male",
+            interests: ["dinosaurs"],
+          },
+        ];
         return {
           ok: true,
           json: async () => ({ id: "new" }),
         } as Response;
       }
       if (url === "/api/child-profiles") {
-        return { ok: true, json: async () => mockProfiles } as Response;
+        return { ok: true, json: async () => profiles } as Response;
       }
       return { ok: true, json: async () => ({}) } as Response;
     });
@@ -156,6 +172,8 @@ describe("ProfilesPage — form validation", () => {
     await waitFor(() => {
       expect(postSpy).toHaveBeenCalledTimes(1);
     });
+
+    expect(await screen.findByText("Sam")).toBeInTheDocument();
   });
 
   it("clears the error when the user types in the interests field", async () => {
@@ -196,6 +214,7 @@ describe("ProfilesPage — side panel", () => {
     vi.restoreAllMocks();
     global.fetch = originalFetch;
     searchParamNew = null;
+    replace.mockReset();
   });
 
   it("opens panel in create mode when Add Profile is clicked", async () => {
@@ -207,9 +226,22 @@ describe("ProfilesPage — side panel", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Add Profile" }));
 
-    expect(screen.getByText("Edit profile")).toBeInTheDocument();
+    expect(screen.getByText("Create profile")).toBeInTheDocument();
     expect(screen.getByText("Save")).toBeInTheDocument();
     expect(screen.getByText("Cancel")).toBeInTheDocument();
+  });
+
+  it("uses the shared card surface token for the side panel", async () => {
+    render(<ProfilesPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Noah")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Add Profile" }));
+
+    const panelHeading = screen.getByRole("heading", { name: "Create profile" });
+    expect(panelHeading.closest("div.relative.flex")).toHaveClass("bg-card");
   });
 
   it("closes panel when Cancel is clicked", async () => {
@@ -220,7 +252,7 @@ describe("ProfilesPage — side panel", () => {
     });
 
     fireEvent.click(screen.getByRole("button", { name: "Add Profile" }));
-    expect(screen.getByText("Edit profile")).toBeInTheDocument();
+    expect(screen.getByText("Create profile")).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
@@ -259,7 +291,7 @@ describe("ProfilesPage — side panel", () => {
     render(<ProfilesPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Edit profile")).toBeInTheDocument();
+      expect(screen.getByText("Create profile")).toBeInTheDocument();
     });
     // Verify it's in create mode (no delete section)
     expect(screen.queryByText(/Delete.*profile\?/)).not.toBeInTheDocument();
@@ -271,6 +303,7 @@ describe("ProfilesPage — layout copy", () => {
     vi.restoreAllMocks();
     global.fetch = originalFetch;
     searchParamNew = null;
+    replace.mockReset();
   });
 
   it("renders the Pencil-aligned page heading copy", async () => {

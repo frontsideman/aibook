@@ -36,12 +36,24 @@ export default function CreateBookPage() {
   }, []);
 
   const selectedProfile = profiles.find((p) => p.id === selectedProfileId);
-  const currentStep = selectedProfileId ? (storyQuery ? 3 : 2) : 1;
-  const percent = Math.round(((currentStep - 1) / 3) * 100);
+  const completedRequiredFields =
+    Number(Boolean(selectedProfileId)) +
+    Number(Boolean(storyQuery.trim())) +
+    Number(Boolean(selectedStyle));
+  const percent = Math.round((completedRequiredFields / 3) * 100);
+  const currentStep =
+    completedRequiredFields === 0
+      ? 1
+      : completedRequiredFields === 1
+      ? 2
+      : 3;
 
   const canSubmit = Boolean(
-    selectedProfileId && storyQuery.trim() && !isSubmitting,
+    selectedProfileId && storyQuery.trim() && selectedStyle && !isSubmitting,
   );
+
+  const normalizedStyle = selectedStyle.toUpperCase();
+  const normalizedTone = selectedTone ? selectedTone.toUpperCase() : undefined;
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
@@ -55,8 +67,8 @@ export default function CreateBookPage() {
           childId: selectedProfileId,
           type: "AI_ADAPTED",
           storyTitle: storyQuery.trim(),
-          style: selectedStyle || undefined,
-          tone: selectedTone || undefined,
+          style: normalizedStyle,
+          tone: normalizedTone,
         }),
       });
       if (!response.ok) throw new Error("Failed to create book");

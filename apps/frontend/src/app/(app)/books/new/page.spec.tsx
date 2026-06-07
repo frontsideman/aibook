@@ -1,5 +1,12 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { beforeEach } from 'vitest';
 import CreateBookPage from './page';
+
+const push = vi.fn();
+
+vi.mock('next/navigation', () => ({
+  useRouter: () => ({ push }),
+}));
 
 const createFetchMock = (responses: Record<string, Response>) =>
   vi.fn(async (input: RequestInfo | URL) => {
@@ -15,7 +22,11 @@ const createFetchMock = (responses: Record<string, Response>) =>
   });
 
 describe('CreateBookPage', () => {
-  it('disables submit until profile and story are selected', async () => {
+  beforeEach(() => {
+    push.mockReset();
+  });
+
+  it('disables submit until profile, story, and style are selected', async () => {
     global.fetch = createFetchMock({
       '/api/child-profiles': {
         ok: true,
@@ -27,12 +38,18 @@ describe('CreateBookPage', () => {
 
     const submit = await screen.findByRole('button', { name: 'Disabled' });
     expect(submit).toBeDisabled();
+    expect(screen.getByText('0%')).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /Nina/ }));
     fireEvent.change(screen.getByLabelText('Story'), { target: { value: 'Cinderella' } });
 
+    expect(screen.getByRole('button', { name: 'Disabled' })).toBeDisabled();
+    expect(screen.getByText('67%')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Watercolor' }));
     const createButton = screen.getByRole('button', { name: 'Create Book' });
     expect(createButton).toBeEnabled();
+    expect(screen.getByText('100%')).toBeInTheDocument();
   });
 
   it('supports preset selection and free text in combobox', async () => {
@@ -72,6 +89,7 @@ describe('CreateBookPage', () => {
     const storyInput = screen.getByLabelText('Story') as HTMLInputElement;
 
     fireEvent.change(storyInput, { target: { value: 'Little Red Riding Hood' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Cartoon' }));
     fireEvent.click(screen.getByRole('button', { name: 'Create Book' }));
 
     await waitFor(() => {
@@ -80,6 +98,15 @@ describe('CreateBookPage', () => {
         expect.objectContaining({ method: 'POST' }),
       );
     });
+
+    const submitCall = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.find(
+      ([input]) => {
+        const url = typeof input === 'string' ? input : input.toString();
+        return new URL(url, 'http://localhost').pathname === '/api/books/generate';
+      },
+    );
+    const submitInit = submitCall?.[1] as RequestInit | undefined;
+    expect(submitInit?.body).toContain('"style":"CARTOON"');
 
     fireEvent.change(storyInput, { target: { value: 'My custom bedtime story' } });
     expect(storyInput.value).toBe('My custom bedtime story');
@@ -111,6 +138,7 @@ describe('CreateBookPage', () => {
 
     fireEvent.click(await screen.findByRole('button', { name: /Nina/ }));
     fireEvent.change(screen.getByLabelText('Story'), { target: { value: 'Broken Story' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Realistic' }));
 
     fireEvent.click(screen.getByRole('button', { name: 'Create Book' }));
 
@@ -130,6 +158,7 @@ describe('CreateBookPage', () => {
     const profileButton = await screen.findByRole('button', { name: /Nina/ });
     fireEvent.click(profileButton);
     fireEvent.click(screen.getByRole('button', { name: 'Watercolor' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Warm' }));
 
     expect(profileButton).toHaveClass('bg-secondary', 'border-primary');
     expect(screen.getByRole('button', { name: 'Cartoon' })).toHaveClass(

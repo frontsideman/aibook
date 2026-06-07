@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import ChildProfileCard, {
   type ChildProfile,
@@ -17,6 +17,7 @@ export default function ProfilesPage() {
     null,
   );
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const fetchProfiles = () => {
     fetch("/api/child-profiles")
@@ -30,11 +31,18 @@ export default function ProfilesPage() {
     fetchProfiles();
   }, []);
 
+  const openCreatePanel = React.useCallback(() => {
+    setEditingProfile(null);
+    setPanelOpen(true);
+  }, []);
+
   useEffect(() => {
+    // Only trigger automatically on mount if "new" is present
     if (searchParams.get("new") === "true") {
       openCreatePanel();
     }
-  }, [searchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Run once on mount
 
   const handleCreate = async (data: {
     name: string;
@@ -79,11 +87,6 @@ export default function ProfilesPage() {
     fetchProfiles();
   };
 
-  const openCreatePanel = () => {
-    setEditingProfile(null);
-    setPanelOpen(true);
-  };
-
   const openEditPanel = (profile: ChildProfile) => {
     setEditingProfile(profile);
     setPanelOpen(true);
@@ -92,6 +95,10 @@ export default function ProfilesPage() {
   const closePanel = () => {
     setPanelOpen(false);
     setEditingProfile(null);
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("new");
+    router.replace(`?${params.toString()}`, { scroll: false });
   };
 
   return (
