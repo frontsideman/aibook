@@ -1,6 +1,7 @@
-'use client';
+"use client";
 
-import { User } from 'lucide-react';
+import { User } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export type ChildProfile = {
   id: string;
@@ -14,7 +15,13 @@ type ProfileSelectorProps = {
   onSelect: (id: string) => void;
 };
 
-export function ProfileSelector({ profiles, selectedId, onSelect }: ProfileSelectorProps) {
+export function ProfileSelector({
+  profiles,
+  selectedId,
+  onSelect,
+}: ProfileSelectorProps) {
+  const router = useRouter();
+
   return (
     <div className="space-y-3">
       <div className="flex items-center justify-between">
@@ -23,6 +30,7 @@ export function ProfileSelector({ profiles, selectedId, onSelect }: ProfileSelec
         </h2>
         <button
           type="button"
+          onClick={() => router.push("/profiles?new=true")}
           className="rounded-[9px] border border-border bg-background px-3 py-2 text-[13px] font-extrabold text-primary transition-colors hover:bg-secondary"
         >
           Create Child Profile
@@ -34,17 +42,20 @@ export function ProfileSelector({ profiles, selectedId, onSelect }: ProfileSelec
           <div className="flex items-center gap-3">
             <User className="h-5 w-5 text-primary" />
             <div className="flex-1">
-              <p className="text-sm font-semibold text-foreground">No child profiles yet</p>
+              <p className="text-sm font-semibold text-foreground">
+                No child profiles yet
+              </p>
               <p className="text-xs text-muted-foreground">
                 Create a child profile to get started with personalized stories.
               </p>
+              <button
+                type="button"
+                onClick={() => router.push("/profiles?new=true")}
+                className="mt-2 text-[13px] font-extrabold text-primary underline-offset-4 hover:underline"
+              >
+                Create First Profile
+              </button>
             </div>
-            <button
-              type="button"
-              className="rounded-lg bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground transition-colors hover:opacity-90"
-            >
-              Create Profile
-            </button>
           </div>
         </div>
       ) : (
@@ -58,8 +69,8 @@ export function ProfileSelector({ profiles, selectedId, onSelect }: ProfileSelec
                 onClick={() => onSelect(profile.id)}
                 className={`flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all ${
                   isSelected
-                    ? 'border-primary bg-secondary shadow-[0_8px_18px_-14px_oklch(0.22_0.03_56/0.45)]'
-                    : 'border-border bg-card hover:border-primary/30 hover:bg-secondary/50'
+                    ? "border-primary bg-secondary shadow-[0_8px_18px_-14px_oklch(0.22_0.03_56/0.45)]"
+                    : "border-border bg-card hover:border-primary/30 hover:bg-secondary/50"
                 }`}
               >
                 <div className="flex h-[58px] w-[58px] shrink-0 items-center justify-center rounded-full bg-accent ring-1 ring-primary/30">
@@ -68,8 +79,12 @@ export function ProfileSelector({ profiles, selectedId, onSelect }: ProfileSelec
                   </span>
                 </div>
                 <div>
-                  <p className="text-[14px] font-bold text-foreground">{profile.name}</p>
-                  <p className="text-[12px] text-muted-foreground">{profile.age} years old</p>
+                  <p className="text-[14px] font-bold text-foreground">
+                    {profile.name}
+                  </p>
+                  <p className="text-[12px] text-muted-foreground">
+                    {profile.age} years old
+                  </p>
                 </div>
               </button>
             );
