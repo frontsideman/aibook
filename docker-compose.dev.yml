@@ -18,9 +18,9 @@ services:
       - '6379:6379'
 
   backend:
-    image: node:24-alpine
+    image: node:24-slim
     working_dir: /app
-    command: npm run dev --filter=backend
+    command: /bin/sh -lc "npm install && npm run db:generate && npm run db:push && npm --workspace packages/database run seed && npm --workspace apps/backend run start:dev"
     volumes:
       - .:/app
       - /app/node_modules
@@ -39,9 +39,9 @@ services:
       - redis
 
   frontend:
-    image: node:24-alpine
+    image: node:24-slim
     working_dir: /app
-    command: npm run dev --filter=frontend
+    command: /bin/sh -lc "npm install && npm --workspace apps/frontend run dev"
     volumes:
       - .:/app
       - /app/node_modules

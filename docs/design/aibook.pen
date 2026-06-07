@@ -7902,6 +7902,7 @@
               "layout": "vertical",
               "gap": 20,
               "padding": 28,
+              "alignItems": "center",
               "children": [
                 {
                   "type": "frame",
@@ -7930,7 +7931,7 @@
                           "content": "YOUR LIBRARY",
                           "fontFamily": "$ab-font-mono",
                           "fontSize": 12,
-                          "fontWeight": "800"
+                          "fontWeight": "600"
                         },
                         {
                           "type": "text",
@@ -7951,100 +7952,6 @@
                           "fontFamily": "$ab-font-ui",
                           "fontSize": 16,
                           "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "FB1f1",
-                      "layoutPosition": "absolute",
-                      "x": 958,
-                      "y": 48,
-                      "name": "View Mode Toggle",
-                      "height": 44,
-                      "fill": "$ab-card",
-                      "cornerRadius": 12,
-                      "stroke": "$ab-border",
-                      "strokeWidth": 1,
-                      "gap": 4,
-                      "padding": 4,
-                      "alignItems": "center",
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "N3wIx",
-                          "name": "Table Toggle",
-                          "height": 36,
-                          "fill": "$ab-surface",
-                          "cornerRadius": 9,
-                          "stroke": "$ab-border",
-                          "strokeWidth": 1,
-                          "gap": 7,
-                          "padding": [
-                            0,
-                            12
-                          ],
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon",
-                              "id": "W25EK",
-                              "name": "Table Toggle Icon",
-                              "width": 16,
-                              "height": 16,
-                              "icon": "table",
-                              "library": "lucide",
-                              "fill": "$ab-primary"
-                            },
-                            {
-                              "type": "text",
-                              "id": "YDcvS",
-                              "name": "Table Toggle Label",
-                              "fill": "$ab-text",
-                              "content": "Table",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 13,
-                              "fontWeight": "800"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "eqfan",
-                          "name": "Cards Toggle",
-                          "height": 36,
-                          "fill": "#00000000",
-                          "cornerRadius": 9,
-                          "stroke": "#00000000",
-                          "strokeWidth": 1,
-                          "gap": 7,
-                          "padding": [
-                            0,
-                            12
-                          ],
-                          "alignItems": "center",
-                          "children": [
-                            {
-                              "type": "icon",
-                              "id": "j0ejAy",
-                              "name": "Cards Toggle Icon",
-                              "width": 16,
-                              "height": 16,
-                              "icon": "layout-grid",
-                              "library": "lucide",
-                              "fill": "$ab-muted"
-                            },
-                            {
-                              "type": "text",
-                              "id": "PaieH",
-                              "name": "Cards Toggle Label",
-                              "fill": "$ab-muted",
-                              "content": "Cards",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 13,
-                              "fontWeight": "800"
-                            }
-                          ]
                         }
                       ]
                     }
@@ -8202,6 +8109,108 @@
                 },
                 {
                   "type": "frame",
+                  "id": "c0Bhx",
+                  "name": "View Mode Toggle Row",
+                  "width": "fill_container",
+                  "height": 44,
+                  "justifyContent": "end",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "FB1f1",
+                      "name": "View Mode Toggle",
+                      "height": 44,
+                      "fill": "$ab-card",
+                      "cornerRadius": 12,
+                      "stroke": "$ab-border",
+                      "strokeWidth": 1,
+                      "gap": 4,
+                      "padding": 4,
+                      "alignItems": "center",
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "N3wIx",
+                          "name": "Table Toggle",
+                          "height": 36,
+                          "fill": "$ab-surface",
+                          "cornerRadius": 9,
+                          "stroke": "$ab-border",
+                          "strokeWidth": 1,
+                          "gap": 7,
+                          "padding": [
+                            0,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "W25EK",
+                              "name": "Table Toggle Icon",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "table",
+                              "library": "lucide",
+                              "fill": "$ab-primary"
+                            },
+                            {
+                              "type": "text",
+                              "id": "YDcvS",
+                              "name": "Table Toggle Label",
+                              "fill": "$ab-text",
+                              "content": "Table",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 13,
+                              "fontWeight": "800"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "eqfan",
+                          "name": "Cards Toggle",
+                          "height": 36,
+                          "fill": "#00000000",
+                          "cornerRadius": 9,
+                          "stroke": "#00000000",
+                          "strokeWidth": 1,
+                          "gap": 7,
+                          "padding": [
+                            0,
+                            12
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "icon",
+                              "id": "j0ejAy",
+                              "name": "Cards Toggle Icon",
+                              "width": 16,
+                              "height": 16,
+                              "icon": "layout-grid",
+                              "library": "lucide",
+                              "fill": "$ab-muted"
+                            },
+                            {
+                              "type": "text",
+                              "id": "PaieH",
+                              "name": "Cards Toggle Label",
+                              "fill": "$ab-muted",
+                              "content": "Cards",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 13,
+                              "fontWeight": "800"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
                   "id": "kapZW",
                   "name": "Library Filter Bar",
                   "width": "fill_container",
@@ -8218,7 +8227,7 @@
                       "type": "frame",
                       "id": "PDW0R",
                       "name": "Library Search Field",
-                      "width": 520,
+                      "width": "fill_container",
                       "height": 42,
                       "fill": "$ab-input",
                       "cornerRadius": 10,
@@ -10327,159 +10336,6 @@
                       ]
                     }
                   ]
-                },
-                {
-                  "type": "frame",
-                  "id": "B8I6Dj",
-                  "name": "Library Data States",
-                  "width": "fill_container",
-                  "height": 154,
-                  "gap": 16,
-                  "children": [
-                    {
-                      "type": "frame",
-                      "id": "q8MIF",
-                      "name": "Loading Library State",
-                      "width": "fill_container",
-                      "fill": "#E8D8C4",
-                      "cornerRadius": 16,
-                      "stroke": "$ab-info",
-                      "strokeWidth": 1,
-                      "layout": "vertical",
-                      "gap": 10,
-                      "padding": 16,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "L5BRPV",
-                          "name": "Loading State Title",
-                          "fill": "$ab-info",
-                          "content": "Loading",
-                          "fontFamily": "$ab-font-ui",
-                          "fontSize": 15,
-                          "fontWeight": "850"
-                        },
-                        {
-                          "type": "text",
-                          "id": "XKTJh",
-                          "name": "Loading State Body",
-                          "fill": "$ab-text",
-                          "textGrowth": "fixed-width",
-                          "width": "fill_container",
-                          "content": "Fetching your latest book statuses.",
-                          "lineHeight": 1.35,
-                          "fontFamily": "$ab-font-ui",
-                          "fontSize": 13,
-                          "fontWeight": "normal"
-                        },
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 5,
-                          "id": "R4wXt",
-                          "name": "Loading Skeleton 220",
-                          "fill": "#D8C4A8",
-                          "width": 220,
-                          "height": 10
-                        },
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 5,
-                          "id": "MEDVM",
-                          "name": "Loading Skeleton 300",
-                          "fill": "#D8C4A8",
-                          "width": 300,
-                          "height": 10
-                        },
-                        {
-                          "type": "rectangle",
-                          "cornerRadius": 5,
-                          "id": "rGHYd",
-                          "name": "Loading Skeleton 180",
-                          "fill": "#D8C4A8",
-                          "width": 180,
-                          "height": 10
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "OhLMu",
-                      "name": "Empty Library State",
-                      "width": "fill_container",
-                      "height": 138,
-                      "fill": "#FFF7E8",
-                      "cornerRadius": 16,
-                      "stroke": "$ab-primary",
-                      "strokeWidth": 1,
-                      "layout": "vertical",
-                      "gap": 10,
-                      "padding": 16,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "FBXmX",
-                          "name": "Empty State Title",
-                          "fill": "$ab-primary",
-                          "content": "Empty",
-                          "fontFamily": "$ab-font-ui",
-                          "fontSize": 15,
-                          "fontWeight": "850"
-                        },
-                        {
-                          "type": "text",
-                          "id": "WITLj",
-                          "name": "Empty State Body",
-                          "fill": "$ab-text",
-                          "textGrowth": "fixed-width",
-                          "width": "fill_container",
-                          "content": "No books match these filters. Create a new story or clear filters.",
-                          "lineHeight": 1.35,
-                          "fontFamily": "$ab-font-ui",
-                          "fontSize": 13,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "H2F3r",
-                      "name": "Error Library State",
-                      "width": "fill_container",
-                      "height": 138,
-                      "fill": "#FFF1ED",
-                      "cornerRadius": 16,
-                      "stroke": "$ab-destructive",
-                      "strokeWidth": 1,
-                      "layout": "vertical",
-                      "gap": 10,
-                      "padding": 16,
-                      "children": [
-                        {
-                          "type": "text",
-                          "id": "QpaBB",
-                          "name": "Error State Title",
-                          "fill": "$ab-destructive",
-                          "content": "Error",
-                          "fontFamily": "$ab-font-ui",
-                          "fontSize": 15,
-                          "fontWeight": "850"
-                        },
-                        {
-                          "type": "text",
-                          "id": "L8IEuA",
-                          "name": "Error State Body",
-                          "fill": "$ab-text",
-                          "textGrowth": "fixed-width",
-                          "width": "fill_container",
-                          "content": "Book library failed to load. Retry keeps current filters.",
-                          "lineHeight": 1.35,
-                          "fontFamily": "$ab-font-ui",
-                          "fontSize": 13,
-                          "fontWeight": "normal"
-                        }
-                      ]
-                    }
-                  ]
                 }
               ]
             }
@@ -11057,6 +10913,7 @@
               "layout": "vertical",
               "gap": 20,
               "padding": 28,
+              "alignItems": "center",
               "children": [
                 {
                   "type": "frame",
@@ -13293,8 +13150,9 @@
               "width": "fill_container",
               "height": "fill_container",
               "layout": "vertical",
-              "gap": 18,
+              "gap": 20,
               "padding": 28,
+              "alignItems": "center",
               "children": [
                 {
                   "type": "frame",
@@ -13331,7 +13189,7 @@
                           "fill": "$ab-text",
                           "content": "Mila and the Moonlit Orchard",
                           "fontFamily": "$ab-font-display",
-                          "fontSize": 42,
+                          "fontSize": 48,
                           "fontWeight": "600"
                         },
                         {
@@ -13434,13 +13292,13 @@
                   "name": "Review Body",
                   "width": "fill_container",
                   "height": 800,
-                  "gap": 22,
+                  "gap": 20,
                   "children": [
                     {
                       "type": "frame",
                       "id": "e6pNc",
                       "name": "Spread Review Center",
-                      "width": "fill_container",
+                      "width": 790,
                       "height": "fill_container",
                       "layout": "vertical",
                       "gap": 14,
@@ -13450,7 +13308,7 @@
                           "type": "frame",
                           "id": "u2Najg",
                           "name": "A-Series Landscape Spread Viewer",
-                          "width": 820,
+                          "width": "fill_container",
                           "height": 580,
                           "fill": "#EAD8BC",
                           "cornerRadius": 24,
@@ -13577,6 +13435,7 @@
                                       "type": "frame",
                                       "id": "icCQA",
                                       "name": "No Illustration Placeholder",
+                                      "width": "fill_container",
                                       "height": 40,
                                       "fill": "#FFF7E8",
                                       "cornerRadius": 10,
@@ -13604,7 +13463,7 @@
                                           "id": "Dc3XN",
                                           "name": "No Illustration Text",
                                           "fill": "$ab-muted",
-                                          "content": "No illustration placeholder shown when artwork is unavailable",
+                                          "content": "No illustration available",
                                           "fontFamily": "$ab-font-ui",
                                           "fontSize": 12,
                                           "fontWeight": "700"
@@ -13662,7 +13521,7 @@
                           "type": "frame",
                           "id": "O7hhb",
                           "name": "Page Navigation Controls",
-                          "width": 820,
+                          "width": "fill_container",
                           "height": 48,
                           "justifyContent": "space_between",
                           "alignItems": "center",
@@ -13767,121 +13626,6 @@
                                   "fontFamily": "$ab-font-mono",
                                   "fontSize": 12,
                                   "fontWeight": "800"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "XDraz",
-                          "name": "Preview State Strip",
-                          "width": 820,
-                          "height": 86,
-                          "gap": 10,
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "l35V0",
-                              "name": "Loading preview State",
-                              "width": "fill_container",
-                              "fill": "$ab-surface",
-                              "cornerRadius": 14,
-                              "stroke": "$ab-info",
-                              "strokeWidth": 1,
-                              "layout": "vertical",
-                              "gap": 4,
-                              "padding": 12,
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "O0AdGM",
-                                  "name": "Loading preview State Title",
-                                  "fill": "$ab-info",
-                                  "content": "Loading preview",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 13,
-                                  "fontWeight": "850"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "IPS6i",
-                                  "name": "Loading preview State Body",
-                                  "fill": "$ab-muted",
-                                  "content": "Fetching spread pages",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "spcsZ",
-                              "name": "Preview error State",
-                              "width": "fill_container",
-                              "fill": "$ab-surface",
-                              "cornerRadius": 14,
-                              "stroke": "$ab-destructive",
-                              "strokeWidth": 1,
-                              "layout": "vertical",
-                              "gap": 4,
-                              "padding": 12,
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "kBFMg",
-                                  "name": "Preview error State Title",
-                                  "fill": "$ab-destructive",
-                                  "content": "Preview error",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 13,
-                                  "fontWeight": "850"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "uMOgZ",
-                                  "name": "Preview error State Body",
-                                  "fill": "$ab-muted",
-                                  "content": "Unavailable. Retry preview.",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "vXEK3",
-                              "name": "No illustration State",
-                              "width": "fill_container",
-                              "fill": "$ab-surface",
-                              "cornerRadius": 14,
-                              "stroke": "$ab-muted",
-                              "strokeWidth": 1,
-                              "layout": "vertical",
-                              "gap": 4,
-                              "padding": 12,
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "NmOso",
-                                  "name": "No illustration State Title",
-                                  "fill": "$ab-muted",
-                                  "content": "No illustration",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 13,
-                                  "fontWeight": "850"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "XuvVj",
-                                  "name": "No illustration State Body",
-                                  "fill": "$ab-muted",
-                                  "content": "Artwork not generated yet",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 12,
-                                  "fontWeight": "normal"
                                 }
                               ]
                             }
@@ -14160,127 +13904,6 @@
                                   "fontFamily": "$ab-font-ui",
                                   "fontSize": 13,
                                   "fontWeight": "normal"
-                                }
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "Od5JG",
-                          "name": "Review Submit States",
-                          "width": "fill_container",
-                          "layout": "vertical",
-                          "gap": 8,
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "pb8ju",
-                              "name": "Pending feedback Indicator",
-                              "width": "fill_container",
-                              "height": 36,
-                              "fill": "$ab-card",
-                              "cornerRadius": 10,
-                              "stroke": "$ab-warning",
-                              "strokeWidth": 1,
-                              "gap": 8,
-                              "padding": [
-                                0,
-                                10
-                              ],
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "ellipse",
-                                  "id": "mhggZ",
-                                  "name": "Pending feedback Dot",
-                                  "fill": "$ab-warning",
-                                  "width": 8,
-                                  "height": 8
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "lC6ui",
-                                  "name": "Pending feedback Text",
-                                  "fill": "$ab-warning",
-                                  "content": "Pending feedback • 3 open edits",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 12,
-                                  "fontWeight": "800"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "AOQ05",
-                              "name": "Submitting changes Indicator",
-                              "width": "fill_container",
-                              "height": 36,
-                              "fill": "$ab-card",
-                              "cornerRadius": 10,
-                              "stroke": "$ab-info",
-                              "strokeWidth": 1,
-                              "gap": 8,
-                              "padding": [
-                                0,
-                                10
-                              ],
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "ellipse",
-                                  "id": "bEzk9",
-                                  "name": "Submitting changes Dot",
-                                  "fill": "$ab-info",
-                                  "width": 8,
-                                  "height": 8
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "o21zA",
-                                  "name": "Submitting changes Text",
-                                  "fill": "$ab-info",
-                                  "content": "Submitting changes • Saving edit requests",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 12,
-                                  "fontWeight": "800"
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "ksnsw",
-                              "name": "Approving book Indicator",
-                              "width": "fill_container",
-                              "height": 36,
-                              "fill": "$ab-card",
-                              "cornerRadius": 10,
-                              "stroke": "$ab-success",
-                              "strokeWidth": 1,
-                              "gap": 8,
-                              "padding": [
-                                0,
-                                10
-                              ],
-                              "alignItems": "center",
-                              "children": [
-                                {
-                                  "type": "ellipse",
-                                  "id": "X8crT0",
-                                  "name": "Approving book Dot",
-                                  "fill": "$ab-success",
-                                  "width": 8,
-                                  "height": 8
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "oQ1rx",
-                                  "name": "Approving book Text",
-                                  "fill": "$ab-success",
-                                  "content": "Approving book • Preparing final PDF",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 12,
-                                  "fontWeight": "800"
                                 }
                               ]
                             }
@@ -14971,7 +14594,7 @@
                   "type": "frame",
                   "id": "QyBhv",
                   "name": "Completed Focused Content",
-                  "width": 980,
+                  "width": 1140,
                   "height": "fill_container",
                   "layout": "vertical",
                   "gap": 20,
@@ -15898,148 +15521,6 @@
                           ]
                         }
                       ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "o8UEO",
-                      "name": "Completed Detail States",
-                      "width": "fill_container",
-                      "height": 138,
-                      "gap": 14,
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "hC5JI",
-                          "name": "Loading Completed State",
-                          "width": "fill_container",
-                          "fill": "#EEF5F7",
-                          "cornerRadius": 14,
-                          "stroke": "$ab-info",
-                          "strokeWidth": 1,
-                          "layout": "vertical",
-                          "gap": 8,
-                          "padding": 14,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "nl0Gy",
-                              "name": "Loading Completed State Title",
-                              "fill": "$ab-info",
-                              "content": "Loading",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 14,
-                              "fontWeight": "850"
-                            },
-                            {
-                              "type": "text",
-                              "id": "G87bPu",
-                              "name": "Loading Completed State Body",
-                              "fill": "$ab-text",
-                              "textGrowth": "fixed-width",
-                              "width": "fill_container",
-                              "content": "Preparing completed book details.",
-                              "lineHeight": 1.35,
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            },
-                            {
-                              "type": "rectangle",
-                              "cornerRadius": 5,
-                              "id": "YbjWJ",
-                              "name": "Completed Loading Skeleton 190",
-                              "fill": "#D8C4A8",
-                              "width": 190,
-                              "height": 10
-                            },
-                            {
-                              "type": "rectangle",
-                              "cornerRadius": 5,
-                              "id": "V4HKOM",
-                              "name": "Completed Loading Skeleton 240",
-                              "fill": "#D8C4A8",
-                              "width": 240,
-                              "height": 10
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "C2kF8H",
-                          "name": "Empty Completed State",
-                          "width": "fill_container",
-                          "fill": "$ab-card",
-                          "cornerRadius": 14,
-                          "stroke": "$ab-muted",
-                          "strokeWidth": 1,
-                          "layout": "vertical",
-                          "gap": 8,
-                          "padding": 14,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "gIPXW",
-                              "name": "Empty Completed State Title",
-                              "fill": "$ab-muted",
-                              "content": "Empty",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 14,
-                              "fontWeight": "850"
-                            },
-                            {
-                              "type": "text",
-                              "id": "RIrW0",
-                              "name": "Empty Completed State Body",
-                              "fill": "$ab-text",
-                              "textGrowth": "fixed-width",
-                              "width": "fill_container",
-                              "content": "No approved pages are available yet.",
-                              "lineHeight": 1.35,
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "iFsrj",
-                          "name": "Error Completed State",
-                          "width": "fill_container",
-                          "fill": "#FFF1ED",
-                          "cornerRadius": 14,
-                          "stroke": "$ab-destructive",
-                          "strokeWidth": 1,
-                          "layout": "vertical",
-                          "gap": 8,
-                          "padding": 14,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "hn7Sn",
-                              "name": "Error Completed State Title",
-                              "fill": "$ab-destructive",
-                              "content": "Error",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 14,
-                              "fontWeight": "850"
-                            },
-                            {
-                              "type": "text",
-                              "id": "SUExz",
-                              "name": "Error Completed State Body",
-                              "fill": "$ab-text",
-                              "textGrowth": "fixed-width",
-                              "width": "fill_container",
-                              "content": "Final PDF metadata could not load.",
-                              "lineHeight": 1.35,
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        }
-                      ]
                     }
                   ]
                 }
@@ -16581,6 +16062,7 @@
               "layout": "vertical",
               "gap": 20,
               "padding": 28,
+              "alignItems": "center",
               "children": [
                 {
                   "type": "frame",
@@ -16608,7 +16090,7 @@
                           "content": "PERSONALIZATION",
                           "fontFamily": "$ab-font-mono",
                           "fontSize": 12,
-                          "fontWeight": "850"
+                          "fontWeight": "800"
                         },
                         {
                           "type": "text",
@@ -17748,173 +17230,6 @@
                               ]
                             }
                           ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "fCDjm",
-                          "name": "Profiles Data States",
-                          "width": "fill_container",
-                          "height": 138,
-                          "gap": 14,
-                          "children": [
-                            {
-                              "type": "frame",
-                              "id": "kEnYH",
-                              "name": "Empty Profiles State",
-                              "width": "fill_container",
-                              "fill": "#FFF7E8",
-                              "cornerRadius": 14,
-                              "stroke": "$ab-primary",
-                              "strokeWidth": 1,
-                              "layout": "vertical",
-                              "gap": 8,
-                              "padding": 14,
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "Pz0bp",
-                                  "name": "Empty Profiles State Title",
-                                  "fill": "$ab-primary",
-                                  "content": "Empty",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 14,
-                                  "fontWeight": "850"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "yBebH",
-                                  "name": "Empty Profiles State Body",
-                                  "fill": "$ab-text",
-                                  "textGrowth": "fixed-width",
-                                  "width": "fill_container",
-                                  "content": "No child profiles yet. Add one to personalize a first story.",
-                                  "lineHeight": 1.35,
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 13,
-                                  "fontWeight": "normal"
-                                },
-                                {
-                                  "type": "frame",
-                                  "id": "l49woK",
-                                  "name": "Empty Add Profile CTA",
-                                  "height": 34,
-                                  "fill": "$ab-primary",
-                                  "cornerRadius": 9,
-                                  "padding": [
-                                    0,
-                                    12
-                                  ],
-                                  "alignItems": "center",
-                                  "children": [
-                                    {
-                                      "type": "text",
-                                      "id": "m4d1u",
-                                      "name": "Empty Add Profile CTA Text",
-                                      "fill": "#FFFFFF",
-                                      "content": "Add first profile",
-                                      "fontFamily": "$ab-font-ui",
-                                      "fontSize": 12,
-                                      "fontWeight": "850"
-                                    }
-                                  ]
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "yb5h5",
-                              "name": "Loading Profiles State",
-                              "width": "fill_container",
-                              "fill": "#EEF5F7",
-                              "cornerRadius": 14,
-                              "stroke": "$ab-info",
-                              "strokeWidth": 1,
-                              "layout": "vertical",
-                              "gap": 8,
-                              "padding": 14,
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "sA3wf",
-                                  "name": "Loading Profiles State Title",
-                                  "fill": "$ab-info",
-                                  "content": "Loading",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 14,
-                                  "fontWeight": "850"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "Wsrgg",
-                                  "name": "Loading Profiles State Body",
-                                  "fill": "$ab-text",
-                                  "textGrowth": "fixed-width",
-                                  "width": "fill_container",
-                                  "content": "Loading saved profiles and interests.",
-                                  "lineHeight": 1.35,
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 13,
-                                  "fontWeight": "normal"
-                                },
-                                {
-                                  "type": "rectangle",
-                                  "cornerRadius": 5,
-                                  "id": "ddDdq",
-                                  "name": "Profiles Loading Skeleton 190",
-                                  "fill": "#D8C4A8",
-                                  "width": 190,
-                                  "height": 10
-                                },
-                                {
-                                  "type": "rectangle",
-                                  "cornerRadius": 5,
-                                  "id": "PgzLr",
-                                  "name": "Profiles Loading Skeleton 240",
-                                  "fill": "#D8C4A8",
-                                  "width": 240,
-                                  "height": 10
-                                }
-                              ]
-                            },
-                            {
-                              "type": "frame",
-                              "id": "rbrNz",
-                              "name": "Error Profiles State",
-                              "width": "fill_container",
-                              "fill": "#FFF1ED",
-                              "cornerRadius": 14,
-                              "stroke": "$ab-destructive",
-                              "strokeWidth": 1,
-                              "layout": "vertical",
-                              "gap": 8,
-                              "padding": 14,
-                              "children": [
-                                {
-                                  "type": "text",
-                                  "id": "Yy3an",
-                                  "name": "Error Profiles State Title",
-                                  "fill": "$ab-destructive",
-                                  "content": "Error",
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 14,
-                                  "fontWeight": "850"
-                                },
-                                {
-                                  "type": "text",
-                                  "id": "EPFtT",
-                                  "name": "Error Profiles State Body",
-                                  "fill": "$ab-text",
-                                  "textGrowth": "fixed-width",
-                                  "width": "fill_container",
-                                  "content": "Profiles could not load. Retry keeps your current workspace.",
-                                  "lineHeight": 1.35,
-                                  "fontFamily": "$ab-font-ui",
-                                  "fontSize": 13,
-                                  "fontWeight": "normal"
-                                }
-                              ]
-                            }
-                          ]
                         }
                       ]
                     },
@@ -18841,7 +18156,7 @@
                   "type": "frame",
                   "id": "XVeQ8",
                   "name": "Settings Focused Content",
-                  "width": 980,
+                  "width": 1140,
                   "height": "fill_container",
                   "layout": "vertical",
                   "gap": 20,
@@ -18872,7 +18187,7 @@
                               "content": "ACCOUNT",
                               "fontFamily": "$ab-font-mono",
                               "fontSize": 12,
-                              "fontWeight": "850"
+                              "fontWeight": "800"
                             },
                             {
                               "type": "text",
@@ -19762,110 +19077,6 @@
                           ]
                         }
                       ]
-                    },
-                    {
-                      "type": "frame",
-                      "id": "fV8Ob",
-                      "name": "Settings Data States",
-                      "width": "fill_container",
-                      "height": 118,
-                      "gap": 14,
-                      "children": [
-                        {
-                          "type": "frame",
-                          "id": "MOMF9",
-                          "name": "Loading Settings State",
-                          "width": "fill_container",
-                          "fill": "#EEF5F7",
-                          "cornerRadius": 14,
-                          "stroke": "$ab-info",
-                          "strokeWidth": 1,
-                          "layout": "vertical",
-                          "gap": 8,
-                          "padding": 14,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "dCJoZ",
-                              "name": "Loading Settings State Title",
-                              "fill": "$ab-info",
-                              "content": "Loading",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 14,
-                              "fontWeight": "850"
-                            },
-                            {
-                              "type": "text",
-                              "id": "uyyvA",
-                              "name": "Loading Settings State Body",
-                              "fill": "$ab-text",
-                              "textGrowth": "fixed-width",
-                              "width": "fill_container",
-                              "content": "Loading billing and preference settings.",
-                              "lineHeight": 1.35,
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            },
-                            {
-                              "type": "rectangle",
-                              "cornerRadius": 5,
-                              "id": "s9HwxI",
-                              "name": "Settings Loading Skeleton 220",
-                              "fill": "#D8C4A8",
-                              "width": 220,
-                              "height": 10
-                            },
-                            {
-                              "type": "rectangle",
-                              "cornerRadius": 5,
-                              "id": "Y5Sr6",
-                              "name": "Settings Loading Skeleton 300",
-                              "fill": "#D8C4A8",
-                              "width": 300,
-                              "height": 10
-                            }
-                          ]
-                        },
-                        {
-                          "type": "frame",
-                          "id": "bF995",
-                          "name": "Error Settings State",
-                          "width": "fill_container",
-                          "fill": "#FFF1ED",
-                          "cornerRadius": 14,
-                          "stroke": "$ab-destructive",
-                          "strokeWidth": 1,
-                          "layout": "vertical",
-                          "gap": 8,
-                          "padding": 14,
-                          "children": [
-                            {
-                              "type": "text",
-                              "id": "dZzq0",
-                              "name": "Error Settings State Title",
-                              "fill": "$ab-destructive",
-                              "content": "Error",
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 14,
-                              "fontWeight": "850"
-                            },
-                            {
-                              "type": "text",
-                              "id": "Q2CiGw",
-                              "name": "Error Settings State Body",
-                              "fill": "$ab-text",
-                              "textGrowth": "fixed-width",
-                              "width": "fill_container",
-                              "content": "Settings failed to load. Retry keeps the current session active.",
-                              "lineHeight": 1.35,
-                              "fontFamily": "$ab-font-ui",
-                              "fontSize": 13,
-                              "fontWeight": "normal"
-                            }
-                          ]
-                        }
-                      ]
                     }
                   ]
                 }
@@ -20663,6 +19874,1167 @@
                   "fontFamily": "$ab-font-ui",
                   "fontSize": 12,
                   "fontWeight": "750"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "SJcRE",
+      "x": 0,
+      "y": 4580,
+      "name": "aiBook System Messages Page",
+      "clip": true,
+      "width": 1440,
+      "height": 1540,
+      "fill": "$ab-bg",
+      "layout": "vertical",
+      "gap": 24,
+      "padding": 40,
+      "children": [
+        {
+          "type": "frame",
+          "id": "yyXjG",
+          "name": "System Messages Header",
+          "width": "fill_container",
+          "height": 102,
+          "layout": "vertical",
+          "gap": 8,
+          "children": [
+            {
+              "type": "text",
+              "id": "pvvCT",
+              "name": "System Messages Eyebrow",
+              "fill": "$ab-primary",
+              "content": "SYSTEM STATES",
+              "fontFamily": "$ab-font-mono",
+              "fontSize": 12,
+              "fontWeight": "800"
+            },
+            {
+              "type": "text",
+              "id": "D1IK6P",
+              "name": "System Messages Title",
+              "fill": "$ab-text",
+              "content": "System Messages",
+              "fontFamily": "$ab-font-display",
+              "fontSize": 48,
+              "fontWeight": "600"
+            },
+            {
+              "type": "text",
+              "id": "A5GMg4",
+              "name": "System Messages Subtitle",
+              "fill": "$ab-muted",
+              "content": "Centralized loading, empty, error, preview, feedback, and submission messages used across aiBook.",
+              "fontFamily": "$ab-font-ui",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Ztywu",
+          "name": "Library data messages Section",
+          "width": "fill_container",
+          "height": 208,
+          "fill": "$ab-card",
+          "cornerRadius": 18,
+          "stroke": "$ab-border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 14,
+          "padding": 18,
+          "children": [
+            {
+              "type": "text",
+              "id": "ahIeF",
+              "name": "Library data messages Section Title",
+              "fill": "$ab-muted",
+              "content": "LIBRARY DATA MESSAGES",
+              "fontFamily": "$ab-font-mono",
+              "fontSize": 12,
+              "fontWeight": "800"
+            },
+            {
+              "type": "frame",
+              "id": "B8I6Dj",
+              "name": "Library Data States",
+              "width": "fill_container",
+              "height": 154,
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "q8MIF",
+                  "name": "Loading Library State",
+                  "width": "fill_container",
+                  "fill": "#E8D8C4",
+                  "cornerRadius": 16,
+                  "stroke": "$ab-info",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "L5BRPV",
+                      "name": "Loading State Title",
+                      "fill": "$ab-info",
+                      "content": "Loading",
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 15,
+                      "fontWeight": "850"
+                    },
+                    {
+                      "type": "text",
+                      "id": "XKTJh",
+                      "name": "Loading State Body",
+                      "fill": "$ab-text",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Fetching your latest book statuses.",
+                      "lineHeight": 1.35,
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 5,
+                      "id": "R4wXt",
+                      "name": "Loading Skeleton 220",
+                      "fill": "#D8C4A8",
+                      "width": 220,
+                      "height": 10
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 5,
+                      "id": "MEDVM",
+                      "name": "Loading Skeleton 300",
+                      "fill": "#D8C4A8",
+                      "width": 300,
+                      "height": 10
+                    },
+                    {
+                      "type": "rectangle",
+                      "cornerRadius": 5,
+                      "id": "rGHYd",
+                      "name": "Loading Skeleton 180",
+                      "fill": "#D8C4A8",
+                      "width": 180,
+                      "height": 10
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "OhLMu",
+                  "name": "Empty Library State",
+                  "width": "fill_container",
+                  "height": 138,
+                  "fill": "#FFF7E8",
+                  "cornerRadius": 16,
+                  "stroke": "$ab-primary",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "FBXmX",
+                      "name": "Empty State Title",
+                      "fill": "$ab-primary",
+                      "content": "Empty",
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 15,
+                      "fontWeight": "850"
+                    },
+                    {
+                      "type": "text",
+                      "id": "WITLj",
+                      "name": "Empty State Body",
+                      "fill": "$ab-text",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "No books match these filters. Create a new story or clear filters.",
+                      "lineHeight": 1.35,
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "H2F3r",
+                  "name": "Error Library State",
+                  "width": "fill_container",
+                  "height": 138,
+                  "fill": "#FFF1ED",
+                  "cornerRadius": 16,
+                  "stroke": "$ab-destructive",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "QpaBB",
+                      "name": "Error State Title",
+                      "fill": "$ab-destructive",
+                      "content": "Error",
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 15,
+                      "fontWeight": "850"
+                    },
+                    {
+                      "type": "text",
+                      "id": "L8IEuA",
+                      "name": "Error State Body",
+                      "fill": "$ab-text",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Book library failed to load. Retry keeps current filters.",
+                      "lineHeight": 1.35,
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "Ot4M9",
+          "name": "Review workflow messages Section",
+          "width": "fill_container",
+          "height": 240,
+          "fill": "$ab-card",
+          "cornerRadius": 18,
+          "stroke": "$ab-border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 14,
+          "padding": 18,
+          "children": [
+            {
+              "type": "text",
+              "id": "KYCR8",
+              "name": "Review workflow messages Section Title",
+              "fill": "$ab-muted",
+              "content": "REVIEW WORKFLOW MESSAGES",
+              "fontFamily": "$ab-font-mono",
+              "fontSize": 12,
+              "fontWeight": "800"
+            },
+            {
+              "type": "frame",
+              "id": "in4Mf",
+              "name": "Review Messages Row",
+              "width": "fill_container",
+              "height": "fill_container",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "KsH66",
+                  "name": "Review Preview Messages Column",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "XDraz",
+                      "name": "Preview State Strip",
+                      "width": "fill_container",
+                      "height": 86,
+                      "gap": 10,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "l35V0",
+                          "name": "Loading preview State",
+                          "width": "fill_container",
+                          "fill": "$ab-surface",
+                          "cornerRadius": 14,
+                          "stroke": "$ab-info",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": 12,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "O0AdGM",
+                              "name": "Loading preview State Title",
+                              "fill": "$ab-info",
+                              "content": "Loading preview",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 13,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "IPS6i",
+                              "name": "Loading preview State Body",
+                              "fill": "$ab-muted",
+                              "content": "Fetching spread pages",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "spcsZ",
+                          "name": "Preview error State",
+                          "width": "fill_container",
+                          "fill": "$ab-surface",
+                          "cornerRadius": 14,
+                          "stroke": "$ab-destructive",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": 12,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "kBFMg",
+                              "name": "Preview error State Title",
+                              "fill": "$ab-destructive",
+                              "content": "Preview error",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 13,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "uMOgZ",
+                              "name": "Preview error State Body",
+                              "fill": "$ab-muted",
+                              "content": "Unavailable. Retry preview.",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "vXEK3",
+                          "name": "No illustration State",
+                          "width": "fill_container",
+                          "fill": "$ab-surface",
+                          "cornerRadius": 14,
+                          "stroke": "$ab-muted",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 4,
+                          "padding": 12,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "NmOso",
+                              "name": "No illustration State Title",
+                              "fill": "$ab-muted",
+                              "content": "No illustration",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 13,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "XuvVj",
+                              "name": "No illustration State Body",
+                              "fill": "$ab-muted",
+                              "content": "Artwork not generated yet",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 12,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "oK2sD",
+                  "name": "Review Submit Messages Column",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "Od5JG",
+                      "name": "Review Submit States",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 8,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "pb8ju",
+                          "name": "Pending feedback Indicator",
+                          "width": "fill_container",
+                          "height": 36,
+                          "fill": "$ab-card",
+                          "cornerRadius": 10,
+                          "stroke": "$ab-warning",
+                          "strokeWidth": 1,
+                          "gap": 8,
+                          "padding": [
+                            0,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "ellipse",
+                              "id": "mhggZ",
+                              "name": "Pending feedback Dot",
+                              "fill": "$ab-warning",
+                              "width": 8,
+                              "height": 8
+                            },
+                            {
+                              "type": "text",
+                              "id": "lC6ui",
+                              "name": "Pending feedback Text",
+                              "fill": "$ab-warning",
+                              "content": "Pending feedback • 3 open edits",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 12,
+                              "fontWeight": "800"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "AOQ05",
+                          "name": "Submitting changes Indicator",
+                          "width": "fill_container",
+                          "height": 36,
+                          "fill": "$ab-card",
+                          "cornerRadius": 10,
+                          "stroke": "$ab-info",
+                          "strokeWidth": 1,
+                          "gap": 8,
+                          "padding": [
+                            0,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "ellipse",
+                              "id": "bEzk9",
+                              "name": "Submitting changes Dot",
+                              "fill": "$ab-info",
+                              "width": 8,
+                              "height": 8
+                            },
+                            {
+                              "type": "text",
+                              "id": "o21zA",
+                              "name": "Submitting changes Text",
+                              "fill": "$ab-info",
+                              "content": "Submitting changes • Saving edit requests",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 12,
+                              "fontWeight": "800"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "ksnsw",
+                          "name": "Approving book Indicator",
+                          "width": "fill_container",
+                          "height": 36,
+                          "fill": "$ab-card",
+                          "cornerRadius": 10,
+                          "stroke": "$ab-success",
+                          "strokeWidth": 1,
+                          "gap": 8,
+                          "padding": [
+                            0,
+                            10
+                          ],
+                          "alignItems": "center",
+                          "children": [
+                            {
+                              "type": "ellipse",
+                              "id": "X8crT0",
+                              "name": "Approving book Dot",
+                              "fill": "$ab-success",
+                              "width": 8,
+                              "height": 8
+                            },
+                            {
+                              "type": "text",
+                              "id": "oQ1rx",
+                              "name": "Approving book Text",
+                              "fill": "$ab-success",
+                              "content": "Approving book • Preparing final PDF",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 12,
+                              "fontWeight": "800"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "d3Filf",
+          "name": "Page and profile messages Section",
+          "width": "fill_container",
+          "height": 560,
+          "fill": "$ab-card",
+          "cornerRadius": 18,
+          "stroke": "$ab-border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 14,
+          "padding": 18,
+          "children": [
+            {
+              "type": "text",
+              "id": "q2a2bb",
+              "name": "Page and profile messages Section Title",
+              "fill": "$ab-muted",
+              "content": "PAGE AND PROFILE MESSAGES",
+              "fontFamily": "$ab-font-mono",
+              "fontSize": 12,
+              "fontWeight": "800"
+            },
+            {
+              "type": "frame",
+              "id": "GhM4p",
+              "name": "Page Messages Row",
+              "width": "fill_container",
+              "height": "fill_container",
+              "layout": "vertical",
+              "gap": 14,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "QJoY9",
+                  "name": "Completed Messages Column",
+                  "width": "fill_container",
+                  "height": 150,
+                  "layout": "vertical",
+                  "gap": 10,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "o8UEO",
+                      "name": "Completed Detail States",
+                      "width": "fill_container",
+                      "height": 150,
+                      "gap": 14,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "hC5JI",
+                          "name": "Loading Completed State",
+                          "width": "fill_container",
+                          "fill": "#EEF5F7",
+                          "cornerRadius": 14,
+                          "stroke": "$ab-info",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 14,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "nl0Gy",
+                              "name": "Loading Completed State Title",
+                              "fill": "$ab-info",
+                              "content": "Loading",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 14,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "G87bPu",
+                              "name": "Loading Completed State Body",
+                              "fill": "$ab-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Preparing completed book details.",
+                              "lineHeight": 1.35,
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 5,
+                              "id": "YbjWJ",
+                              "name": "Completed Loading Skeleton 190",
+                              "fill": "#D8C4A8",
+                              "width": 190,
+                              "height": 10
+                            },
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 5,
+                              "id": "V4HKOM",
+                              "name": "Completed Loading Skeleton 240",
+                              "fill": "#D8C4A8",
+                              "width": 240,
+                              "height": 10
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "C2kF8H",
+                          "name": "Empty Completed State",
+                          "width": "fill_container",
+                          "fill": "$ab-card",
+                          "cornerRadius": 14,
+                          "stroke": "$ab-muted",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 14,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "gIPXW",
+                              "name": "Empty Completed State Title",
+                              "fill": "$ab-muted",
+                              "content": "Empty",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 14,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "RIrW0",
+                              "name": "Empty Completed State Body",
+                              "fill": "$ab-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "No approved pages are available yet.",
+                              "lineHeight": 1.35,
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "iFsrj",
+                          "name": "Error Completed State",
+                          "width": "fill_container",
+                          "fill": "#FFF1ED",
+                          "cornerRadius": 14,
+                          "stroke": "$ab-destructive",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 14,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "hn7Sn",
+                              "name": "Error Completed State Title",
+                              "fill": "$ab-destructive",
+                              "content": "Error",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 14,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "SUExz",
+                              "name": "Error Completed State Body",
+                              "fill": "$ab-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Final PDF metadata could not load.",
+                              "lineHeight": 1.35,
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "tDun4",
+                  "name": "Profiles Messages Column",
+                  "width": "fill_container",
+                  "height": 178,
+                  "layout": "vertical",
+                  "gap": 10,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "fCDjm",
+                      "name": "Profiles Data States",
+                      "width": "fill_container",
+                      "height": 178,
+                      "gap": 14,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "kEnYH",
+                          "name": "Empty Profiles State",
+                          "width": "fill_container",
+                          "fill": "#FFF7E8",
+                          "cornerRadius": 14,
+                          "stroke": "$ab-primary",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 14,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Pz0bp",
+                              "name": "Empty Profiles State Title",
+                              "fill": "$ab-primary",
+                              "content": "Empty",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 14,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "yBebH",
+                              "name": "Empty Profiles State Body",
+                              "fill": "$ab-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "No child profiles yet. Add one to personalize a first story.",
+                              "lineHeight": 1.35,
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "frame",
+                              "id": "l49woK",
+                              "name": "Empty Add Profile CTA",
+                              "height": 34,
+                              "fill": "$ab-primary",
+                              "cornerRadius": 9,
+                              "padding": [
+                                0,
+                                12
+                              ],
+                              "alignItems": "center",
+                              "children": [
+                                {
+                                  "type": "text",
+                                  "id": "m4d1u",
+                                  "name": "Empty Add Profile CTA Text",
+                                  "fill": "#FFFFFF",
+                                  "content": "Add first profile",
+                                  "fontFamily": "$ab-font-ui",
+                                  "fontSize": 12,
+                                  "fontWeight": "850"
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "yb5h5",
+                          "name": "Loading Profiles State",
+                          "width": "fill_container",
+                          "fill": "#EEF5F7",
+                          "cornerRadius": 14,
+                          "stroke": "$ab-info",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 14,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "sA3wf",
+                              "name": "Loading Profiles State Title",
+                              "fill": "$ab-info",
+                              "content": "Loading",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 14,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Wsrgg",
+                              "name": "Loading Profiles State Body",
+                              "fill": "$ab-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Loading saved profiles and interests.",
+                              "lineHeight": 1.35,
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 5,
+                              "id": "ddDdq",
+                              "name": "Profiles Loading Skeleton 190",
+                              "fill": "#D8C4A8",
+                              "width": 190,
+                              "height": 10
+                            },
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 5,
+                              "id": "PgzLr",
+                              "name": "Profiles Loading Skeleton 240",
+                              "fill": "#D8C4A8",
+                              "width": 240,
+                              "height": 10
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "rbrNz",
+                          "name": "Error Profiles State",
+                          "width": "fill_container",
+                          "fill": "#FFF1ED",
+                          "cornerRadius": 14,
+                          "stroke": "$ab-destructive",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 14,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "Yy3an",
+                              "name": "Error Profiles State Title",
+                              "fill": "$ab-destructive",
+                              "content": "Error",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 14,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "EPFtT",
+                              "name": "Error Profiles State Body",
+                              "fill": "$ab-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Profiles could not load. Retry keeps your current workspace.",
+                              "lineHeight": 1.35,
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "u8Q0k",
+                  "name": "Settings Messages Column",
+                  "width": "fill_container",
+                  "height": 136,
+                  "layout": "vertical",
+                  "gap": 10,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "fV8Ob",
+                      "name": "Settings Data States",
+                      "width": "fill_container",
+                      "height": 136,
+                      "gap": 14,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "MOMF9",
+                          "name": "Loading Settings State",
+                          "width": "fill_container",
+                          "fill": "#EEF5F7",
+                          "cornerRadius": 14,
+                          "stroke": "$ab-info",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 14,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "dCJoZ",
+                              "name": "Loading Settings State Title",
+                              "fill": "$ab-info",
+                              "content": "Loading",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 14,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "uyyvA",
+                              "name": "Loading Settings State Body",
+                              "fill": "$ab-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Loading billing and preference settings.",
+                              "lineHeight": 1.35,
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            },
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 5,
+                              "id": "s9HwxI",
+                              "name": "Settings Loading Skeleton 220",
+                              "fill": "#D8C4A8",
+                              "width": 220,
+                              "height": 10
+                            },
+                            {
+                              "type": "rectangle",
+                              "cornerRadius": 5,
+                              "id": "Y5Sr6",
+                              "name": "Settings Loading Skeleton 300",
+                              "fill": "#D8C4A8",
+                              "width": 300,
+                              "height": 10
+                            }
+                          ]
+                        },
+                        {
+                          "type": "frame",
+                          "id": "bF995",
+                          "name": "Error Settings State",
+                          "width": "fill_container",
+                          "fill": "#FFF1ED",
+                          "cornerRadius": 14,
+                          "stroke": "$ab-destructive",
+                          "strokeWidth": 1,
+                          "layout": "vertical",
+                          "gap": 8,
+                          "padding": 14,
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "dZzq0",
+                              "name": "Error Settings State Title",
+                              "fill": "$ab-destructive",
+                              "content": "Error",
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 14,
+                              "fontWeight": "850"
+                            },
+                            {
+                              "type": "text",
+                              "id": "Q2CiGw",
+                              "name": "Error Settings State Body",
+                              "fill": "$ab-text",
+                              "textGrowth": "fixed-width",
+                              "width": "fill_container",
+                              "content": "Settings failed to load. Retry keeps the current session active.",
+                              "lineHeight": 1.35,
+                              "fontFamily": "$ab-font-ui",
+                              "fontSize": 13,
+                              "fontWeight": "normal"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "iUW7p",
+          "name": "Compact status messages Section",
+          "width": "fill_container",
+          "height": 178,
+          "fill": "$ab-card",
+          "cornerRadius": 18,
+          "stroke": "$ab-border",
+          "strokeWidth": 1,
+          "layout": "vertical",
+          "gap": 14,
+          "padding": 18,
+          "children": [
+            {
+              "type": "text",
+              "id": "tpbZy",
+              "name": "Compact status messages Section Title",
+              "fill": "$ab-muted",
+              "content": "COMPACT STATUS MESSAGES",
+              "fontFamily": "$ab-font-mono",
+              "fontSize": 12,
+              "fontWeight": "800"
+            },
+            {
+              "type": "frame",
+              "id": "jz1Ox",
+              "name": "Compact Status Messages Grid",
+              "width": "fill_container",
+              "height": "fill_container",
+              "gap": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "r4df6",
+                  "name": "Auth Validation Message",
+                  "width": "fill_container",
+                  "fill": "#FFF1ED",
+                  "cornerRadius": 14,
+                  "stroke": "$ab-destructive",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "kE4g8",
+                      "name": "Auth Validation Message Title",
+                      "fill": "$ab-destructive",
+                      "content": "Validation error",
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 14,
+                      "fontWeight": "850"
+                    },
+                    {
+                      "type": "text",
+                      "id": "ITwoN",
+                      "name": "Auth Validation Message Body",
+                      "fill": "$ab-text",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Check your email and password.",
+                      "lineHeight": 1.35,
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "WWPlp",
+                  "name": "Generation Pending Message",
+                  "width": "fill_container",
+                  "fill": "#FFF2D8",
+                  "cornerRadius": 14,
+                  "stroke": "$ab-warning",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "bzDIn",
+                      "name": "Generation Pending Message Title",
+                      "fill": "$ab-warning",
+                      "content": "Pending feedback",
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 14,
+                      "fontWeight": "850"
+                    },
+                    {
+                      "type": "text",
+                      "id": "b3bELM",
+                      "name": "Generation Pending Message Body",
+                      "fill": "$ab-text",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "3 requested edits are waiting for review.",
+                      "lineHeight": 1.35,
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
+                },
+                {
+                  "type": "frame",
+                  "id": "zalzj",
+                  "name": "PDF Ready Message",
+                  "width": "fill_container",
+                  "fill": "#EEF7F0",
+                  "cornerRadius": 14,
+                  "stroke": "$ab-success",
+                  "strokeWidth": 1,
+                  "layout": "vertical",
+                  "gap": 8,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "OJ1D3",
+                      "name": "PDF Ready Message Title",
+                      "fill": "$ab-success",
+                      "content": "Completed",
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 14,
+                      "fontWeight": "850"
+                    },
+                    {
+                      "type": "text",
+                      "id": "KLk8c",
+                      "name": "PDF Ready Message Body",
+                      "fill": "$ab-text",
+                      "textGrowth": "fixed-width",
+                      "width": "fill_container",
+                      "content": "Final PDF is ready to download.",
+                      "lineHeight": 1.35,
+                      "fontFamily": "$ab-font-ui",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    }
+                  ]
                 }
               ]
             }
