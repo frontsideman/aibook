@@ -55,10 +55,12 @@ export default function ProfilesPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-    if (res.ok) {
-      setPanelOpen(false);
-      fetchProfiles();
+    if (!res.ok) {
+      throw new Error("Failed to create profile");
     }
+
+    setPanelOpen(false);
+    fetchProfiles();
   };
 
   const handleUpdate = async (data: {
@@ -73,11 +75,13 @@ export default function ProfilesPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-    if (res.ok) {
-      setPanelOpen(false);
-      setEditingProfile(null);
-      fetchProfiles();
+    if (!res.ok) {
+      throw new Error("Failed to update profile");
     }
+
+    setPanelOpen(false);
+    setEditingProfile(null);
+    fetchProfiles();
   };
 
   const handleDelete = async (id: string) => {

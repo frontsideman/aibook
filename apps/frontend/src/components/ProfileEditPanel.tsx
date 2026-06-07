@@ -17,7 +17,7 @@ type ProfileEditPanelProps = {
     age: number;
     gender: string;
     interests: string[];
-  }) => void;
+  }) => Promise<void>;
   onDelete: (id: string) => void;
 };
 
@@ -34,6 +34,7 @@ export default function ProfileEditPanel({
   const [gender, setGender] = useState("male");
   const [interests, setInterests] = useState("");
   const [interestsError, setInterestsError] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -50,6 +51,7 @@ export default function ProfileEditPanel({
         setInterests("");
       }
       setInterestsError(null);
+      setSubmitError(null);
       setSubmitting(false);
     }
   }, [open, profile]);
@@ -68,15 +70,18 @@ export default function ProfileEditPanel({
       return;
     }
     setInterestsError(null);
+    setSubmitError(null);
     setSubmitting(true);
     try {
-      await Promise.resolve(
-        onSave({
-          name,
-          age: parseInt(age),
-          gender,
-          interests: parsedInterests,
-        }),
+      await onSave({
+        name,
+        age: parseInt(age),
+        gender,
+        interests: parsedInterests,
+      });
+    } catch {
+      setSubmitError(
+        "Could not save the profile. Check the backend connection and try again.",
       );
     } finally {
       setSubmitting(false);
@@ -121,7 +126,10 @@ export default function ProfileEditPanel({
               <Input
                 placeholder="Name"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {
+                  setName(e.target.value);
+                  if (submitError) setSubmitError(null);
+                }}
                 required
                 className="h-[44px]"
               />
@@ -135,7 +143,10 @@ export default function ProfileEditPanel({
                 type="number"
                 placeholder="Age"
                 value={age}
-                onChange={(e) => setAge(e.target.value)}
+                onChange={(e) => {
+                  setAge(e.target.value);
+                  if (submitError) setSubmitError(null);
+                }}
                 required
                 min={1}
                 max={18}
@@ -149,7 +160,10 @@ export default function ProfileEditPanel({
               </label>
               <select
                 value={gender}
-                onChange={(e) => setGender(e.target.value)}
+                onChange={(e) => {
+                  setGender(e.target.value);
+                  if (submitError) setSubmitError(null);
+                }}
                 className="h-[44px] w-full min-w-0 rounded-[10px] border border-input bg-input-bg px-3 text-sm transition-colors outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
               >
                 <option value="male">Boy</option>
@@ -168,6 +182,7 @@ export default function ProfileEditPanel({
                 onChange={(e) => {
                   setInterests(e.target.value);
                   if (interestsError) setInterestsError(null);
+                  if (submitError) setSubmitError(null);
                 }}
                 aria-invalid={interestsError ? "true" : "false"}
                 aria-describedby={
@@ -185,6 +200,11 @@ export default function ProfileEditPanel({
                   className="text-xs font-medium text-destructive"
                 >
                   {interestsError}
+                </p>
+              )}
+              {submitError && (
+                <p className="text-xs font-medium text-destructive" role="alert">
+                  {submitError}
                 </p>
               )}
             </div>

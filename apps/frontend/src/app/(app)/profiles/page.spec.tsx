@@ -176,6 +176,39 @@ describe("ProfilesPage — form validation", () => {
     expect(await screen.findByText("Sam")).toBeInTheDocument();
   });
 
+  it("shows a submit error when profile creation fails", async () => {
+    mockFetch((url, init) => {
+      if (init?.method === "POST" && url === "/api/child-profiles") {
+        return {
+          ok: false,
+          json: async () => ({ message: "Backend unavailable" }),
+        } as Response;
+      }
+
+      if (url === "/api/child-profiles") {
+        return { ok: true, json: async () => mockProfiles } as Response;
+      }
+
+      return { ok: true, json: async () => ({}) } as Response;
+    });
+
+    render(<ProfilesPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Noah")).toBeInTheDocument();
+    });
+
+    openForm();
+    fillForm({ interests: "dinosaurs" });
+
+    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+
+    expect(
+      await screen.findByText("Could not save the profile. Check the backend connection and try again."),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Create profile")).toBeInTheDocument();
+  });
+
   it("clears the error when the user types in the interests field", async () => {
     render(<ProfilesPage />);
 
