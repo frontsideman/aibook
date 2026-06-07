@@ -1,6 +1,6 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
-import { BookStatus, ReasoningEffort } from '@repo/database';
+import { BookStatus, BookStyle, ReasoningEffort, Tone } from '@repo/database';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { PdfService } from '../pdf/pdf.service';
@@ -19,6 +19,7 @@ export class CreateBookDto {
 
 export class SearchQueryDto {
   title?: string;
+  search?: string;
   style?: string;
   status?: string;
   childId?: string;
@@ -35,6 +36,18 @@ export class RegenerateDto {
 }
 
 const DEFAULT_REASONING_EFFORT = ReasoningEffort.MEDIUM;
+const STALE_GENERATING_BOOK_AGE_MS = 10 * 60 * 1000;
+
+function normalizeEnumValue<T extends string>(value: string | undefined, allowed: readonly T[], fieldName: string): T | undefined {
+  if (!value) return undefined;
+
+  const normalized = value.trim().toUpperCase() as T;
+  if (!allowed.includes(normalized)) {
+    throw new BadRequestException(`Invalid ${fieldName}`);
+  }
+
+  return normalized;
+}
 
 @Injectable()
 export class BookService {
@@ -46,8 +59,26 @@ export class BookService {
     private configService: ConfigService,
   ) {}
 
+  private async ensureGenerationQueueReady() {
+    try {
+      await this.bookQueue.waitUntilReady();
+    } catch {
+      throw new ServiceUnavailableException('Book generation queue is unavailable');
+    }
+  }
+
   async findAll(params: { skip?: number; take?: number; where?: any }) {
     const { skip, take, where } = params;
+    const staleGenerationCutoff = new Date(Date.now() - STALE_GENERATING_BOOK_AGE_MS);
+
+    await this.prisma.client.book.updateMany({
+      where: {
+        status: BookStatus.GENERATING,
+        updatedAt: { lt: staleGenerationCutoff },
+      },
+      data: { status: BookStatus.FAILED },
+    });
+
     const [books, total] = await Promise.all([
       this.prisma.client.book.findMany({
         skip,
@@ -79,24 +110,41 @@ export class BookService {
       },
     });
     const activeModel = this.configService.getOrThrow('LLM_MODEL_NAME');
+    const style = normalizeEnumValue(dto.style, Object.values(BookStyle), 'book style');
+    const tone = normalizeEnumValue(dto.tone, Object.values(Tone), 'book tone');
+
+    if (!style) {
+      throw new BadRequestException('Book style is required');
+    }
+
+    await this.ensureGenerationQueueReady();
 
     const book = await this.prisma.client.book.create({
       data: {
         title: dto.storyTitle || (dto.userContent ? dto.userContent.slice(0, 50) : 'New Book'),
         type: dto.type,
-        style: dto.style,
+        style,
         llmModel: activeModel,
         reasoningEffort: user?.preferredReasoningEffort ?? DEFAULT_REASONING_EFFORT,
-        tone: dto.tone,
+        tone,
         parentComments: dto.parentComments,
-        status: BookStatus.DRAFT,
+        status: BookStatus.GENERATING,
         userId,
         childId: dto.childId,
       },
     });
 
-    await this.bookQueue.add('generate-book', { bookId: book.id });
-    return { bookId: book.id, status: 'DRAFT' };
+    try {
+      await this.bookQueue.add('generate-book', { bookId: book.id });
+    } catch {
+      await this.prisma.client.book.update({
+        where: { id: book.id },
+        data: { status: BookStatus.FAILED },
+      });
+      throw new ServiceUnavailableException('Book generation queue is unavailable');
+    }
+
+    return { bookId: book.id, status: 'GENERATING' };
   }
 
   async getById(bookId: string, userId?: string) {
@@ -113,6 +161,7 @@ export class BookService {
   }
 
   async triggerGeneration(bookId: string) {
+    await this.ensureGenerationQueueReady();
     await this.bookQueue.add('generate-book', { bookId });
     return { bookId, status: 'QUEUED' };
   }
@@ -189,6 +238,8 @@ export class BookService {
   async regenerate(bookId: string, dto: RegenerateDto, userId?: string) {
     const book = await this.prisma.client.book.findUnique({ where: { id: bookId, ...(userId ? { userId } : {}) } });
     if (!book) throw new NotFoundException('Book not found');
+
+    await this.ensureGenerationQueueReady();
 
     await this.prisma.client.book.update({
       where: { id: bookId },

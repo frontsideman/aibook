@@ -64,6 +64,20 @@ describe('BookController', () => {
       });
     });
 
+    it('should treat search as a title filter alias', async () => {
+      const query = { search: 'Moon', page: '1', limit: '10' };
+      const req = { user: { id: 'user-3' } };
+      await controller.findAll(query as any, req);
+      expect(service.findAll).toHaveBeenCalledWith({
+        where: {
+          userId: 'user-3',
+          title: { contains: 'Moon', mode: 'insensitive' },
+        },
+        skip: 0,
+        take: 10,
+      });
+    });
+
     it('should include status and childId filters when provided', async () => {
       const query = { status: 'REVIEW', childId: 'child-1', page: '2', limit: '5' };
       const req = { user: { id: 'user-2' } };

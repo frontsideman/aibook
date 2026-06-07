@@ -5,7 +5,7 @@ import { PdfService } from '../pdf/pdf.service';
 import { StorageService } from '../storage/storage.service';
 import { BookStatus, ReasoningEffort } from '@repo/database';
 import { Queue } from 'bullmq';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 describe('BookService', () => {
@@ -25,6 +25,7 @@ describe('BookService', () => {
       findUnique: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
+      updateMany: jest.fn(),
       count: jest.fn(),
     },
     page: {
@@ -37,13 +38,14 @@ describe('BookService', () => {
   const mockPrismaService = { client: mockPrismaClient };
   const mockPdfService = { generateBookPdf: jest.fn() };
   const mockStorageService = { upload: jest.fn() };
-  const mockQueue = { add: jest.fn() };
+  const mockQueue = { add: jest.fn(), waitUntilReady: jest.fn() };
   const mockConfigService = {
     getOrThrow: jest.fn(),
   };
 
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockQueue.waitUntilReady.mockResolvedValue(undefined);
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BookService,
@@ -72,22 +74,37 @@ describe('BookService', () => {
       const books = [{ id: '1', title: 'Test', child: { name: 'Alice' }, pages: [], createdAt: new Date() }];
       mockPrismaClient.book.findMany.mockResolvedValue(books);
       mockPrismaClient.book.count.mockResolvedValue(1);
+      mockPrismaClient.book.updateMany.mockResolvedValue({ count: 0 });
 
       const result = await service.findAll({ skip: 0, take: 10, where: {} });
+      expect(mockPrismaClient.book.updateMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({
+            status: BookStatus.GENERATING,
+          }),
+          data: { status: BookStatus.FAILED },
+        }),
+      );
       expect(result).toEqual({ books, total: 1, page: 1, totalPages: 1 });
     });
   });
 
   describe('createAndGenerate', () => {
     it('should create book and enqueue job', async () => {
-      const dto = { childId: 'c1', type: 'AI_ADAPTED' as const, style: 'CARTOON' };
+      const dto = { childId: 'c1', type: 'AI_ADAPTED' as const, style: 'cartoon' };
       const createdBook = { id: 'book-1' };
       mockPrismaClient.book.create.mockResolvedValue(createdBook);
 
       const result = await service.createAndGenerate(dto, 'user-1');
       expect(prisma.client.book.create).toHaveBeenCalled();
+      expect(mockQueue.waitUntilReady).toHaveBeenCalled();
       expect(mockQueue.add).toHaveBeenCalledWith('generate-book', { bookId: 'book-1' });
-      expect(result).toEqual({ bookId: 'book-1', status: 'DRAFT' });
+      expect(result).toEqual({ bookId: 'book-1', status: 'GENERATING' });
+      expect(prisma.client.book.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({ style: 'CARTOON' }),
+        }),
+      );
     });
 
     it('stores the user generation defaults on a newly created book', async () => {
@@ -95,7 +112,8 @@ describe('BookService', () => {
         childId: 'child-1',
         type: 'AI_ADAPTED' as const,
         storyTitle: 'Cinderella',
-        style: 'WATERCOLOR',
+        style: 'watercolor',
+        tone: 'playful',
       };
       const userId = 'user-1';
 
@@ -121,9 +139,26 @@ describe('BookService', () => {
           data: expect.objectContaining({
             llmModel: 'openai:gpt-5.4.1',
             reasoningEffort: ReasoningEffort.HIGH,
+            style: 'WATERCOLOR',
+            tone: 'PLAYFUL',
           }),
         }),
       );
+    });
+
+    it('fails fast when the generation queue is unavailable', async () => {
+      const dto = {
+        childId: 'child-1',
+        type: 'AI_ADAPTED' as const,
+        storyTitle: 'Cinderella',
+        style: 'watercolor',
+      };
+
+      mockQueue.waitUntilReady.mockRejectedValue(new Error('redis down'));
+
+      await expect(service.createAndGenerate(dto, 'user-1')).rejects.toThrow(ServiceUnavailableException);
+      expect(mockPrismaClient.book.create).not.toHaveBeenCalled();
+      expect(mockQueue.add).not.toHaveBeenCalled();
     });
 
     it('falls back to built-in defaults when user settings are unavailable', async () => {
@@ -131,7 +166,7 @@ describe('BookService', () => {
         childId: 'child-1',
         type: 'AI_ADAPTED' as const,
         storyTitle: 'Cinderella',
-        style: 'WATERCOLOR',
+        style: 'watercolor',
       };
 
       mockPrismaClient.user.findUnique.mockResolvedValue(null);
@@ -146,6 +181,7 @@ describe('BookService', () => {
           data: expect.objectContaining({
             llmModel: 'openai:gpt-5.4.1',
             reasoningEffort: ReasoningEffort.MEDIUM,
+            style: 'WATERCOLOR',
           }),
         }),
       );
@@ -229,8 +265,10 @@ describe('BookService', () => {
   describe('regenerate', () => {
     it('should delete pages and enqueue new job', async () => {
       mockPrismaClient.book.findUnique.mockResolvedValue({ id: 'b1', userId: 'user-1' });
+      mockQueue.waitUntilReady.mockResolvedValue(undefined);
       const result = await service.regenerate('b1', { parentFeedback: 'Make it funnier' }, 'user-1');
       expect(prisma.client.page.deleteMany).toHaveBeenCalledWith({ where: { bookId: 'b1' } });
+      expect(mockQueue.waitUntilReady).toHaveBeenCalled();
       expect(mockQueue.add).toHaveBeenCalledWith('generate-book', {
         bookId: 'b1',
         parentFeedback: 'Make it funnier',

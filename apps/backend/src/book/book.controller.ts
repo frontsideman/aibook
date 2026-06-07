@@ -18,7 +18,8 @@ export class BookController {
     const skip = (page - 1) * limit;
 
     const where: any = { userId: req.user.id };
-    if (query.title) where.title = { contains: query.title, mode: 'insensitive' };
+    const titleFilter = query.title || query.search;
+    if (titleFilter) where.title = { contains: titleFilter, mode: 'insensitive' };
     if (query.style) where.style = query.style;
     if (query.status) where.status = query.status;
     if (query.childId) where.childId = query.childId;
