@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 import ChildProfileCard, {
   type ChildProfile,
@@ -15,6 +16,7 @@ export default function ProfilesPage() {
   const [editingProfile, setEditingProfile] = useState<ChildProfile | null>(
     null,
   );
+  const searchParams = useSearchParams();
 
   const fetchProfiles = () => {
     fetch("/api/child-profiles")
@@ -27,6 +29,12 @@ export default function ProfilesPage() {
   useEffect(() => {
     fetchProfiles();
   }, []);
+
+  useEffect(() => {
+    if (searchParams.get("new") === "true") {
+      openCreatePanel();
+    }
+  }, [searchParams]);
 
   const handleCreate = async (data: {
     name: string;
@@ -111,7 +119,9 @@ export default function ProfilesPage() {
 
       {loading ? (
         <div className="paper-card flex min-h-[220px] items-center justify-center rounded-[18px] p-8">
-          <p className="text-[15px] text-muted-foreground">Loading profiles...</p>
+          <p className="text-[15px] text-muted-foreground">
+            Loading profiles...
+          </p>
         </div>
       ) : profiles.length === 0 ? (
         <div className="paper-card flex min-h-[220px] flex-col items-center justify-center rounded-[18px] px-6 py-12 text-center">
@@ -121,13 +131,6 @@ export default function ProfilesPage() {
           <p className="mt-2 max-w-[420px] text-[14px] leading-relaxed text-muted-foreground">
             Create a child profile to reuse details across book generation.
           </p>
-          <button
-            onClick={openCreatePanel}
-            className="mt-5 inline-flex h-11 items-center gap-2 rounded-[11px] bg-primary px-4 text-[14px] font-extrabold text-primary-foreground transition hover:opacity-90"
-          >
-            <Plus className="h-4 w-4" aria-hidden="true" />
-            Create first profile
-          </button>
         </div>
       ) : (
         <div

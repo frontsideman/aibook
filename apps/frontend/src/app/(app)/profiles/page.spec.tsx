@@ -3,6 +3,13 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import ProfilesPage from "./page";
 
+let searchParamNew: string | null = null;
+vi.mock("next/navigation", () => ({
+  useSearchParams: () => ({
+    get: (key: string) => (key === "new" ? searchParamNew : null),
+  }),
+}));
+
 const mockProfiles = [
   {
     id: "p1",
@@ -38,6 +45,7 @@ describe("ProfilesPage — form validation", () => {
   afterEach(() => {
     vi.restoreAllMocks();
     global.fetch = originalFetch;
+    searchParamNew = null;
   });
 
   const openForm = () => {
@@ -187,6 +195,7 @@ describe("ProfilesPage — side panel", () => {
   afterEach(() => {
     vi.restoreAllMocks();
     global.fetch = originalFetch;
+    searchParamNew = null;
   });
 
   it("opens panel in create mode when Add Profile is clicked", async () => {
@@ -244,12 +253,24 @@ describe("ProfilesPage — side panel", () => {
 
     expect(screen.queryByText(/Delete.*profile\?/)).not.toBeInTheDocument();
   });
+
+  it("automatically opens the creation panel when ?new=true is present", async () => {
+    searchParamNew = "true";
+    render(<ProfilesPage />);
+
+    await waitFor(() => {
+      expect(screen.getByText("Edit profile")).toBeInTheDocument();
+    });
+    // Verify it's in create mode (no delete section)
+    expect(screen.queryByText(/Delete.*profile\?/)).not.toBeInTheDocument();
+  });
 });
 
 describe("ProfilesPage — layout copy", () => {
   afterEach(() => {
     vi.restoreAllMocks();
     global.fetch = originalFetch;
+    searchParamNew = null;
   });
 
   it("renders the Pencil-aligned page heading copy", async () => {
