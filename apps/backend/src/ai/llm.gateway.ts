@@ -4,6 +4,7 @@ import { getLlmConfig } from './llm.config';
 
 type ProviderResponse = {
   storyText?: string;
+  choices?: Array<{ message?: { content?: string } }>;
 };
 
 const LLM_REQUEST_TIMEOUT_MS = 30_000;
@@ -26,6 +27,15 @@ function isAbortError(error: unknown): boolean {
   );
 }
 
+function buildRequestUrl(apiUrl: string) {
+  const normalized = apiUrl.replace(/\/$/, '');
+  if (normalized.endsWith('/chat/completions')) {
+    return normalized;
+  }
+
+  return `${normalized}/chat/completions`;
+}
+
 export class LlmGateway {
   constructor(
     private readonly configService: ConfigService,
@@ -34,22 +44,25 @@ export class LlmGateway {
 
   async generateStory(
     prompt: string,
-    _options: StoryGenerationOptions,
+    options: StoryGenerationOptions,
   ): Promise<string> {
     const { apiUrl, apiKey, modelName } = getLlmConfig(this.configService);
+    const requestUrl = buildRequestUrl(apiUrl);
     const abortController = new AbortController();
     const timeoutId = setTimeout(() => abortController.abort(), LLM_REQUEST_TIMEOUT_MS);
 
     try {
-      const response = await this.fetchImpl(apiUrl, {
+      const response = await this.fetchImpl(requestUrl, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          prompt,
           model: modelName,
+          messages: [{ role: 'user', content: prompt }],
+          reasoning_effort: options.reasoningEffort.toLowerCase(),
+          stream: false,
         }),
         signal: abortController.signal,
       });
@@ -69,15 +82,29 @@ export class LlmGateway {
         throw toGatewayError('response body was not an object');
       }
 
-      if (typeof body.storyText !== 'string') {
-        throw toGatewayError('response did not include story text');
+      const choiceContent = body.choices?.[0]?.message?.content;
+      if (typeof choiceContent === 'string') {
+        const trimmed = choiceContent.trim();
+        if (trimmed.length === 0) {
+          throw toGatewayError('story text was empty');
+        }
+        return trimmed;
       }
 
-      if (body.storyText.trim().length === 0) {
-        throw toGatewayError('story text was empty');
+      if (Object.prototype.hasOwnProperty.call(body, 'storyText')) {
+        if (typeof body.storyText !== 'string') {
+          throw toGatewayError('response did not include story text');
+        }
+
+        const trimmed = body.storyText.trim();
+        if (trimmed.length === 0) {
+          throw toGatewayError('story text was empty');
+        }
+
+        return trimmed;
       }
 
-      return body.storyText;
+      throw toGatewayError('response did not include story text');
     } catch (error) {
       if (isAbortError(error)) {
         throw toTimeoutError();

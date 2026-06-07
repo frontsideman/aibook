@@ -12,6 +12,9 @@ export class AiService {
   ) {}
 
   async generateStory(prompt: string, options: StoryGenerationOptions): Promise<string> {
+
+    console.log("🚀 +++ AiService +++ generateStory +++ prompt:", prompt)
+
     return this.aiProvider.generateStory(prompt, options);
   }
 }

@@ -12,6 +12,7 @@ describe('BookProcessor', () => {
 
   const mockPrismaClient = {
     book: { findUnique: jest.fn(), update: jest.fn() },
+    storyLibrary: { findUnique: jest.fn() },
     page: { create: jest.fn() },
     illustration: { create: jest.fn() },
     $transaction: jest.fn(),
@@ -67,11 +68,15 @@ describe('BookProcessor', () => {
       data: { status: BookStatus.GENERATING },
     });
     expect(aiService.generateStory).toHaveBeenCalledWith(
-      expect.stringContaining('Generate a children\'s book story titled "Test Book"'),
+      expect.stringContaining('Use the classic story titled "Test Book" as the source tale'),
       {
         model: 'provider:model-mini',
         reasoningEffort: ReasoningEffort.MEDIUM,
       },
+    );
+    expect(aiService.generateStory).toHaveBeenCalledWith(
+      expect.stringContaining('Style: watercolor.'),
+      expect.any(Object),
     );
     expect(prisma.client.page.create).toHaveBeenCalledTimes(3);
     expect(prisma.client.page.create).toHaveBeenNthCalledWith(1, {

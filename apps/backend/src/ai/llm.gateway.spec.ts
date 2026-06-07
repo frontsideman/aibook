@@ -23,7 +23,7 @@ describe('LlmGateway', () => {
     };
 
     jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-      if (key === 'LLM_API_URL') return 'https://provider.example.com';
+      if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
       if (key === 'LLM_API_KEY') return 'secret-key';
       if (key === 'LLM_MODEL_NAME') return 'storybook-model';
       return undefined;
@@ -32,7 +32,7 @@ describe('LlmGateway', () => {
     await gateway.generateStory('A brave little cat', options);
 
     expect(fetchMock).toHaveBeenCalledWith(
-      'https://provider.example.com',
+      'https://provider.example.com/chat/completions',
       expect.objectContaining({
         method: 'POST',
         headers: expect.objectContaining({
@@ -41,8 +41,10 @@ describe('LlmGateway', () => {
         }),
         signal: expect.any(AbortSignal),
         body: JSON.stringify({
-          prompt: 'A brave little cat',
           model: 'storybook-model',
+          messages: [{ role: 'user', content: 'A brave little cat' }],
+          reasoning_effort: 'medium',
+          stream: false,
         }),
       }),
     );
@@ -71,7 +73,7 @@ describe('LlmGateway', () => {
       const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
 
       jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-        if (key === 'LLM_API_URL') return 'https://provider.example.com';
+        if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
         if (key === 'LLM_API_KEY') return 'secret-key';
         if (key === 'LLM_MODEL_NAME') return 'storybook-model';
         return undefined;
@@ -90,7 +92,7 @@ describe('LlmGateway', () => {
       await rejectionAssertion;
 
       expect(fetchMock).toHaveBeenCalledWith(
-        'https://provider.example.com',
+        'https://provider.example.com/chat/completions',
         expect.objectContaining({
           signal: expect.any(AbortSignal),
         }),
@@ -108,7 +110,7 @@ describe('LlmGateway', () => {
     const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
 
     jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-      if (key === 'LLM_API_URL') return 'https://provider.example.com';
+      if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
       if (key === 'LLM_API_KEY') return 'secret-key';
       if (key === 'LLM_MODEL_NAME') return 'storybook-model';
       return undefined;
@@ -120,11 +122,13 @@ describe('LlmGateway', () => {
     });
 
     expect(fetchMock).toHaveBeenCalledWith(
-      'https://provider.example.com',
+      'https://provider.example.com/chat/completions',
       expect.objectContaining({
         body: JSON.stringify({
-          prompt: 'A brave little cat',
           model: 'storybook-model',
+          messages: [{ role: 'user', content: 'A brave little cat' }],
+          reasoning_effort: 'medium',
+          stream: false,
         }),
       }),
     );
@@ -138,7 +142,7 @@ describe('LlmGateway', () => {
     const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
 
     jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-      if (key === 'LLM_API_URL') return 'https://provider.example.com';
+      if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
       if (key === 'LLM_API_KEY') return 'secret-key';
       if (key === 'LLM_MODEL_NAME') return 'storybook-model';
       return undefined;
@@ -164,7 +168,7 @@ describe('LlmGateway', () => {
     const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
 
     jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-      if (key === 'LLM_API_URL') return 'https://provider.example.com';
+      if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
       if (key === 'LLM_API_KEY') return 'secret-key';
       if (key === 'LLM_MODEL_NAME') return 'storybook-model';
       return undefined;
@@ -188,7 +192,7 @@ describe('LlmGateway', () => {
     const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
 
     jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-      if (key === 'LLM_API_URL') return 'https://provider.example.com';
+      if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
       if (key === 'LLM_API_KEY') return 'secret-key';
       if (key === 'LLM_MODEL_NAME') return 'storybook-model';
       return undefined;
@@ -212,7 +216,7 @@ describe('LlmGateway', () => {
     const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
 
     jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-      if (key === 'LLM_API_URL') return 'https://provider.example.com';
+      if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
       if (key === 'LLM_API_KEY') return 'secret-key';
       if (key === 'LLM_MODEL_NAME') return 'storybook-model';
       return undefined;
@@ -236,7 +240,7 @@ describe('LlmGateway', () => {
     const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
 
     jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-      if (key === 'LLM_API_URL') return 'https://provider.example.com';
+      if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
       if (key === 'LLM_API_KEY') return 'secret-key';
       if (key === 'LLM_MODEL_NAME') return 'storybook-model';
       return undefined;
@@ -260,7 +264,7 @@ describe('LlmGateway', () => {
     const gateway = new LlmGateway(configService, fetchMock as typeof fetch);
 
     jest.spyOn(configService, 'get').mockImplementation((key: string) => {
-      if (key === 'LLM_API_URL') return 'https://provider.example.com';
+      if (key === 'LLM_API_URL') return 'https://provider.example.com/chat/completions';
       if (key === 'LLM_API_KEY') return 'secret-key';
       if (key === 'LLM_MODEL_NAME') return 'storybook-model';
       return undefined;

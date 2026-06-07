@@ -31,21 +31,24 @@ export class BookProcessor extends WorkerHost {
     });
 
     try {
-      let storyPrompt = `Generate a children's book story titled "${book.title}" for a ${book.child.age} year old ${book.child.gender} who likes ${(book.child.interests || []).join(', ')}.`;
-
-      if (book.tone) {
-        storyPrompt += ` The tone should be ${book.tone.toLowerCase()}.`;
-      }
-
-      if (book.parentComments) {
-        storyPrompt += ` Parent instructions: ${book.parentComments}.`;
-      }
-
-      if (parentFeedback) {
-        storyPrompt += ` The parent requested changes: ${parentFeedback}. Revise the story accordingly.`;
-      }
-
-      storyPrompt += ` The story should be between 3 and 20 pages long. Format each page as "Page X: [content]".`;
+      const childInterests = (book.child.interests || []).join(', ') || 'no specific interests listed';
+      const storyPrompt = [
+        'You are writing an original children\'s book adaptation.',
+        `Use the classic story titled "${book.title}" as the source tale and rely on your knowledge of that story to recreate its key characters and plot beats.`,
+        `Child profile: ${book.child.name}, a ${book.child.age}-year-old ${book.child.gender} child who likes ${childInterests}.`,
+        `Style: ${book.style.toLowerCase()}.`,
+        book.tone ? `Tone: ${book.tone.toLowerCase()}.` : null,
+        book.parentComments ? `Parent instructions: ${book.parentComments}.` : null,
+        parentFeedback ? `Parent requested changes: ${parentFeedback}. Revise the story accordingly.` : null,
+        'Write a fresh, age-appropriate adaptation that follows the original story structure, but do not copy the source text verbatim.',
+        'Return 3 to 20 pages.',
+        'Format the output strictly as:',
+        'Page 1: ...',
+        'Page 2: ...',
+        'Page 3: ...',
+      ]
+        .filter(Boolean)
+        .join(' ');
 
       const storyText = await this.aiService.generateStory(storyPrompt, {
         model: book.llmModel,
