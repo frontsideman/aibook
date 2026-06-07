@@ -26,10 +26,12 @@ export class MockAuthGuard implements CanActivate {
       where: { id: MOCK_USER.id },
       update: {
         email: MOCK_USER.email,
+        subscriptionActive: true,
       },
       create: {
         id: MOCK_USER.id,
         email: MOCK_USER.email,
+        subscriptionActive: true,
       },
     });
 

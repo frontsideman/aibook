@@ -67,10 +67,12 @@ describe('MockAuthGuard', () => {
       where: { id: 'mock-user-id' },
       update: {
         email: 'mock@example.com',
+        subscriptionActive: true,
       },
       create: {
         id: 'mock-user-id',
         email: 'mock@example.com',
+        subscriptionActive: true,
       },
     });
     expect(request.user).toEqual({
