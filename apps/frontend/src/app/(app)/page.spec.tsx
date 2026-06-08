@@ -48,7 +48,11 @@ describe('DashboardPage view modes', () => {
   });
 
   it('defaults to table mode when query is missing', async () => {
-    render(<HeaderProvider><DashboardPage /></HeaderProvider>);
+    render(
+      <HeaderProvider>
+        <DashboardPage />
+      </HeaderProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByTestId('books-table-mode')).toBeInTheDocument();
@@ -58,7 +62,11 @@ describe('DashboardPage view modes', () => {
 
   it('renders cards mode when view=list', async () => {
     viewParam = 'list';
-    render(<HeaderProvider><DashboardPage /></HeaderProvider>);
+    render(
+      <HeaderProvider>
+        <DashboardPage />
+      </HeaderProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByTestId('books-cards-mode')).toBeInTheDocument();
@@ -68,7 +76,11 @@ describe('DashboardPage view modes', () => {
 
   it('renders table mode when view=grid', async () => {
     viewParam = 'grid';
-    render(<HeaderProvider><DashboardPage /></HeaderProvider>);
+    render(
+      <HeaderProvider>
+        <DashboardPage />
+      </HeaderProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByTestId('books-table-mode')).toBeInTheDocument();
@@ -78,7 +90,11 @@ describe('DashboardPage view modes', () => {
 
   it('falls back to table mode for invalid view values', async () => {
     viewParam = 'cards';
-    render(<HeaderProvider><DashboardPage /></HeaderProvider>);
+    render(
+      <HeaderProvider>
+        <DashboardPage />
+      </HeaderProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByTestId('books-table-mode')).toBeInTheDocument();
@@ -87,7 +103,11 @@ describe('DashboardPage view modes', () => {
   });
 
   it('updates URL query via replace when toggling mode', async () => {
-    render(<HeaderProvider><DashboardPage /></HeaderProvider>);
+    render(
+      <HeaderProvider>
+        <DashboardPage />
+      </HeaderProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByTestId('books-table-mode')).toBeInTheDocument();
@@ -101,7 +121,11 @@ describe('DashboardPage view modes', () => {
   });
 
   it('renders the status summary with book counts', async () => {
-    render(<HeaderProvider><DashboardPage /></HeaderProvider>);
+    render(
+      <HeaderProvider>
+        <DashboardPage />
+      </HeaderProvider>
+    );
 
     await waitFor(() => {
       expect(screen.getByTestId('status-summary')).toBeInTheDocument();

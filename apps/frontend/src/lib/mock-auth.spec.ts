@@ -30,10 +30,7 @@ function ensureClearableLocalStorage(): void {
   });
 }
 
-function withLocalStorageOverride(
-  value: Storage | undefined,
-  run: () => void,
-): void {
+function withLocalStorageOverride(value: Storage | undefined, run: () => void): void {
   const originalDescriptor = Object.getOwnPropertyDescriptor(window, 'localStorage');
 
   Object.defineProperty(window, 'localStorage', {
@@ -115,8 +112,8 @@ describe('mock auth storage', () => {
           createDemoSession({
             email: 'demo@example.com',
             name: 'Demo User',
-          }),
-        ),
+          })
+        )
       ).not.toThrow();
       expect(() => clearMockSession()).not.toThrow();
     } finally {
@@ -170,7 +167,7 @@ describe('mock auth storage', () => {
       () => {
         expect(() => writeMockSession(session)).not.toThrow();
         expect(() => clearMockSession()).not.toThrow();
-      },
+      }
     );
   });
 
@@ -192,7 +189,7 @@ describe('mock auth storage', () => {
       } as Storage,
       () => {
         expect(readMockSession()).toBeNull();
-      },
+      }
     );
   });
 });

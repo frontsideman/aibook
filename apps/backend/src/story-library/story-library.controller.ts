@@ -11,7 +11,7 @@ export class StoryLibraryController {
   async findAll(
     @Query('search') search?: string,
     @Query('limit') limit?: string,
-    @Query('offset') offset?: string,
+    @Query('offset') offset?: string
   ) {
     return this.service.findAll({
       search,

@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  createContext,
-  use,
-  useEffect,
-  useState,
-  type ReactNode,
-} from 'react';
+import { createContext, use, useEffect, useState, type ReactNode } from 'react';
 
 import {
   clearMockSession,

@@ -42,7 +42,7 @@ function renderLoginPage() {
   return render(
     <AuthProvider>
       <LoginPage />
-    </AuthProvider>,
+    </AuthProvider>
   );
 }
 
@@ -50,7 +50,7 @@ function renderSignupPage() {
   return render(
     <AuthProvider>
       <SignupPage />
-    </AuthProvider>,
+    </AuthProvider>
   );
 }
 
@@ -77,25 +77,17 @@ describe('auth pages', () => {
     renderLoginPage();
 
     expect(screen.getByText('aiBook')).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { name: 'Welcome back' }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Sign in to continue your books.'),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Welcome back' })).toBeInTheDocument();
+    expect(screen.getByText('Sign in to continue your books.')).toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Continue' })).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'Continue with Google' }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: 'Forgot password?' }),
-    ).toHaveAttribute('href', '/forgot-password');
-    expect(screen.getByRole('link', { name: 'Create account' })).toHaveAttribute(
+    expect(screen.getByRole('button', { name: 'Continue with Google' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Forgot password?' })).toHaveAttribute(
       'href',
-      '/signup',
+      '/forgot-password'
     );
+    expect(screen.getByRole('link', { name: 'Create account' })).toHaveAttribute('href', '/signup');
   });
 
   it('shows inline validation when login fields are empty', async () => {
@@ -103,9 +95,7 @@ describe('auth pages', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Continue' }));
 
-    expect(
-      await screen.findByText('Check your email and password.'),
-    ).toBeInTheDocument();
+    expect(await screen.findByText('Check your email and password.')).toBeInTheDocument();
     expect(replace).not.toHaveBeenCalled();
     expect(window.localStorage.getItem(MOCK_AUTH_STORAGE_KEY)).toBeNull();
   });
@@ -125,7 +115,7 @@ describe('auth pages', () => {
 
     await waitFor(() => {
       expect(window.localStorage.getItem(MOCK_AUTH_STORAGE_KEY)).toContain(
-        '"email":"demo.parent@example.com"',
+        '"email":"demo.parent@example.com"'
       );
     });
 
@@ -138,22 +128,13 @@ describe('auth pages', () => {
     renderSignupPage();
 
     expect(screen.getByText('aiBook')).toBeInTheDocument();
-    expect(
-      screen.getByRole('heading', { name: 'Create your account' }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText('Start creating personalized keepsakes.'),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Create your account' })).toBeInTheDocument();
+    expect(screen.getByText('Start creating personalized keepsakes.')).toBeInTheDocument();
     expect(screen.getByLabelText('Name')).toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
-    expect(
-      screen.getByText('Use at least 8 characters.'),
-    ).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Log in' })).toHaveAttribute(
-      'href',
-      '/login',
-    );
+    expect(screen.getByText('Use at least 8 characters.')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Log in' })).toHaveAttribute('href', '/login');
     expect(screen.getByRole('button', { name: 'Create account' })).toBeInTheDocument();
   });
 
@@ -172,7 +153,7 @@ describe('auth pages', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
 
     expect(
-      await screen.findByText('Complete all fields with a valid password.'),
+      await screen.findByText('Complete all fields with a valid password.')
     ).toBeInTheDocument();
     expect(replace).not.toHaveBeenCalled();
     expect(window.localStorage.getItem(MOCK_AUTH_STORAGE_KEY)).toBeNull();
@@ -192,20 +173,16 @@ describe('auth pages', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: 'Create account' }));
 
-    expect(
-      screen.getByRole('button', { name: 'Creating account...' }),
-    ).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Creating account...' })).toBeDisabled();
 
     await waitFor(() => {
       expect(window.localStorage.getItem(MOCK_AUTH_STORAGE_KEY)).toContain(
-        '"email":"ava.parent@example.com"',
+        '"email":"ava.parent@example.com"'
       );
     });
 
     await waitFor(() => {
-      expect(window.localStorage.getItem(MOCK_AUTH_STORAGE_KEY)).toContain(
-        '"name":"Ava Parent"',
-      );
+      expect(window.localStorage.getItem(MOCK_AUTH_STORAGE_KEY)).toContain('"name":"Ava Parent"');
     });
 
     await waitFor(() => {

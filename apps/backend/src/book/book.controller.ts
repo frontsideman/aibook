@@ -1,8 +1,22 @@
 import {
-  Controller, Get, Post, Patch, Body, Param, Query,
-  UseGuards, Req, ParseIntPipe,
+  Controller,
+  Get,
+  Post,
+  Patch,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+  Req,
+  ParseIntPipe,
 } from '@nestjs/common';
-import { BookService, CreateBookDto, SearchQueryDto, PageEditDto, RegenerateDto } from './book.service';
+import {
+  BookService,
+  CreateBookDto,
+  SearchQueryDto,
+  PageEditDto,
+  RegenerateDto,
+} from './book.service';
 import { SubscriptionGuard } from '../payment/subscription.guard';
 import { MockAuthGuard } from '../mock-auth.guard';
 
@@ -50,7 +64,7 @@ export class BookController {
     @Param('id') id: string,
     @Param('pageNumber', ParseIntPipe) pageNumber: number,
     @Body() body: PageEditDto,
-    @Req() req: any,
+    @Req() req: any
   ) {
     return this.bookService.editPage(id, pageNumber, body, req.user.id);
   }

@@ -17,16 +17,16 @@ export function StyleToneSelector({
   onToneChange,
 }: StyleToneSelectorProps) {
   return (
-    <div className="space-y-6">
-      <div className="space-y-3">
-        <h2 className="text-[16px] font-extrabold text-foreground">3. Select style</h2>
-        <div className="flex flex-wrap gap-2">
+    <div className='space-y-6'>
+      <div className='space-y-3'>
+        <h2 className='text-[16px] font-extrabold text-foreground'>3. Select style</h2>
+        <div className='flex flex-wrap gap-2'>
           {STYLES.map((style) => {
             const isSelected = selectedStyle === style;
             return (
               <button
                 key={style}
-                type="button"
+                type='button'
                 onClick={() => onStyleChange(style)}
                 className={`rounded-[18px] px-3 py-2 text-[13px] font-extrabold transition-colors ${
                   isSelected
@@ -41,15 +41,15 @@ export function StyleToneSelector({
         </div>
       </div>
 
-      <div className="space-y-3">
-        <h2 className="text-[16px] font-extrabold text-foreground">3. Select tone</h2>
-        <div className="flex flex-wrap gap-2">
+      <div className='space-y-3'>
+        <h2 className='text-[16px] font-extrabold text-foreground'>3. Select tone</h2>
+        <div className='flex flex-wrap gap-2'>
           {TONES.map((tone) => {
             const isSelected = selectedTone === tone;
             return (
               <button
                 key={tone}
-                type="button"
+                type='button'
                 onClick={() => onToneChange(tone)}
                 className={`rounded-[18px] px-3 py-2 text-[13px] font-extrabold transition-colors ${
                   isSelected

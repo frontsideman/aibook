@@ -21,7 +21,7 @@ export default function PreviewPage() {
   const [globalFeedback, setGlobalFeedback] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     return () => {
@@ -137,37 +137,41 @@ export default function PreviewPage() {
     }
   };
 
-  if (loading) return <p className="text-muted-foreground">Loading preview...</p>;
-  if (error) return <p className="text-red-600">{error}</p>;
-  if (!data) return <p className="text-muted-foreground">No preview available</p>;
+  if (loading) return <p className='text-muted-foreground'>Loading preview...</p>;
+  if (error) return <p className='text-red-600'>{error}</p>;
+  if (!data) return <p className='text-muted-foreground'>No preview available</p>;
 
   const hasFeedback = Object.values(pageFeedback).some((f) => f.trim()) || globalFeedback.trim();
 
   return (
     <div>
-      <div className="mb-6 flex items-center justify-between">
+      <div className='mb-6 flex items-center justify-between'>
         <div>
-          <h1 className="section-heading !text-3xl">{data.book.title}</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className='section-heading !text-3xl'>{data.book.title}</h1>
+          <p className='text-sm text-muted-foreground'>
             {data.book.style} · {data.book.tone?.toLowerCase()}
-            <span className="ml-2 rounded bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary">REVIEW</span>
+            <span className='ml-2 rounded bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary'>
+              REVIEW
+            </span>
           </p>
         </div>
-        <a href="/" className="text-sm text-muted-foreground hover:text-foreground">
+        <a href='/' className='text-sm text-muted-foreground hover:text-foreground'>
           ← Back to Dashboard
         </a>
       </div>
 
       <SpreadViewer pages={data.book.pages} />
 
-      <div className="mt-8 space-y-4">
-        <h2 className="text-xl font-semibold">Suggest Changes</h2>
+      <div className='mt-8 space-y-4'>
+        <h2 className='text-xl font-semibold'>Suggest Changes</h2>
         {data.book.pages.map((page) => (
-          <div key={page.id} className="paper-card p-4">
-            <div className="mb-2 flex items-center justify-between">
-              <span className="text-sm font-medium">Page {page.pageNumber}</span>
+          <div key={page.id} className='paper-card p-4'>
+            <div className='mb-2 flex items-center justify-between'>
+              <span className='text-sm font-medium'>Page {page.pageNumber}</span>
               {pageFeedback[page.pageNumber]?.trim() && (
-                <span className="rounded bg-accent/40 px-2 py-0.5 text-xs text-foreground">Pending edit</span>
+                <span className='rounded bg-accent/40 px-2 py-0.5 text-xs text-foreground'>
+                  Pending edit
+                </span>
               )}
             </div>
             <button
@@ -175,47 +179,49 @@ export default function PreviewPage() {
                 const el = document.getElementById(`feedback-${page.pageNumber}`);
                 el?.classList.toggle('hidden');
               }}
-              className="mb-2 inline-block text-sm text-primary hover:underline"
+              className='mb-2 inline-block text-sm text-primary hover:underline'
             >
               ✏️ Edit this page
             </button>
             <textarea
               id={`feedback-${page.pageNumber}`}
-              placeholder="Describe what to change on this page..."
+              placeholder='Describe what to change on this page...'
               value={pageFeedback[page.pageNumber] || ''}
-              onChange={(e) => setPageFeedback((prev) => ({ ...prev, [page.pageNumber]: e.target.value }))}
+              onChange={(e) =>
+                setPageFeedback((prev) => ({ ...prev, [page.pageNumber]: e.target.value }))
+              }
               rows={2}
-              className="mt-2 hidden w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm"
+              className='mt-2 hidden w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm'
             />
           </div>
         ))}
       </div>
 
-      <div className="paper-card mt-6 p-4">
-        <h3 className="mb-2 text-sm font-medium">✏️ Global Changes</h3>
+      <div className='paper-card mt-6 p-4'>
+        <h3 className='mb-2 text-sm font-medium'>✏️ Global Changes</h3>
         <textarea
-          placeholder="Describe changes that affect the whole book..."
+          placeholder='Describe changes that affect the whole book...'
           value={globalFeedback}
           onChange={(e) => setGlobalFeedback(e.target.value)}
           rows={3}
-          className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm"
+          className='w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm'
         />
       </div>
 
-      {error && <p className="mt-4 text-sm text-red-600">{error}</p>}
+      {error && <p className='mt-4 text-sm text-red-600'>{error}</p>}
 
-      <div className="mt-6 flex gap-4">
+      <div className='mt-6 flex gap-4'>
         <button
           onClick={handleSubmitChanges}
           disabled={submitting || !hasFeedback}
-          className="rounded-xl border border-primary px-6 py-2 text-sm text-primary disabled:opacity-50 hover:bg-primary/10"
+          className='rounded-xl border border-primary px-6 py-2 text-sm text-primary disabled:opacity-50 hover:bg-primary/10'
         >
           {submitting ? 'Submitting...' : 'Submit Changes'}
         </button>
         <button
           onClick={handleApprove}
           disabled={submitting}
-          className="rounded-xl bg-primary px-6 py-2 text-sm text-primary-foreground disabled:opacity-50 hover:opacity-90"
+          className='rounded-xl bg-primary px-6 py-2 text-sm text-primary-foreground disabled:opacity-50 hover:opacity-90'
         >
           ✅ Approve Book
         </button>

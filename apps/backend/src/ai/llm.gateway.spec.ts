@@ -41,7 +41,7 @@ describe('LlmGateway', () => {
           reasoning_effort: 'medium',
           stream: false,
         }),
-      }),
+      })
     );
   });
 
@@ -61,7 +61,7 @@ describe('LlmGateway', () => {
               error.name = 'AbortError';
               reject(error);
             },
-            { once: true },
+            { once: true }
           );
         });
       });
@@ -72,7 +72,7 @@ describe('LlmGateway', () => {
         reasoningEffort: ReasoningEffort.MEDIUM,
       });
       const rejectionAssertion = expect(requestPromise).rejects.toThrow(
-        'LLM provider request timed out',
+        'LLM provider request timed out'
       );
 
       await jest.advanceTimersByTimeAsync(30_000);
@@ -83,7 +83,7 @@ describe('LlmGateway', () => {
         'https://provider.example.com/chat/completions',
         expect.objectContaining({
           signal: expect.any(AbortSignal),
-        }),
+        })
       );
     } finally {
       jest.useRealTimers();
@@ -111,7 +111,7 @@ describe('LlmGateway', () => {
           reasoning_effort: 'medium',
           stream: false,
         }),
-      }),
+      })
     );
   });
 
@@ -126,10 +126,8 @@ describe('LlmGateway', () => {
       gateway.generateStory('A brave little cat', {
         model: 'storybook-model',
         reasoningEffort: ReasoningEffort.MEDIUM,
-      }),
-    ).resolves.toBe(
-      'Once upon a time...',
-    );
+      })
+    ).resolves.toBe('Once upon a time...');
   });
 
   it('throws on non-2xx response', async () => {
@@ -145,10 +143,8 @@ describe('LlmGateway', () => {
       gateway.generateStory('A brave little cat', {
         model: 'storybook-model',
         reasoningEffort: ReasoningEffort.MEDIUM,
-      }),
-    ).rejects.toThrow(
-      'LLM provider request failed with status 500',
-    );
+      })
+    ).rejects.toThrow('LLM provider request failed with status 500');
   });
 
   it('throws when response lacks story text', async () => {
@@ -162,10 +158,8 @@ describe('LlmGateway', () => {
       gateway.generateStory('A brave little cat', {
         model: 'storybook-model',
         reasoningEffort: ReasoningEffort.MEDIUM,
-      }),
-    ).rejects.toThrow(
-      'LLM provider response invalid: response did not include story text',
-    );
+      })
+    ).rejects.toThrow('LLM provider response invalid: response did not include story text');
   });
 
   it('rejects whitespace-only story text', async () => {
@@ -179,10 +173,8 @@ describe('LlmGateway', () => {
       gateway.generateStory('A brave little cat', {
         model: 'storybook-model',
         reasoningEffort: ReasoningEffort.MEDIUM,
-      }),
-    ).rejects.toThrow(
-      'LLM provider response invalid: story text was empty',
-    );
+      })
+    ).rejects.toThrow('LLM provider response invalid: story text was empty');
   });
 
   it('rejects non-string story text', async () => {
@@ -196,10 +188,8 @@ describe('LlmGateway', () => {
       gateway.generateStory('A brave little cat', {
         model: 'storybook-model',
         reasoningEffort: ReasoningEffort.MEDIUM,
-      }),
-    ).rejects.toThrow(
-      'LLM provider response invalid: response did not include story text',
-    );
+      })
+    ).rejects.toThrow('LLM provider response invalid: response did not include story text');
   });
 
   it('rejects invalid JSON with a normalized error', async () => {
@@ -213,9 +203,7 @@ describe('LlmGateway', () => {
       gateway.generateStory('A brave little cat', {
         model: 'storybook-model',
         reasoningEffort: ReasoningEffort.MEDIUM,
-      }),
-    ).rejects.toThrow(
-      'LLM provider response invalid: failed to parse JSON response',
-    );
+      })
+    ).rejects.toThrow('LLM provider response invalid: failed to parse JSON response');
   });
 });

@@ -1,14 +1,8 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it } from 'vitest';
 
-import {
-  AuthProvider,
-  useAuth,
-} from '@/components/auth/AuthProvider';
-import {
-  MOCK_AUTH_STORAGE_KEY,
-  createDemoSession,
-} from '@/lib/mock-auth';
+import { AuthProvider, useAuth } from '@/components/auth/AuthProvider';
+import { MOCK_AUTH_STORAGE_KEY, createDemoSession } from '@/lib/mock-auth';
 
 function ensureClearableLocalStorage(): void {
   if (typeof window.localStorage.clear === 'function') {
@@ -37,12 +31,12 @@ function AuthStateProbe() {
 
   return (
     <div>
-      <div data-testid="hydrating">{String(auth.isHydrating)}</div>
-      <div data-testid="authenticated">{String(auth.isAuthenticated)}</div>
-      <div data-testid="user-email">{auth.user?.email ?? 'none'}</div>
-      <div data-testid="user-name">{auth.user?.name ?? 'none'}</div>
+      <div data-testid='hydrating'>{String(auth.isHydrating)}</div>
+      <div data-testid='authenticated'>{String(auth.isAuthenticated)}</div>
+      <div data-testid='user-email'>{auth.user?.email ?? 'none'}</div>
+      <div data-testid='user-name'>{auth.user?.name ?? 'none'}</div>
       <button
-        type="button"
+        type='button'
         onClick={() => {
           void auth.loginDemo({ email: 'demo@example.com' });
         }}
@@ -50,7 +44,7 @@ function AuthStateProbe() {
         Login demo
       </button>
       <button
-        type="button"
+        type='button'
         onClick={() => {
           void auth.logout();
         }}
@@ -74,14 +68,14 @@ describe('AuthProvider', () => {
         createDemoSession({
           email: 'stored@example.com',
           name: 'Stored Parent',
-        }),
-      ),
+        })
+      )
     );
 
     render(
       <AuthProvider>
         <AuthStateProbe />
-      </AuthProvider>,
+      </AuthProvider>
     );
 
     await waitFor(() => {
@@ -97,7 +91,7 @@ describe('AuthProvider', () => {
     render(
       <AuthProvider>
         <AuthStateProbe />
-      </AuthProvider>,
+      </AuthProvider>
     );
 
     await waitFor(() => {
@@ -112,7 +106,7 @@ describe('AuthProvider', () => {
     expect(screen.getByTestId('user-email')).toHaveTextContent('demo@example.com');
     expect(screen.getByTestId('user-name')).toHaveTextContent('Demo Parent');
     expect(window.localStorage.getItem(MOCK_AUTH_STORAGE_KEY)).toContain(
-      '"email":"demo@example.com"',
+      '"email":"demo@example.com"'
     );
   });
 
@@ -120,7 +114,7 @@ describe('AuthProvider', () => {
     render(
       <AuthProvider>
         <AuthStateProbe />
-      </AuthProvider>,
+      </AuthProvider>
     );
 
     await waitFor(() => {

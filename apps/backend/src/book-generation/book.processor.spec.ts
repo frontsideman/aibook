@@ -30,7 +30,9 @@ describe('BookProcessor', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
-    mockPrismaClient.$transaction.mockImplementation(async callback => callback(mockPrismaClient));
+    mockPrismaClient.$transaction.mockImplementation(async (callback) =>
+      callback(mockPrismaClient)
+    );
     mockPromptBuilder.buildPrompt.mockReturnValue('test prompt');
 
     const module: TestingModule = await Test.createTestingModule({
@@ -63,8 +65,12 @@ describe('BookProcessor', () => {
     };
 
     mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
-    mockAiService.generateStory.mockResolvedValue('Page 1: Content 1\nPage 2: Content 2\nPage 3: Content 3');
-    mockPrismaClient.page.create.mockImplementation(({ data }) => Promise.resolve({ id: `page-${data.pageNumber}`, ...data }));
+    mockAiService.generateStory.mockResolvedValue(
+      'Page 1: Content 1\nPage 2: Content 2\nPage 3: Content 3'
+    );
+    mockPrismaClient.page.create.mockImplementation(({ data }) =>
+      Promise.resolve({ id: `page-${data.pageNumber}`, ...data })
+    );
 
     const job = { data: { bookId } } as Job;
     await processor.process(job);
@@ -74,13 +80,10 @@ describe('BookProcessor', () => {
       data: { status: BookStatus.GENERATING },
     });
     expect(mockPromptBuilder.buildPrompt).toHaveBeenCalledWith(mockBook, undefined);
-    expect(aiService.generateStory).toHaveBeenCalledWith(
-      'test prompt',
-      {
-        model: 'provider:model-mini',
-        reasoningEffort: ReasoningEffort.MEDIUM,
-      },
-    );
+    expect(aiService.generateStory).toHaveBeenCalledWith('test prompt', {
+      model: 'provider:model-mini',
+      reasoningEffort: ReasoningEffort.MEDIUM,
+    });
     expect(prisma.client.page.create).toHaveBeenCalledTimes(3);
     expect(prisma.client.page.create).toHaveBeenNthCalledWith(1, {
       data: {
@@ -135,7 +138,7 @@ describe('BookProcessor', () => {
       expect.objectContaining({
         model: 'provider:model-standard',
         reasoningEffort: ReasoningEffort.HIGH,
-      }),
+      })
     );
   });
 
@@ -159,13 +162,10 @@ describe('BookProcessor', () => {
     await processor.process(job);
 
     expect(mockPromptBuilder.buildPrompt).toHaveBeenCalledWith(mockBook, parentFeedback);
-    expect(aiService.generateStory).toHaveBeenCalledWith(
-      'test prompt',
-      {
-        model: 'provider:model-nano',
-        reasoningEffort: ReasoningEffort.LOW,
-      },
-    );
+    expect(aiService.generateStory).toHaveBeenCalledWith('test prompt', {
+      model: 'provider:model-nano',
+      reasoningEffort: ReasoningEffort.LOW,
+    });
   });
 
   it('should mark the book as failed and rethrow when story generation fails', async () => {
@@ -224,7 +224,7 @@ describe('BookProcessor', () => {
 
     mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
     mockAiService.generateStory.mockResolvedValue('Page 1: Content 1\nPage 2: Content 2');
-    mockPrismaClient.$transaction.mockImplementation(async callback => {
+    mockPrismaClient.$transaction.mockImplementation(async (callback) => {
       try {
         return await callback({
           book: { update: txBookUpdate },

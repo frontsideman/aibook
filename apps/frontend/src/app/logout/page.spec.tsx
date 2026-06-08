@@ -48,14 +48,14 @@ describe('LogoutPage', () => {
         createDemoSession({
           email: 'parent@example.com',
           name: 'Parent',
-        }),
-      ),
+        })
+      )
     );
 
     render(
       <AuthProvider>
         <LogoutPage />
-      </AuthProvider>,
+      </AuthProvider>
     );
 
     expect(screen.getByText('Signing out...')).toBeInTheDocument();

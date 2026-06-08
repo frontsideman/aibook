@@ -5,10 +5,7 @@ import { AiModule } from '../ai/ai.module';
 import { QueueModule } from '../queue/queue.module';
 
 @Module({
-  imports: [
-    QueueModule,
-    AiModule,
-  ],
+  imports: [QueueModule, AiModule],
   providers: [BookProcessor, PromptBuilderService],
   exports: [QueueModule],
 })

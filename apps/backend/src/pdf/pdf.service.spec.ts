@@ -10,13 +10,13 @@ describe('PdfService', () => {
     }).compile();
 
     service = module.get<PdfService>(PdfService);
-    
+
     // Mock global fetch
     global.fetch = jest.fn().mockImplementation(() =>
       Promise.resolve({
         arrayBuffer: () => Promise.resolve(new ArrayBuffer(8)),
         headers: {
-          get: (name: string) => name === 'Content-Type' ? 'image/png' : null,
+          get: (name: string) => (name === 'Content-Type' ? 'image/png' : null),
         },
       } as any)
     );

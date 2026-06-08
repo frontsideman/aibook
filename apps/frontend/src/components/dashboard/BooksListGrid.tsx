@@ -17,9 +17,9 @@ export default function BooksListGrid({ books, viewMode }: BooksListGridProps) {
   }
 
   return (
-    <section className="flex flex-wrap gap-4" data-testid="books-cards-mode">
+    <section className='flex flex-wrap gap-4' data-testid='books-cards-mode'>
       {books.map((book) => (
-        <div key={book.id} className="w-full md:w-[320px]">
+        <div key={book.id} className='w-full md:w-[320px]'>
           <BookCard
             id={book.id}
             title={book.title}

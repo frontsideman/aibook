@@ -95,16 +95,14 @@ describe('CreateBookPage', () => {
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
         '/api/books/generate',
-        expect.objectContaining({ method: 'POST' }),
+        expect.objectContaining({ method: 'POST' })
       );
     });
 
-    const submitCall = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.find(
-      ([input]) => {
-        const url = typeof input === 'string' ? input : input.toString();
-        return new URL(url, 'http://localhost').pathname === '/api/books/generate';
-      },
-    );
+    const submitCall = (global.fetch as ReturnType<typeof vi.fn>).mock.calls.find(([input]) => {
+      const url = typeof input === 'string' ? input : input.toString();
+      return new URL(url, 'http://localhost').pathname === '/api/books/generate';
+    });
     const submitInit = submitCall?.[1] as RequestInit | undefined;
     expect(submitInit?.body).toContain('"style":"CARTOON"');
 
@@ -163,7 +161,7 @@ describe('CreateBookPage', () => {
     expect(profileButton).toHaveClass('bg-secondary', 'border-primary');
     expect(screen.getByRole('button', { name: 'Cartoon' })).toHaveClass(
       'bg-card',
-      'text-foreground',
+      'text-foreground'
     );
 
     const summaryHeading = screen.getByRole('heading', { name: 'Summary' });

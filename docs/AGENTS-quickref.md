@@ -12,7 +12,8 @@
 | `npm run db:generate` | Prisma generate in `packages/database` |
 | `npm run db:migrate:dev` | Prisma migrate dev in `packages/database` |
 | `npm run db:push` | Prisma db push in `packages/database` |
-| `npm run format` | Prettier on `*.{ts,tsx,md}` |
+| `npm run lint:fix` | `turbo run lint:fix` — auto-fix lint issues |
+| `npm run format` | oxfmt on `*.{ts,tsx,js,jsx,json,md}` |
 
 ## Backend (`apps/backend`)
 

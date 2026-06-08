@@ -48,16 +48,16 @@ describe('AuthGuard', () => {
         createDemoSession({
           email: 'parent@example.com',
           name: 'Parent',
-        }),
-      ),
+        })
+      )
     );
 
     render(
       <AuthProvider>
-        <AuthGuard mode="guest">
+        <AuthGuard mode='guest'>
           <div>guest page</div>
         </AuthGuard>
-      </AuthProvider>,
+      </AuthProvider>
     );
 
     await waitFor(() => {
@@ -70,10 +70,10 @@ describe('AuthGuard', () => {
   it('redirects guests away from authenticated pages to /login', async () => {
     render(
       <AuthProvider>
-        <AuthGuard mode="authenticated">
+        <AuthGuard mode='authenticated'>
           <div>private page</div>
         </AuthGuard>
-      </AuthProvider>,
+      </AuthProvider>
     );
 
     await waitFor(() => {
@@ -90,16 +90,16 @@ describe('AuthGuard', () => {
         createDemoSession({
           email: 'parent@example.com',
           name: 'Parent',
-        }),
-      ),
+        })
+      )
     );
 
     render(
       <AuthProvider>
-        <AuthGuard mode="authenticated">
+        <AuthGuard mode='authenticated'>
           <div>private page</div>
         </AuthGuard>
-      </AuthProvider>,
+      </AuthProvider>
     );
 
     await waitFor(() => {
@@ -112,10 +112,10 @@ describe('AuthGuard', () => {
   it('renders guest pages when no session exists and hydration resolves', async () => {
     render(
       <AuthProvider>
-        <AuthGuard mode="guest">
+        <AuthGuard mode='guest'>
           <div>guest page</div>
         </AuthGuard>
-      </AuthProvider>,
+      </AuthProvider>
     );
 
     await waitFor(() => {

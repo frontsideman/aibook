@@ -38,13 +38,10 @@ function buildRequestUrl(apiUrl: string) {
 export class LlmGateway {
   constructor(
     private readonly config: LlmConfig,
-    private readonly fetchImpl: typeof fetch = fetch,
+    private readonly fetchImpl: typeof fetch = fetch
   ) {}
 
-  async generateStory(
-    prompt: string,
-    options: StoryGenerationOptions,
-  ): Promise<string> {
+  async generateStory(prompt: string, options: StoryGenerationOptions): Promise<string> {
     const { apiUrl, apiKey, modelName } = this.config;
     const requestUrl = buildRequestUrl(apiUrl);
     const abortController = new AbortController();

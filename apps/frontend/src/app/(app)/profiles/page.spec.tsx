@@ -1,13 +1,13 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import ProfilesPage from "./page";
+import ProfilesPage from './page';
 
 let searchParamNew: string | null = null;
 const replace = vi.fn();
-vi.mock("next/navigation", () => ({
+vi.mock('next/navigation', () => ({
   useSearchParams: () => ({
-    get: (key: string) => (key === "new" ? searchParamNew : null),
+    get: (key: string) => (key === 'new' ? searchParamNew : null),
   }),
   useRouter: () => ({
     replace,
@@ -16,11 +16,11 @@ vi.mock("next/navigation", () => ({
 
 const mockProfiles = [
   {
-    id: "p1",
-    name: "Noah",
+    id: 'p1',
+    name: 'Noah',
     age: 7,
-    gender: "male",
-    interests: ["maps"],
+    gender: 'male',
+    interests: ['maps'],
   },
 ];
 
@@ -28,15 +28,15 @@ const originalFetch = global.fetch;
 
 const mockFetch = (impl: (url: string, init?: RequestInit) => Promise<Response> | Response) => {
   global.fetch = vi.fn((input: RequestInfo | URL, init?: RequestInit) => {
-    const url = typeof input === "string" ? input : input.toString();
+    const url = typeof input === 'string' ? input : input.toString();
     return Promise.resolve(impl(url, init));
   }) as unknown as typeof fetch;
 };
 
-describe("ProfilesPage — form validation", () => {
+describe('ProfilesPage — form validation', () => {
   beforeEach(() => {
     mockFetch((url) => {
-      if (url === "/api/child-profiles" || url.startsWith("/api/child-profiles?")) {
+      if (url === '/api/child-profiles' || url.startsWith('/api/child-profiles?')) {
         return {
           ok: true,
           json: async () => mockProfiles,
@@ -54,105 +54,105 @@ describe("ProfilesPage — form validation", () => {
   });
 
   const openForm = () => {
-    fireEvent.click(screen.getByRole("button", { name: "Add Profile" }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add Profile' }));
   };
 
   const fillForm = (overrides: Record<string, string> = {}) => {
-    fireEvent.change(screen.getByPlaceholderText("Name"), {
-      target: { value: overrides.name ?? "Sam" },
+    fireEvent.change(screen.getByPlaceholderText('Name'), {
+      target: { value: overrides.name ?? 'Sam' },
     });
-    fireEvent.change(screen.getByPlaceholderText("Age"), {
-      target: { value: overrides.age ?? "6" },
+    fireEvent.change(screen.getByPlaceholderText('Age'), {
+      target: { value: overrides.age ?? '6' },
     });
-    fireEvent.change(screen.getByTestId("interests-input"), {
-      target: { value: overrides.interests ?? "  , , " },
+    fireEvent.change(screen.getByTestId('interests-input'), {
+      target: { value: overrides.interests ?? '  , , ' },
     });
   };
 
-  it("blocks submit and shows an error when interests are empty", async () => {
+  it('blocks submit and shows an error when interests are empty', async () => {
     render(<ProfilesPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Noah")).toBeInTheDocument();
+      expect(screen.getByText('Noah')).toBeInTheDocument();
     });
 
     openForm();
-    fillForm({ interests: "" });
+    fillForm({ interests: '' });
 
     const postSpy = vi.fn();
     (global.fetch as unknown as ReturnType<typeof vi.fn>).mockImplementation(
       (input: RequestInfo | URL, init?: RequestInit) => {
-        const url = typeof input === "string" ? input : input.toString();
-        if (init?.method === "POST" && url === "/api/child-profiles") {
+        const url = typeof input === 'string' ? input : input.toString();
+        if (init?.method === 'POST' && url === '/api/child-profiles') {
           postSpy(url);
         }
         return Promise.resolve({
           ok: true,
           json: async () => ({}),
         } as Response);
-      },
+      }
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
-    expect(await screen.findByTestId("interests-error")).toHaveTextContent(
-      "Add at least one interest.",
+    expect(await screen.findByTestId('interests-error')).toHaveTextContent(
+      'Add at least one interest.'
     );
     expect(postSpy).not.toHaveBeenCalled();
   });
 
-  it("blocks submit when interests contain only whitespace and commas", async () => {
+  it('blocks submit when interests contain only whitespace and commas', async () => {
     render(<ProfilesPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Noah")).toBeInTheDocument();
+      expect(screen.getByText('Noah')).toBeInTheDocument();
     });
 
     openForm();
-    fillForm({ interests: "  ,  ,  " });
+    fillForm({ interests: '  ,  ,  ' });
 
     const postSpy = vi.fn();
     (global.fetch as unknown as ReturnType<typeof vi.fn>).mockImplementation(
       (input: RequestInfo | URL, init?: RequestInit) => {
-        const url = typeof input === "string" ? input : input.toString();
-        if (init?.method === "POST" && url === "/api/child-profiles") {
+        const url = typeof input === 'string' ? input : input.toString();
+        if (init?.method === 'POST' && url === '/api/child-profiles') {
           postSpy(url);
         }
         return Promise.resolve({
           ok: true,
           json: async () => ({}),
         } as Response);
-      },
+      }
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
-    expect(await screen.findByTestId("interests-error")).toBeInTheDocument();
+    expect(await screen.findByTestId('interests-error')).toBeInTheDocument();
     expect(postSpy).not.toHaveBeenCalled();
   });
 
-  it("submits when at least one interest is provided", async () => {
+  it('submits when at least one interest is provided', async () => {
     const postSpy = vi.fn();
     let profiles = [...mockProfiles];
     mockFetch((url, init) => {
-      if (init?.method === "POST" && url === "/api/child-profiles") {
+      if (init?.method === 'POST' && url === '/api/child-profiles') {
         postSpy(url);
         profiles = [
           ...profiles,
           {
-            id: "new",
-            name: "Sam",
+            id: 'new',
+            name: 'Sam',
             age: 6,
-            gender: "male",
-            interests: ["dinosaurs"],
+            gender: 'male',
+            interests: ['dinosaurs'],
           },
         ];
         return {
           ok: true,
-          json: async () => ({ id: "new" }),
+          json: async () => ({ id: 'new' }),
         } as Response;
       }
-      if (url === "/api/child-profiles") {
+      if (url === '/api/child-profiles') {
         return { ok: true, json: async () => profiles } as Response;
       }
       return { ok: true, json: async () => ({}) } as Response;
@@ -161,31 +161,31 @@ describe("ProfilesPage — form validation", () => {
     render(<ProfilesPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Noah")).toBeInTheDocument();
+      expect(screen.getByText('Noah')).toBeInTheDocument();
     });
 
     openForm();
-    fillForm({ interests: "dinosaurs" });
+    fillForm({ interests: 'dinosaurs' });
 
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
     await waitFor(() => {
       expect(postSpy).toHaveBeenCalledTimes(1);
     });
 
-    expect(await screen.findByText("Sam")).toBeInTheDocument();
+    expect(await screen.findByText('Sam')).toBeInTheDocument();
   });
 
-  it("shows a submit error when profile creation fails", async () => {
+  it('shows a submit error when profile creation fails', async () => {
     mockFetch((url, init) => {
-      if (init?.method === "POST" && url === "/api/child-profiles") {
+      if (init?.method === 'POST' && url === '/api/child-profiles') {
         return {
           ok: false,
-          json: async () => ({ message: "Backend unavailable" }),
+          json: async () => ({ message: 'Backend unavailable' }),
         } as Response;
       }
 
-      if (url === "/api/child-profiles") {
+      if (url === '/api/child-profiles') {
         return { ok: true, json: async () => mockProfiles } as Response;
       }
 
@@ -195,45 +195,47 @@ describe("ProfilesPage — form validation", () => {
     render(<ProfilesPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Noah")).toBeInTheDocument();
+      expect(screen.getByText('Noah')).toBeInTheDocument();
     });
 
     openForm();
-    fillForm({ interests: "dinosaurs" });
+    fillForm({ interests: 'dinosaurs' });
 
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
 
     expect(
-      await screen.findByText("Could not save the profile. Check the backend connection and try again."),
+      await screen.findByText(
+        'Could not save the profile. Check the backend connection and try again.'
+      )
     ).toBeInTheDocument();
-    expect(screen.getByText("Create profile")).toBeInTheDocument();
+    expect(screen.getByText('Create profile')).toBeInTheDocument();
   });
 
-  it("clears the error when the user types in the interests field", async () => {
+  it('clears the error when the user types in the interests field', async () => {
     render(<ProfilesPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Noah")).toBeInTheDocument();
+      expect(screen.getByText('Noah')).toBeInTheDocument();
     });
 
     openForm();
-    fillForm({ interests: "" });
+    fillForm({ interests: '' });
 
-    fireEvent.click(screen.getByRole("button", { name: "Save" }));
-    expect(await screen.findByTestId("interests-error")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    expect(await screen.findByTestId('interests-error')).toBeInTheDocument();
 
-    fireEvent.change(screen.getByTestId("interests-input"), {
-      target: { value: "dinosaurs" },
+    fireEvent.change(screen.getByTestId('interests-input'), {
+      target: { value: 'dinosaurs' },
     });
 
-    expect(screen.queryByTestId("interests-error")).not.toBeInTheDocument();
+    expect(screen.queryByTestId('interests-error')).not.toBeInTheDocument();
   });
 });
 
-describe("ProfilesPage — side panel", () => {
+describe('ProfilesPage — side panel', () => {
   beforeEach(() => {
     mockFetch((url) => {
-      if (url === "/api/child-profiles" || url.startsWith("/api/child-profiles?")) {
+      if (url === '/api/child-profiles' || url.startsWith('/api/child-profiles?')) {
         return {
           ok: true,
           json: async () => mockProfiles,
@@ -250,88 +252,88 @@ describe("ProfilesPage — side panel", () => {
     replace.mockReset();
   });
 
-  it("opens panel in create mode when Add Profile is clicked", async () => {
+  it('opens panel in create mode when Add Profile is clicked', async () => {
     render(<ProfilesPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Noah")).toBeInTheDocument();
+      expect(screen.getByText('Noah')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Add Profile" }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add Profile' }));
 
-    expect(screen.getByText("Create profile")).toBeInTheDocument();
-    expect(screen.getByText("Save")).toBeInTheDocument();
-    expect(screen.getByText("Cancel")).toBeInTheDocument();
+    expect(screen.getByText('Create profile')).toBeInTheDocument();
+    expect(screen.getByText('Save')).toBeInTheDocument();
+    expect(screen.getByText('Cancel')).toBeInTheDocument();
   });
 
-  it("uses the shared card surface token for the side panel", async () => {
+  it('uses the shared card surface token for the side panel', async () => {
     render(<ProfilesPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Noah")).toBeInTheDocument();
+      expect(screen.getByText('Noah')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Add Profile" }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add Profile' }));
 
-    const panelHeading = screen.getByRole("heading", { name: "Create profile" });
-    expect(panelHeading.closest("div.relative.flex")).toHaveClass("bg-card");
+    const panelHeading = screen.getByRole('heading', { name: 'Create profile' });
+    expect(panelHeading.closest('div.relative.flex')).toHaveClass('bg-card');
   });
 
-  it("closes panel when Cancel is clicked", async () => {
+  it('closes panel when Cancel is clicked', async () => {
     render(<ProfilesPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Noah")).toBeInTheDocument();
+      expect(screen.getByText('Noah')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Add Profile" }));
-    expect(screen.getByText("Create profile")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: 'Add Profile' }));
+    expect(screen.getByText('Create profile')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
 
-    expect(screen.queryByText("Edit profile")).not.toBeInTheDocument();
+    expect(screen.queryByText('Edit profile')).not.toBeInTheDocument();
   });
 
-  it("opens panel in edit mode with pre-filled data when Edit is clicked", async () => {
+  it('opens panel in edit mode with pre-filled data when Edit is clicked', async () => {
     render(<ProfilesPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Noah")).toBeInTheDocument();
+      expect(screen.getByText('Noah')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Edit Noah" }));
+    fireEvent.click(screen.getByRole('button', { name: 'Edit Noah' }));
 
-    expect(screen.getByText("Edit profile")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("Noah")).toBeInTheDocument();
-    expect(screen.getByDisplayValue("7")).toBeInTheDocument();
+    expect(screen.getByText('Edit profile')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('Noah')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('7')).toBeInTheDocument();
     expect(screen.getByText("Delete Noah's profile?")).toBeInTheDocument();
   });
 
-  it("does not show delete section in create mode", async () => {
+  it('does not show delete section in create mode', async () => {
     render(<ProfilesPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Noah")).toBeInTheDocument();
+      expect(screen.getByText('Noah')).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole("button", { name: "Add Profile" }));
+    fireEvent.click(screen.getByRole('button', { name: 'Add Profile' }));
 
     expect(screen.queryByText(/Delete.*profile\?/)).not.toBeInTheDocument();
   });
 
-  it("automatically opens the creation panel when ?new=true is present", async () => {
-    searchParamNew = "true";
+  it('automatically opens the creation panel when ?new=true is present', async () => {
+    searchParamNew = 'true';
     render(<ProfilesPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("Create profile")).toBeInTheDocument();
+      expect(screen.getByText('Create profile')).toBeInTheDocument();
     });
     // Verify it's in create mode (no delete section)
     expect(screen.queryByText(/Delete.*profile\?/)).not.toBeInTheDocument();
   });
 });
 
-describe("ProfilesPage — layout copy", () => {
+describe('ProfilesPage — layout copy', () => {
   afterEach(() => {
     vi.restoreAllMocks();
     global.fetch = originalFetch;
@@ -339,9 +341,9 @@ describe("ProfilesPage — layout copy", () => {
     replace.mockReset();
   });
 
-  it("renders the Pencil-aligned page heading copy", async () => {
+  it('renders the Pencil-aligned page heading copy', async () => {
     mockFetch((url) => {
-      if (url === "/api/child-profiles" || url.startsWith("/api/child-profiles?")) {
+      if (url === '/api/child-profiles' || url.startsWith('/api/child-profiles?')) {
         return {
           ok: true,
           json: async () => mockProfiles,
@@ -353,17 +355,17 @@ describe("ProfilesPage — layout copy", () => {
     render(<ProfilesPage />);
 
     await waitFor(() => {
-      expect(screen.getByText("PERSONALIZATION")).toBeInTheDocument();
+      expect(screen.getByText('PERSONALIZATION')).toBeInTheDocument();
     });
     expect(
-      screen.getByText("Manage reusable child details for personalized book generation."),
+      screen.getByText('Manage reusable child details for personalized book generation.')
     ).toBeInTheDocument();
-    expect(screen.getByTestId("profiles-grid")).toBeInTheDocument();
+    expect(screen.getByTestId('profiles-grid')).toBeInTheDocument();
   });
 
-  it("renders the Pencil-aligned empty state copy", async () => {
+  it('renders the Pencil-aligned empty state copy', async () => {
     mockFetch((url) => {
-      if (url === "/api/child-profiles" || url.startsWith("/api/child-profiles?")) {
+      if (url === '/api/child-profiles' || url.startsWith('/api/child-profiles?')) {
         return {
           ok: true,
           json: async () => [],
@@ -374,9 +376,9 @@ describe("ProfilesPage — layout copy", () => {
 
     render(<ProfilesPage />);
 
-    expect(await screen.findByText("No profiles yet")).toBeInTheDocument();
+    expect(await screen.findByText('No profiles yet')).toBeInTheDocument();
     expect(
-      screen.getByText("Create a child profile to reuse details across book generation."),
+      screen.getByText('Create a child profile to reuse details across book generation.')
     ).toBeInTheDocument();
   });
 });

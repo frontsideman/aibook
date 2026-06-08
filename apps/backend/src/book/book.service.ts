@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException, ServiceUnavailableException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { BookStatus, BookStyle, ReasoningEffort, Tone } from '@repo/database';
 import { InjectQueue } from '@nestjs/bullmq';
@@ -40,7 +45,11 @@ export class RegenerateDto {
 const DEFAULT_REASONING_EFFORT = ReasoningEffort.MEDIUM;
 const STALE_GENERATING_BOOK_AGE_MS = 10 * 60 * 1000;
 
-function normalizeEnumValue<T extends string>(value: string | undefined, allowed: readonly T[], fieldName: string): T | undefined {
+function normalizeEnumValue<T extends string>(
+  value: string | undefined,
+  allowed: readonly T[],
+  fieldName: string
+): T | undefined {
   if (!value) return undefined;
 
   const normalized = value.trim().toUpperCase() as T;
@@ -58,7 +67,7 @@ export class BookService {
     @InjectQueue('book-generation') private bookQueue: Queue,
     private pdfService: PdfService,
     private storageService: StorageService,
-    private configService: ConfigService,
+    private configService: ConfigService
   ) {}
 
   private async ensureGenerationQueueReady() {
@@ -239,7 +248,9 @@ export class BookService {
   }
 
   async regenerate(bookId: string, dto: RegenerateDto, userId?: string) {
-    const book = await this.prisma.client.book.findUnique({ where: { id: bookId, ...(userId ? { userId } : {}) } });
+    const book = await this.prisma.client.book.findUnique({
+      where: { id: bookId, ...(userId ? { userId } : {}) },
+    });
     if (!book) throw new NotFoundException('Book not found');
 
     await this.ensureGenerationQueueReady();
