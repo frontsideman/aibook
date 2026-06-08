@@ -32,3 +32,8 @@ Current interim mock solution:
    - Define the final layout, hierarchy, and copy for the loading state.
    - Design `REVIEW` handoff cues and the `FAILED` recovery state.
    - Keep the page compatible with the functional polling flow already defined in the book creation spec.
+
+## Update Rule
+
+When adding/removing/updating backlog items:
+1. Update this file (`docs/AGENTS-backlog.md`) to reflect changes

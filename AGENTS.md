@@ -4,15 +4,15 @@
 
 | File | Contents |
 |------|----------|
-| [AGENTS-architecture.md](./agents/AGENTS-architecture.md) | Monorepo structure, Turbo, ports, workspace commands |
-| [AGENTS-database.md](./agents/AGENTS-database.md) | Prisma schema, enums, data rules, client usage |
-| [AGENTS-frontend.md](./agents/AGENTS-frontend.md) | Routes, routing rules, styling (Tailwind), testing |
-| [AGENTS-backend.md](./agents/AGENTS-backend.md) | Backend modules, HTTP API surface, product state |
-| [AGENTS-auth.md](./agents/AGENTS-auth.md) | Auth state, mock guards, key quirks |
-| [AGENTS-docker.md](./agents/AGENTS-docker.md) | Docker Compose files, multi-stage builds, Colima |
-| [AGENTS-docs-git.md](./agents/AGENTS-docs-git.md) | Docs location, Git conventions, commit format |
-| [AGENTS-quickref.md](./agents/AGENTS-quickref.md) | All command tables (high-frequency reference) |
-| [AGENTS-backlog.md](./agents/AGENTS-backlog.md) | Backlog reference (future work) |
+| [AGENTS-architecture.md](./docs/AGENTS-architecture.md) | Monorepo structure, Turbo, ports, workspace commands |
+| [AGENTS-database.md](./docs/AGENTS-database.md) | Prisma schema, enums, data rules, client usage |
+| [AGENTS-frontend.md](./docs/AGENTS-frontend.md) | Routes, routing rules, styling (Tailwind), testing |
+| [AGENTS-backend.md](./docs/AGENTS-backend.md) | Backend modules, HTTP API surface, product state |
+| [AGENTS-auth.md](./docs/AGENTS-auth.md) | Auth state, mock guards, key quirks |
+| [AGENTS-docker.md](./docs/AGENTS-docker.md) | Docker Compose files, multi-stage builds, Colima |
+| [AGENTS-docs-git.md](./docs/AGENTS-docs-git.md) | Docs location, Git conventions, commit format |
+| [AGENTS-quickref.md](./docs/AGENTS-quickref.md) | All command tables (high-frequency reference) |
+| [AGENTS-backlog.md](./docs/AGENTS-backlog.md) | Backlog reference (future work) |
 
 ## When to Load What
 
@@ -42,14 +42,21 @@ The app is still a prototype, but the current flow is more advanced than the ori
 
 | Area Changed | Update File |
 |--------------|-------------|
-| Monorepo structure, Turbo config, ports, workspace commands | `agents/AGENTS-architecture.md` |
-| Prisma schema, enums, data rules, client usage | `agents/AGENTS-database.md` |
-| Frontend routes, routing rules, styling, testing | `agents/AGENTS-frontend.md` |
-| Backend modules, HTTP API surface, product state | `agents/AGENTS-backend.md` |
-| Auth state, mock guards, key quirks | `agents/AGENTS-auth.md` |
-| Docker Compose, Dockerfiles, Colima config | `agents/AGENTS-docker.md` |
-| Docs location, Git conventions, commit format | `agents/AGENTS-docs-git.md` |
-| Command tables | `agents/AGENTS-quickref.md` |
-| Backlog items (add/remove/update) | `agents/AGENTS-backlog.md` + `backlog.md` |
+| Monorepo structure, Turbo config, ports, workspace commands | `docs/AGENTS-architecture.md` |
+| Prisma schema, enums, data rules, client usage | `docs/AGENTS-database.md` |
+| Frontend routes, routing rules, styling, testing | `docs/AGENTS-frontend.md` |
+| Backend modules, HTTP API surface, product state | `docs/AGENTS-backend.md` |
+| Auth state, mock guards, key quirks | `docs/AGENTS-auth.md` |
+| Docker Compose, Dockerfiles, Colima config | `docs/AGENTS-docker.md` |
+| Docs location, Git conventions, commit format | `docs/AGENTS-docs-git.md` |
+| Command tables | `docs/AGENTS-quickref.md` |
+| Backlog items (add/remove/update) | `docs/AGENTS-backlog.md` |
 
 **Rule:** No PR is complete without updating the relevant AGENTS file. Treat these as living documentation that must stay in sync with code.
+
+## Code Review & Git Workflow (Summary)
+
+See [`docs/AGENTS-docs-git.md`](./docs/AGENTS-docs-git.md) for full rules.
+
+- **Code Review Standards**: Verify Conventional Commits format before commit; suggest corrections; ask for confirmation
+- **Git Workflow**: Review changes first → generate conventional message → never commit non-conventional unless explicitly requested
