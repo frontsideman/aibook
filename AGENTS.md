@@ -193,8 +193,25 @@ Recent docs already cover the current auth and book-creation direction. Check th
 
 ## Git
 
-Use Conventional Commits for every commit:
+Always use Conventional Commits format for git commit messages:
 
-- https://www.conventionalcommits.org/en/v1.0.0/
+Format: <type>(<scope>): <description>
+
+Types allowed:
+- feat: new feature
+- fix: bug fix
+- docs: documentation only
+- style: code style changes (formatting, missing semicolons, etc.)
+- refactor: code change that neither fixes a bug nor adds a feature
+- perf: performance improvement
+- test: adding missing tests
+- chore: changes to build process or auxiliary tools
+
+Examples:
+- feat(auth): add login functionality
+- fix(api): handle null response
+- docs(readme): update installation guide
+
+Always write commit messages in English and keep the first line under 72 characters.
 
 Group logically related changes together. Avoid mixing unrelated frontend, backend, and docs work in the same commit unless they are part of one cohesive change.
