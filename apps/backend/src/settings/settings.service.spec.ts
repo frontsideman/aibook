@@ -71,7 +71,7 @@ describe('SettingsService', () => {
     expect(mockPrismaClient.user.update).toHaveBeenCalledWith({
       where: { id: 'user-1' },
       data: { preferredReasoningEffort: ReasoningEffort.MEDIUM },
-      select: { preferredReasoningEffort: true },
+      select: { preferredReasoningEffort: true, preferredLlmModel: true },
     });
   });
 

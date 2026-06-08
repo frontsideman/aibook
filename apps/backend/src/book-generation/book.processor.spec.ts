@@ -126,8 +126,10 @@ describe('BookProcessor', () => {
     };
 
     mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
-    mockAiService.generateStory.mockResolvedValue('Page 1: Fun content');
-    mockPrismaClient.page.create.mockResolvedValue({ id: 'page-1' });
+    mockAiService.generateStory.mockResolvedValue('Page 1: Fun content\nPage 2: More fun content');
+    mockPrismaClient.page.create.mockImplementation(({ data }) =>
+      Promise.resolve({ id: `page-${data.pageNumber}`, ...data })
+    );
 
     const job = { data: { bookId } } as Job;
     await processor.process(job);
@@ -154,8 +156,10 @@ describe('BookProcessor', () => {
     };
 
     mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
-    mockAiService.generateStory.mockResolvedValue('Page 1: New content');
-    mockPrismaClient.page.create.mockResolvedValue({ id: 'page-1' });
+    mockAiService.generateStory.mockResolvedValue('Page 1: New content\nPage 2: Updated content');
+    mockPrismaClient.page.create.mockImplementation(({ data }) =>
+      Promise.resolve({ id: `page-${data.pageNumber}`, ...data })
+    );
 
     const parentFeedback = 'Make the ending happier';
     const job = { data: { bookId, parentFeedback } } as Job;
