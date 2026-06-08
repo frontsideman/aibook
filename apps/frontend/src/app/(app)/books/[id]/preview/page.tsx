@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import SpreadViewer from '@/components/SpreadViewer';
 
@@ -21,6 +21,13 @@ export default function PreviewPage() {
   const [globalFeedback, setGlobalFeedback] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     const loadPreview = async () => {
@@ -83,7 +90,7 @@ export default function PreviewPage() {
         setGlobalFeedback('');
         setPageFeedback({});
         setSubmitting(false);
-        setTimeout(() => {
+        timeoutRef.current = setTimeout(() => {
           setLoading(true);
           void (async () => {
             try {

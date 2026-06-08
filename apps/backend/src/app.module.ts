@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { BullModule } from '@nestjs/bullmq';
 import { AiModule } from './ai/ai.module';
 import { BookGenerationModule } from './book-generation/book-generation.module';
@@ -21,11 +21,14 @@ import { SettingsModule } from './settings/settings.module';
       envFilePath: BACKEND_ENV_FILE_PATH,
       validate: validateEnv,
     }),
-    BullModule.forRoot({
-      connection: {
-        host: process.env.REDIS_HOST || 'localhost',
-        port: parseInt(process.env.REDIS_PORT || '6379'),
-      },
+    BullModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        connection: {
+          host: configService.get('REDIS_HOST', 'localhost'),
+          port: configService.get('REDIS_PORT', 6379),
+        },
+      }),
     }),
     PrismaModule,
     AiModule,

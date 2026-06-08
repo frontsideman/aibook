@@ -1,9 +1,9 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { createPrismaClient } from '@repo/database';
+import { createPrismaClient, PrismaClient } from '@repo/database';
 
 @Injectable()
 export class PrismaService implements OnModuleInit, OnModuleDestroy {
-  private prismaClient: any;
+  private prismaClient: PrismaClient;
 
   constructor() {
     this.prismaClient = createPrismaClient(process.env.DATABASE_URL);

@@ -13,9 +13,8 @@ WORKDIR /app
 ENV NODE_ENV=production
 
 # Copy necessary files
-# Note: In a real production setup, we might use 'turbo prune' for a smaller footprint,
-# but for this prototype, copying the built artifacts is reliable.
 COPY --from=builder /app/node_modules ./node_modules
+RUN npm prune --omit=dev
 COPY --from=builder /app/packages/database ./packages/database
 COPY --from=builder /app/apps/backend/dist ./apps/backend/dist
 COPY --from=builder /app/package.json ./package.json

@@ -62,9 +62,10 @@ export class PdfService {
             }
           );
       }
-      doc.end();
     } catch (err) {
       doc.emit('error', err);
+    } finally {
+      doc.end();
     }
 
     return resultPromise;
