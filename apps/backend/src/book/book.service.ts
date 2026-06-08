@@ -77,6 +77,7 @@ export class BookService {
       where: {
         status: BookStatus.GENERATING,
         updatedAt: { lt: staleGenerationCutoff },
+        // TODO: Add userId filter when multi-tenant auth is implemented
       },
       data: { status: BookStatus.FAILED },
     });

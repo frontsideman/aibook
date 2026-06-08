@@ -7,7 +7,7 @@ export class SubscriptionGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const email = request.user?.email ?? request.headers['user-email'];
+    const email = request.user?.email ?? request.headers['user-email']; // TODO: Remove header fallback when real auth is implemented
 
     if (!email) {
       throw new ForbiddenException('User email required for subscription check');

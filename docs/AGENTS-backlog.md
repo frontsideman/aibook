@@ -33,6 +33,13 @@ Current interim mock solution:
    - Design `REVIEW` handoff cues and the `FAILED` recovery state.
    - Keep the page compatible with the functional polling flow already defined in the book creation spec.
 
+## StoryLibrary Integration
+
+1. Connect frontend `CreateBookPage` to backend `/api/stories` search endpoint.
+   - Backend has a complete `StoryLibraryController`/`StoryLibraryService` with search
+   - Frontend currently fetches child profiles and accepts free-form story input — never calls `/api/stories`
+   - Design the UI for browsing/picking from existing story templates
+
 ## Update Rule
 
 When adding/removing/updating backlog items:

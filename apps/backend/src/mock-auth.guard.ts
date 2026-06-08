@@ -19,6 +19,7 @@ export class MockAuthGuard implements CanActivate {
     const isMock = this.configService.get('MOCK_AUTH') === 'true';
     if (!isMock) {
       // In a real app, this would be where passport-google-oauth20 or similar is checked
+      // TODO: Replace with real auth guard when auth is implemented
       return false; 
     }
 
