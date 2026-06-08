@@ -52,6 +52,8 @@ The app is still a prototype, but the current flow is more advanced than the ori
 | Command tables | `docs/AGENTS-quickref.md` |
 | Backlog items (add/remove/update) | `docs/AGENTS-backlog.md` |
 
+**Rule:** Work on new features must start in a feature branch. Documentation updates to AGENTS files may be committed separately only for purely cosmetic edits or internal refactors that do not change observable behavior. Any change that affects public behavior — including public APIs, agent system prompts, output formats, configuration defaults, or user-facing flows — requires the corresponding documentation, examples, and tests to be included in the same pull request and merged before the code change is merged. If documentation cannot be completed in the same PR, open a linked documentation PR or issue, add a changelog entry, and mark the main PR with the `docs-pending` label; do not merge the main PR until the documentation PR is merged or a maintainer explicitly approves merging without docs. Maintainers may require additional QA (integration or snapshot tests) for agent or prompt changes.
+
 **Rule:** No PR is complete without updating the relevant AGENTS file. Treat these as living documentation that must stay in sync with code.
 
 ## Code Review & Git Workflow (Summary)
