@@ -9,6 +9,9 @@ Planning and design artifacts live under `docs/superpowers/`:
 
 Recent docs already cover the current auth and book-creation direction. Check those before inventing new patterns for the same area.
 
+### Backlog
+Future work tracked in [`../backlog.md`](../backlog.md) and summarized in [`AGENTS-backlog.md`](./AGENTS-backlog.md).
+
 ## Git Conventions
 
 Always use Conventional Commits format for git commit messages:
