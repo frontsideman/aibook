@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_DB: aibook
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -15,7 +15,7 @@ services:
     image: redis:7-alpine
     restart: always
     ports:
-      - '6379:6379'
+      - "6379:6379"
 
   backend:
     image: node:24-slim
@@ -31,9 +31,9 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       PORT: 3001
-      MOCK_AUTH: 'true'
+      MOCK_AUTH: "true"
     ports:
-      - '3001:3001'
+      - "3001:3001"
     depends_on:
       - db
       - redis
@@ -42,15 +42,21 @@ services:
     image: node:24-slim
     working_dir: /app
     command: /bin/sh -lc "npm install && npm --workspace apps/frontend run dev"
+    build: .
     volumes:
       - .:/app
+      - /app/.turbo
       - /app/node_modules
+      - /app/apps/frontend/node_modules
       - /app/apps/frontend/.next
+      - /app/apps/frontend/.turbo
     environment:
       BACKEND_URL: http://backend:3001
       PORT: 3000
+      WATCHPACK_POLLING: "true"
+      TURBOPACK_POLL_INTERVAL: "1000"
     ports:
-      - '3000:3000'
+      - "3000:3000"
     depends_on:
       - backend
 
