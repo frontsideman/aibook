@@ -25,10 +25,7 @@ describe('SubscriptionGuard', () => {
     jest.clearAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        SubscriptionGuard,
-        { provide: PrismaService, useValue: mockPrismaService },
-      ],
+      providers: [SubscriptionGuard, { provide: PrismaService, useValue: mockPrismaService }],
     }).compile();
 
     guard = module.get(SubscriptionGuard);
@@ -45,8 +42,8 @@ describe('SubscriptionGuard', () => {
         createContext({
           user: { email: 'mock@example.com' },
           headers: {},
-        }),
-      ),
+        })
+      )
     ).resolves.toBe(true);
   });
 
@@ -55,8 +52,8 @@ describe('SubscriptionGuard', () => {
       guard.canActivate(
         createContext({
           headers: {},
-        }),
-      ),
+        })
+      )
     ).rejects.toBeInstanceOf(ForbiddenException);
   });
 
@@ -71,8 +68,8 @@ describe('SubscriptionGuard', () => {
         createContext({
           user: { email: 'mock@example.com' },
           headers: {},
-        }),
-      ),
+        })
+      )
     ).rejects.toBeInstanceOf(ForbiddenException);
   });
 });

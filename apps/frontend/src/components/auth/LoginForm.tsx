@@ -41,57 +41,49 @@ export function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-[430px] rounded-[22px] border border-border bg-card p-7 shadow-[0_16px_34px_#3A28141A]">
-      <BrandMark className="mb-[18px]" />
+    <div className='w-full max-w-[430px] rounded-[22px] border border-border bg-card p-7 shadow-[0_16px_34px_#3A28141A]'>
+      <BrandMark className='mb-[18px]' />
 
-      <h1 className="font-display text-[34px] font-semibold text-foreground">
-        Welcome back
-      </h1>
+      <h1 className='font-display text-[34px] font-semibold text-foreground'>Welcome back</h1>
 
-      <p className="mt-[18px] text-sm text-muted-foreground">
-        Sign in to continue your books.
-      </p>
+      <p className='mt-[18px] text-sm text-muted-foreground'>Sign in to continue your books.</p>
 
-      <form className="mt-[18px] space-y-[14px]" onSubmit={handleSubmit}>
-        <div className="space-y-1.5">
-          <label className="text-[13px] font-extrabold text-foreground">
-            Email
-          </label>
-          <div className="relative">
-            <Mail className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+      <form className='mt-[18px] space-y-[14px]' onSubmit={handleSubmit}>
+        <div className='space-y-1.5'>
+          <label className='text-[13px] font-extrabold text-foreground'>Email</label>
+          <div className='relative'>
+            <Mail className='pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
             <Input
-              aria-label="Email"
-              type="email"
+              aria-label='Email'
+              type='email'
               value={email}
               onChange={(event) => {
                 setEmail(event.target.value);
                 if (error) setError('');
               }}
-              placeholder="parent@example.com"
-              className="pl-9"
-              autoComplete="email"
+              placeholder='parent@example.com'
+              className='pl-9'
+              autoComplete='email'
               disabled={isSubmitting}
             />
           </div>
         </div>
 
-        <div className="space-y-1.5">
-          <label className="text-[13px] font-extrabold text-foreground">
-            Password
-          </label>
-          <div className="relative">
-            <Lock className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+        <div className='space-y-1.5'>
+          <label className='text-[13px] font-extrabold text-foreground'>Password</label>
+          <div className='relative'>
+            <Lock className='pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
             <Input
-              aria-label="Password"
-              type="password"
+              aria-label='Password'
+              type='password'
               value={password}
               onChange={(event) => {
                 setPassword(event.target.value);
                 if (error) setError('');
               }}
-              placeholder="Enter your password"
-              className="pl-9"
-              autoComplete="current-password"
+              placeholder='Enter your password'
+              className='pl-9'
+              autoComplete='current-password'
               disabled={isSubmitting}
               aria-invalid={!!error}
             />
@@ -99,43 +91,33 @@ export function LoginForm() {
         </div>
 
         {error && (
-          <div className="flex items-center gap-2.5 rounded-[12px] border border-destructive bg-destructive/10 p-3">
-            <X className="size-4 shrink-0 text-destructive" />
-            <span className="text-xs font-bold text-destructive" role="alert">
+          <div className='flex items-center gap-2.5 rounded-[12px] border border-destructive bg-destructive/10 p-3'>
+            <X className='size-4 shrink-0 text-destructive' />
+            <span className='text-xs font-bold text-destructive' role='alert'>
               {error}
             </span>
           </div>
         )}
 
-        <Button
-          type="submit"
-          className="w-full"
-          loading={isSubmitting}
-        >
+        <Button type='submit' className='w-full' loading={isSubmitting}>
           {isSubmitting ? undefined : 'Continue'}
         </Button>
 
         <Button
-          type="button"
-          variant="outline"
-          className="w-full bg-card"
-          aria-label="Continue with Google"
+          type='button'
+          variant='outline'
+          className='w-full bg-card'
+          aria-label='Continue with Google'
         >
-          <span className="text-[15px] font-extrabold text-primary">G</span>
+          <span className='text-[15px] font-extrabold text-primary'>G</span>
           Continue with Google
         </Button>
 
-        <div className="flex items-center justify-between">
-          <Link
-            href="/forgot-password"
-            className="text-[13px] font-extrabold text-primary"
-          >
+        <div className='flex items-center justify-between'>
+          <Link href='/forgot-password' className='text-[13px] font-extrabold text-primary'>
             Forgot password?
           </Link>
-          <Link
-            href="/signup"
-            className="text-[13px] font-extrabold text-primary"
-          >
+          <Link href='/signup' className='text-[13px] font-extrabold text-primary'>
             Create account
           </Link>
         </div>

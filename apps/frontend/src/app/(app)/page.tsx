@@ -1,32 +1,26 @@
-"use client";
+'use client';
 
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-  useMemo,
-} from "react";
-import { useSearchParams } from "next/navigation";
-import Pagination from "@/components/Pagination";
-import BooksDataTable from "@/components/dashboard/BooksDataTable";
-import { LibraryTopHeader } from "@/components/dashboard/LibraryTopHeader";
-import ViewModeToggle from "@/components/dashboard/ViewModeToggle";
-import StatusSummary from "@/components/dashboard/StatusSummary";
-import BooksListGrid from "@/components/dashboard/BooksListGrid";
-import LibraryFilterBar from "@/components/dashboard/LibraryFilterBar";
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+import { useSearchParams } from 'next/navigation';
+import Pagination from '@/components/Pagination';
+import BooksDataTable from '@/components/dashboard/BooksDataTable';
+import { LibraryTopHeader } from '@/components/dashboard/LibraryTopHeader';
+import ViewModeToggle from '@/components/dashboard/ViewModeToggle';
+import StatusSummary from '@/components/dashboard/StatusSummary';
+import BooksListGrid from '@/components/dashboard/BooksListGrid';
+import LibraryFilterBar from '@/components/dashboard/LibraryFilterBar';
 import {
   DashboardLoadingState,
   DashboardErrorState,
   DashboardEmptyState,
-} from "@/components/dashboard/DashboardStates";
+} from '@/components/dashboard/DashboardStates';
 import {
   applyDashboardBookFilterSort,
   toDashboardBookViewModel,
   type DashboardBookApiModel,
   type DashboardBookStatus,
-} from "@/lib/books-view-model";
-import { useHeader } from "@/components/app-shell/HeaderContext";
+} from '@/lib/books-view-model';
+import { useHeader } from '@/components/app-shell/HeaderContext';
 
 type PaginatedResponse = {
   books: DashboardBookApiModel[];
@@ -35,16 +29,16 @@ type PaginatedResponse = {
   totalPages: number;
 };
 
-type ViewMode = "grid" | "list";
+type ViewMode = 'grid' | 'list';
 
 const isPaginatedResponse = (value: unknown): value is PaginatedResponse => {
-  if (!value || typeof value !== "object") return false;
+  if (!value || typeof value !== 'object') return false;
   const payload = value as Record<string, unknown>;
   return (
     Array.isArray(payload.books) &&
-    typeof payload.total === "number" &&
-    typeof payload.page === "number" &&
-    typeof payload.totalPages === "number"
+    typeof payload.total === 'number' &&
+    typeof payload.page === 'number' &&
+    typeof payload.totalPages === 'number'
   );
 };
 
@@ -58,18 +52,18 @@ const EMPTY_COUNTS: Record<DashboardBookStatus, number> = {
 
 export default function DashboardPage() {
   const searchParams = useSearchParams();
-  const requestedView = searchParams.get("view");
-  const viewMode: ViewMode = requestedView === "list" ? "list" : "grid";
+  const requestedView = searchParams.get('view');
+  const viewMode: ViewMode = requestedView === 'list' ? 'list' : 'grid';
 
   const [data, setData] = useState<PaginatedResponse | null>(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("");
-  const [style, setStyle] = useState("");
-  const [type, setType] = useState("");
-  const [profile, setProfile] = useState("");
-  const [sort, setSort] = useState<"updated" | "title">("updated");
+  const [search, setSearch] = useState('');
+  const [status, setStatus] = useState('');
+  const [style, setStyle] = useState('');
+  const [type, setType] = useState('');
+  const [profile, setProfile] = useState('');
+  const [sort, setSort] = useState<'updated' | 'title'>('updated');
   const [page, setPage] = useState(1);
   const latestRequestIdRef = useRef(0);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -84,13 +78,13 @@ export default function DashboardPage() {
     setError(false);
 
     const params = new URLSearchParams();
-    if (search) params.set("search", search);
-    if (status) params.set("status", status);
-    if (style) params.set("style", style);
-    if (type) params.set("type", type);
-    if (profile) params.set("childName", profile);
-    params.set("page", String(page));
-    params.set("limit", "10");
+    if (search) params.set('search', search);
+    if (status) params.set('status', status);
+    if (style) params.set('style', style);
+    if (type) params.set('type', type);
+    if (profile) params.set('childName', profile);
+    params.set('page', String(page));
+    params.set('limit', '10');
 
     try {
       const res = await fetch(`/api/books?${params}`, {
@@ -112,10 +106,7 @@ export default function DashboardPage() {
         setError(true);
       }
     } catch {
-      if (
-        controller.signal.aborted ||
-        requestId !== latestRequestIdRef.current
-      ) {
+      if (controller.signal.aborted || requestId !== latestRequestIdRef.current) {
         return;
       }
       setData(null);
@@ -172,25 +163,20 @@ export default function DashboardPage() {
   }, [setHeader]);
 
   return (
-    <div className="flex flex-col gap-[20px]">
-      <div className="relative">
-        <div className="max-w-[780px] space-y-2">
-          <p className="font-mono text-[12px] font-semibold uppercase text-primary">
-            YOUR LIBRARY
-          </p>
-          <h1 className="font-display text-[48px] font-semibold text-foreground">
-            My Books
-          </h1>
-          <p className="font-sans text-[16px] font-normal text-muted-foreground">
-            Curate, review, and publish each story from draft to finished
-            keepsake.
+    <div className='flex flex-col gap-[20px]'>
+      <div className='relative'>
+        <div className='max-w-[780px] space-y-2'>
+          <p className='font-mono text-[12px] font-semibold uppercase text-primary'>YOUR LIBRARY</p>
+          <h1 className='font-display text-[48px] font-semibold text-foreground'>My Books</h1>
+          <p className='font-sans text-[16px] font-normal text-muted-foreground'>
+            Curate, review, and publish each story from draft to finished keepsake.
           </p>
         </div>
       </div>
 
       <StatusSummary counts={statusCounts} />
 
-      <div className="flex items-center justify-end">
+      <div className='flex items-center justify-end'>
         <ViewModeToggle viewMode={viewMode} />
       </div>
 
@@ -231,13 +217,11 @@ export default function DashboardPage() {
         <DashboardErrorState onRetry={fetchBooks} />
       ) : visibleBooks.length > 0 ? (
         <>
-          {viewMode === "grid" ? (
-            <section className="flex flex-col gap-[14px]">
-              <div className="flex h-[34px] items-center justify-between">
-                <p className="text-[15px] font-extrabold text-foreground">
-                  Table view
-                </p>
-                <p className="text-[13px] text-muted-foreground">
+          {viewMode === 'grid' ? (
+            <section className='flex flex-col gap-[14px]'>
+              <div className='flex h-[34px] items-center justify-between'>
+                <p className='text-[15px] font-extrabold text-foreground'>Table view</p>
+                <p className='text-[13px] text-muted-foreground'>
                   Dense scanning for status and action queues
                 </p>
               </div>

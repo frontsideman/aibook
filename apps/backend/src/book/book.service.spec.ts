@@ -71,7 +71,9 @@ describe('BookService', () => {
 
   describe('findAll', () => {
     it('should return paginated results', async () => {
-      const books = [{ id: '1', title: 'Test', child: { name: 'Alice' }, pages: [], createdAt: new Date() }];
+      const books = [
+        { id: '1', title: 'Test', child: { name: 'Alice' }, pages: [], createdAt: new Date() },
+      ];
       mockPrismaClient.book.findMany.mockResolvedValue(books);
       mockPrismaClient.book.count.mockResolvedValue(1);
       mockPrismaClient.book.updateMany.mockResolvedValue({ count: 0 });
@@ -83,7 +85,7 @@ describe('BookService', () => {
             status: BookStatus.GENERATING,
           }),
           data: { status: BookStatus.FAILED },
-        }),
+        })
       );
       expect(result).toEqual({ books, total: 1, page: 1, totalPages: 1 });
     });
@@ -103,7 +105,7 @@ describe('BookService', () => {
       expect(prisma.client.book.create).toHaveBeenCalledWith(
         expect.objectContaining({
           data: expect.objectContaining({ style: 'CARTOON' }),
-        }),
+        })
       );
     });
 
@@ -131,7 +133,7 @@ describe('BookService', () => {
       expect(mockPrismaClient.user.findUnique).toHaveBeenCalledWith(
         expect.objectContaining({
           where: { id: userId },
-        }),
+        })
       );
 
       expect(mockPrismaClient.book.create).toHaveBeenCalledWith(
@@ -142,7 +144,7 @@ describe('BookService', () => {
             style: 'WATERCOLOR',
             tone: 'PLAYFUL',
           }),
-        }),
+        })
       );
     });
 
@@ -156,7 +158,9 @@ describe('BookService', () => {
 
       mockQueue.waitUntilReady.mockRejectedValue(new Error('redis down'));
 
-      await expect(service.createAndGenerate(dto, 'user-1')).rejects.toThrow(ServiceUnavailableException);
+      await expect(service.createAndGenerate(dto, 'user-1')).rejects.toThrow(
+        ServiceUnavailableException
+      );
       expect(mockPrismaClient.book.create).not.toHaveBeenCalled();
       expect(mockQueue.add).not.toHaveBeenCalled();
     });
@@ -183,7 +187,7 @@ describe('BookService', () => {
             reasoningEffort: ReasoningEffort.MEDIUM,
             style: 'WATERCOLOR',
           }),
-        }),
+        })
       );
     });
   });
@@ -232,11 +236,20 @@ describe('BookService', () => {
     });
 
     it('should return pdfUrl for COMPLETED status', async () => {
-      const mockBook = { id: 'b1', status: BookStatus.COMPLETED, pdfUrl: 'https://s3.com/book.pdf', pages: [] };
+      const mockBook = {
+        id: 'b1',
+        status: BookStatus.COMPLETED,
+        pdfUrl: 'https://s3.com/book.pdf',
+        pages: [],
+      };
       mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
 
       const result = await service.getPreview('b1', 'user-1');
-      expect(result).toEqual({ book: mockBook, pdfUrl: 'https://s3.com/book.pdf', redirectToDetail: true });
+      expect(result).toEqual({
+        book: mockBook,
+        pdfUrl: 'https://s3.com/book.pdf',
+        redirectToDetail: true,
+      });
     });
   });
 
@@ -266,7 +279,11 @@ describe('BookService', () => {
     it('should delete pages and enqueue new job', async () => {
       mockPrismaClient.book.findUnique.mockResolvedValue({ id: 'b1', userId: 'user-1' });
       mockQueue.waitUntilReady.mockResolvedValue(undefined);
-      const result = await service.regenerate('b1', { parentFeedback: 'Make it funnier' }, 'user-1');
+      const result = await service.regenerate(
+        'b1',
+        { parentFeedback: 'Make it funnier' },
+        'user-1'
+      );
       expect(prisma.client.page.deleteMany).toHaveBeenCalledWith({ where: { bookId: 'b1' } });
       expect(mockQueue.waitUntilReady).toHaveBeenCalled();
       expect(mockQueue.add).toHaveBeenCalledWith('generate-book', {

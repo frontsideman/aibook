@@ -92,7 +92,9 @@ describe('PromptBuilderService', () => {
 
   it('includes parent feedback when provided', () => {
     const result = service.buildPrompt(mockBook as any, 'Make the ending happier');
-    expect(result).toContain('Parent feedback: Make the ending happier. Revise the story accordingly.');
+    expect(result).toContain(
+      'Parent feedback: Make the ending happier. Revise the story accordingly.'
+    );
   });
 
   it('omits parent feedback section when not provided', () => {
@@ -102,7 +104,9 @@ describe('PromptBuilderService', () => {
 
   it('appends the format instruction at the end', () => {
     const result = service.buildPrompt(mockBook as any);
-    expect(result).toMatch(/Format the output strictly as: Page 1: \.\.\., Page 2: \.\.\., Page 3: \.\.\.$/);
+    expect(result).toMatch(
+      /Format the output strictly as: Page 1: \.\.\., Page 2: \.\.\., Page 3: \.\.\.$/
+    );
   });
 
   it('returns a non-empty string', () => {

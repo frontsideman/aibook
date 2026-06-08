@@ -16,7 +16,7 @@ describe('AppShell', () => {
         <AppShell>
           <div>content</div>
         </AppShell>
-      </HeaderProvider>,
+      </HeaderProvider>
     );
 
     for (const item of navItems) {

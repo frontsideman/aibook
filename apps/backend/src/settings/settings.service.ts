@@ -9,7 +9,7 @@ const DEFAULT_REASONING_EFFORT = ReasoningEffort.MEDIUM;
 export class SettingsService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService
   ) {}
 
   async getGenerationSettings(userId: string) {
@@ -31,7 +31,10 @@ export class SettingsService {
     };
   }
 
-  async updateGenerationSettings(userId: string, input: { llmModel?: string; reasoningEffort: ReasoningEffort }) {
+  async updateGenerationSettings(
+    userId: string,
+    input: { llmModel?: string; reasoningEffort: ReasoningEffort }
+  ) {
     this.validateReasoningEffort(input.reasoningEffort);
 
     let user;

@@ -75,7 +75,10 @@ describe('GeneratingPage', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('link', { name: 'Go to Dashboard' })).toHaveAttribute('href', '/');
-      expect(screen.getByRole('link', { name: 'Create Another Book' })).toHaveAttribute('href', '/books/new');
+      expect(screen.getByRole('link', { name: 'Create Another Book' })).toHaveAttribute(
+        'href',
+        '/books/new'
+      );
     });
   });
 });

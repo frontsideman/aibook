@@ -1,0 +1,62 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "import", "react", "jsx-a11y"],
+  "env": {
+    "es2022": true
+  },
+  "categories": {
+    "correctness": "warn",
+    "suspicious": "warn",
+    "style": "off",
+    "perf": "off",
+    "nursery": "off",
+    "pedantic": "off",
+    "restriction": "off"
+  },
+  "settings": {
+    "react": {
+      "version": "19.2.0"
+    }
+  },
+  "rules": {
+    "import/no-cycle": "error"
+  },
+  "overrides": [
+    {
+      "files": ["apps/frontend/**/*.{ts,tsx,js,jsx}"],
+      "env": {
+        "browser": true,
+        "es2022": true
+      },
+      "rules": {
+        "import/no-unassigned-import": "warn",
+        "unicorn/catch-error-name": "warn"
+      }
+    },
+    {
+      "files": ["apps/backend/**/*.ts"],
+      "env": {
+        "node": true,
+        "es2022": true,
+        "jest": true
+      },
+      "rules": {
+        "typescript/no-explicit-any": "warn",
+        "typescript/consistent-type-imports": "warn",
+        "unicorn/prefer-node-protocol": "error",
+        "unicorn/filename-case": "off",
+        "import/no-named-export": "off",
+        "import/prefer-default-export": "off",
+        "import/no-namespace": "off",
+        "unicorn/catch-error-name": "warn"
+      }
+    },
+    {
+      "files": ["**/*.spec.{ts,tsx}", "**/*.test.{ts,tsx}"],
+      "rules": {
+        "eslint/no-unused-vars": "warn",
+        "unicorn/prefer-global-this": "off"
+      }
+    }
+  ]
+}

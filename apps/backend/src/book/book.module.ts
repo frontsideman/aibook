@@ -7,12 +7,7 @@ import { PdfModule } from '../pdf/pdf.module';
 import { StorageModule } from '../storage/storage.module';
 
 @Module({
-  imports: [
-    QueueModule,
-    PaymentModule,
-    PdfModule,
-    StorageModule,
-  ],
+  imports: [QueueModule, PaymentModule, PdfModule, StorageModule],
   controllers: [BookController],
   providers: [BookService],
   exports: [BookService],

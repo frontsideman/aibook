@@ -6,9 +6,7 @@ export type MockAuthUser = {
   name: string;
 };
 
-export function createDemoSession(
-  input: Pick<MockAuthUser, 'email' | 'name'>,
-): MockAuthUser {
+export function createDemoSession(input: Pick<MockAuthUser, 'email' | 'name'>): MockAuthUser {
   return {
     id: 'demo-user',
     email: input.email,

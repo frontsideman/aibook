@@ -9,7 +9,7 @@ describe('validateEnv', () => {
         LLM_API_KEY: 'secret',
         LLM_MODEL_NAME: 'model',
         LLM_DEFAULT_PROMPT: 'Write a story',
-      }),
+      })
     ).not.toThrow();
   });
 
@@ -22,7 +22,7 @@ describe('validateEnv', () => {
       validateEnv({
         DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',
         REDIS_PORT: 'abc',
-      }),
+      })
     ).toThrow(/REDIS_PORT must be a valid integer/);
   });
 
@@ -31,7 +31,7 @@ describe('validateEnv', () => {
       validateEnv({
         DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',
         MOCK_AUTH: 'yes',
-      }),
+      })
     ).toThrow(/MOCK_AUTH must be either "true" or "false"/);
   });
 
@@ -41,7 +41,7 @@ describe('validateEnv', () => {
         DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',
         LLM_API_KEY: 'secret',
         LLM_MODEL_NAME: 'model',
-      }),
+      })
     ).toThrow(/LLM_API_URL is required/);
   });
 
@@ -52,7 +52,7 @@ describe('validateEnv', () => {
         LLM_API_URL: 'api.example.com',
         LLM_API_KEY: 'secret',
         LLM_MODEL_NAME: 'model',
-      }),
+      })
     ).toThrow(/LLM_API_URL must be a valid absolute http\/https URL/);
   });
 
@@ -62,7 +62,7 @@ describe('validateEnv', () => {
         DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',
         LLM_API_URL: 'https://api.example.com',
         LLM_MODEL_NAME: 'model',
-      }),
+      })
     ).toThrow(/LLM_API_KEY is required/);
   });
 
@@ -72,7 +72,7 @@ describe('validateEnv', () => {
         DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',
         LLM_API_URL: 'https://api.example.com',
         LLM_API_KEY: 'secret',
-      }),
+      })
     ).toThrow(/LLM_MODEL_NAME is required/);
   });
 });

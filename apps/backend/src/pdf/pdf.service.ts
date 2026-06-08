@@ -28,7 +28,7 @@ export class PdfService {
         if (page.imageUrl) {
           try {
             const response = await fetch(page.imageUrl);
-            
+
             const contentType = response.headers.get('Content-Type');
             if (!contentType || !contentType.startsWith('image/')) {
               throw new Error(`Invalid content type: ${contentType} for image ${page.imageUrl}`);
@@ -36,7 +36,7 @@ export class PdfService {
 
             const arrayBuffer = await response.arrayBuffer();
             const buffer = Buffer.from(arrayBuffer);
-            
+
             doc.image(buffer, 0, 0, {
               width: doc.page.width,
               height: doc.page.height,
@@ -48,19 +48,14 @@ export class PdfService {
 
         const textHeight = 100;
         const padding = 50;
-        
+
         doc
           .fillColor('black')
           .fontSize(30)
-          .text(
-            page.text,
-            padding,
-            doc.page.height - textHeight - padding,
-            {
-              width: doc.page.width - 2 * padding,
-              align: 'center',
-            }
-          );
+          .text(page.text, padding, doc.page.height - textHeight - padding, {
+            width: doc.page.width - 2 * padding,
+            align: 'center',
+          });
       }
     } catch (err) {
       doc.emit('error', err);

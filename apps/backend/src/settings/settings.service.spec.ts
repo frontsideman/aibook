@@ -50,7 +50,7 @@ describe('SettingsService', () => {
     await expect(
       service.updateGenerationSettings('user-1', {
         reasoningEffort: 'EXTREME' as ReasoningEffort,
-      }),
+      })
     ).rejects.toThrow(BadRequestException);
   });
 
@@ -62,7 +62,7 @@ describe('SettingsService', () => {
     await expect(
       service.updateGenerationSettings('user-1', {
         reasoningEffort: ReasoningEffort.MEDIUM,
-      }),
+      })
     ).resolves.toEqual({
       llmModel: 'openai:env-model',
       reasoningEffort: ReasoningEffort.MEDIUM,
@@ -71,7 +71,7 @@ describe('SettingsService', () => {
     expect(mockPrismaClient.user.update).toHaveBeenCalledWith({
       where: { id: 'user-1' },
       data: { preferredReasoningEffort: ReasoningEffort.MEDIUM },
-      select: { preferredReasoningEffort: true },
+      select: { preferredReasoningEffort: true, preferredLlmModel: true },
     });
   });
 
@@ -81,7 +81,7 @@ describe('SettingsService', () => {
     await expect(
       service.updateGenerationSettings('missing-user', {
         reasoningEffort: ReasoningEffort.MEDIUM,
-      }),
+      })
     ).rejects.toThrow(NotFoundException);
   });
 });

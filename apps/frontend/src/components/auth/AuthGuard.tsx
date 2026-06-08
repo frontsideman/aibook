@@ -14,14 +14,7 @@ export function AuthGuard({ mode, children }: AuthGuardProps) {
   const router = useRouter();
   const { isHydrating, user } = useAuth();
 
-  const redirectTarget =
-    mode === 'guest'
-      ? user
-        ? '/'
-        : null
-      : user
-        ? null
-        : '/login';
+  const redirectTarget = mode === 'guest' ? (user ? '/' : null) : user ? null : '/login';
 
   useEffect(() => {
     if (!isHydrating && redirectTarget) {

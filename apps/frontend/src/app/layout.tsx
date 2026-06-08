@@ -1,25 +1,25 @@
-import type { Metadata } from "next";
-import { Inter, Newsreader, IBM_Plex_Mono } from "next/font/google";
-import "./globals.css";
-import { AuthProvider } from "@/components/auth/AuthProvider";
-import ServiceWorkerCleanup from "@/components/ServiceWorkerCleanup";
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
+import type { Metadata } from 'next';
+import { Inter, Newsreader, IBM_Plex_Mono } from 'next/font/google';
+import './globals.css';
+import { AuthProvider } from '@/components/auth/AuthProvider';
+import ServiceWorkerCleanup from '@/components/ServiceWorkerCleanup';
+import { ThemeProvider } from '@/components/theme-provider';
+import { Toaster } from '@/components/ui/sonner';
 
 const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
+  subsets: ['latin'],
+  variable: '--font-sans',
 });
 
 const newsreader = Newsreader({
-  subsets: ["latin"],
-  variable: "--font-display",
+  subsets: ['latin'],
+  variable: '--font-display',
 });
 
 const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-mono",
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  variable: '--font-mono',
 });
 
 export const metadata: Metadata = {
@@ -34,10 +34,10 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang='en'
       suppressHydrationWarning
       className={`${inter.variable} ${newsreader.variable} ${ibmPlexMono.variable} font-sans`}
-      >
+    >
       <body>
         <ThemeProvider>
           <AuthProvider>

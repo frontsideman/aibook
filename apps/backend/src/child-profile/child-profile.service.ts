@@ -29,12 +29,15 @@ export class ChildProfileService {
     });
   }
 
-  async update(id: string, data: Partial<{
-    name: string;
-    age: number;
-    gender: string;
-    interests: string[];
-  }>) {
+  async update(
+    id: string,
+    data: Partial<{
+      name: string;
+      age: number;
+      gender: string;
+      interests: string[];
+    }>
+  ) {
     return this.prisma.client.childProfile.update({
       where: { id },
       data,

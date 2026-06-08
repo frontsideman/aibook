@@ -52,7 +52,7 @@ export function applyDashboardBookFilterSort(
     status?: string;
     style?: string;
     sort?: DashboardSort;
-  },
+  }
 ): DashboardBookViewModel[] {
   const titleSearch = options?.titleSearch?.trim().toLowerCase() ?? '';
   const status = options?.status ?? '';

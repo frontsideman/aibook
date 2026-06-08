@@ -10,7 +10,7 @@ export class BookProcessor extends WorkerHost {
   constructor(
     private readonly prisma: PrismaService,
     private readonly aiService: AiService,
-    private readonly promptBuilder: PromptBuilderService,
+    private readonly promptBuilder: PromptBuilderService
   ) {
     super();
   }
@@ -44,19 +44,21 @@ export class BookProcessor extends WorkerHost {
       const cleaned = storyText.replace(/\*\*/g, '').trim();
       let pagesContent = cleaned
         .split(/Page \d+[\.:]\s*/)
-        .map(c => c.trim())
-        .filter(content => content.length > 0);
+        .map((c) => c.trim())
+        .filter((content) => content.length > 0);
 
       if (pagesContent.length <= 1) {
         // if the regex failed to split, fall back to double newline splitting
         pagesContent = storyText
           .split(/\n\n+/)
-          .map(c => c.trim())
-          .filter(content => content.length > 0);
+          .map((c) => c.trim())
+          .filter((content) => content.length > 0);
       }
 
       if (pagesContent.length <= 1) {
-        throw new Error(`Failed to parse story into pages — only ${pagesContent.length} segment(s) found`);
+        throw new Error(
+          `Failed to parse story into pages — only ${pagesContent.length} segment(s) found`
+        );
       }
 
       await this.prisma.client.$transaction(async (tx: Prisma.TransactionClient) => {

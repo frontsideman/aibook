@@ -12,7 +12,7 @@ const MOCK_USER = {
 export class MockAuthGuard implements CanActivate {
   constructor(
     private configService: ConfigService,
-    private prisma: PrismaService,
+    private prisma: PrismaService
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -20,7 +20,7 @@ export class MockAuthGuard implements CanActivate {
     if (!isMock) {
       // In a real app, this would be where passport-google-oauth20 or similar is checked
       // TODO: Replace with real auth guard when auth is implemented
-      return false; 
+      return false;
     }
 
     await this.prisma.client.user.upsert({

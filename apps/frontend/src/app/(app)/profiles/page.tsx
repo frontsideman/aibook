@@ -1,26 +1,22 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from 'react';
+import { Plus } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-import ChildProfileCard, {
-  type ChildProfile,
-} from "@/components/ChildProfileCard";
-import ProfileEditPanel from "@/components/ProfileEditPanel";
+import ChildProfileCard, { type ChildProfile } from '@/components/ChildProfileCard';
+import ProfileEditPanel from '@/components/ProfileEditPanel';
 
 export default function ProfilesPage() {
   const [profiles, setProfiles] = useState<ChildProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [panelOpen, setPanelOpen] = useState(false);
-  const [editingProfile, setEditingProfile] = useState<ChildProfile | null>(
-    null,
-  );
+  const [editingProfile, setEditingProfile] = useState<ChildProfile | null>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
 
   const fetchProfiles = () => {
-    fetch("/api/child-profiles")
+    fetch('/api/child-profiles')
       .then((r) => r.json())
       .then(setProfiles)
       .catch(() => {})
@@ -38,7 +34,7 @@ export default function ProfilesPage() {
 
   useEffect(() => {
     // Only trigger automatically on mount if "new" is present
-    if (searchParams.get("new") === "true") {
+    if (searchParams.get('new') === 'true') {
       openCreatePanel();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -50,13 +46,13 @@ export default function ProfilesPage() {
     gender: string;
     interests: string[];
   }) => {
-    const res = await fetch("/api/child-profiles", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const res = await fetch('/api/child-profiles', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     if (!res.ok) {
-      throw new Error("Failed to create profile");
+      throw new Error('Failed to create profile');
     }
 
     setPanelOpen(false);
@@ -71,12 +67,12 @@ export default function ProfilesPage() {
   }) => {
     if (!editingProfile) return;
     const res = await fetch(`/api/child-profiles/${editingProfile.id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
     if (!res.ok) {
-      throw new Error("Failed to update profile");
+      throw new Error('Failed to update profile');
     }
 
     setPanelOpen(false);
@@ -85,7 +81,7 @@ export default function ProfilesPage() {
   };
 
   const handleDelete = async (id: string) => {
-    await fetch(`/api/child-profiles/${id}`, { method: "DELETE" });
+    await fetch(`/api/child-profiles/${id}`, { method: 'DELETE' });
     setPanelOpen(false);
     setEditingProfile(null);
     fetchProfiles();
@@ -101,53 +97,46 @@ export default function ProfilesPage() {
     setEditingProfile(null);
 
     const params = new URLSearchParams(searchParams.toString());
-    params.delete("new");
+    params.delete('new');
     router.replace(`?${params.toString()}`, { scroll: false });
   };
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="flex items-end justify-between gap-4">
-        <div className="max-w-[720px] space-y-2">
-          <p className="font-mono text-[12px] font-extrabold uppercase text-primary">
+    <div className='flex flex-col gap-5'>
+      <div className='flex items-end justify-between gap-4'>
+        <div className='max-w-[720px] space-y-2'>
+          <p className='font-mono text-[12px] font-extrabold uppercase text-primary'>
             PERSONALIZATION
           </p>
-          <h1 className="font-display text-[48px] font-semibold leading-none text-foreground">
+          <h1 className='font-display text-[48px] font-semibold leading-none text-foreground'>
             Child Profiles
           </h1>
-          <p className="text-[16px] text-muted-foreground">
+          <p className='text-[16px] text-muted-foreground'>
             Manage reusable child details for personalized book generation.
           </p>
         </div>
         <button
           onClick={openCreatePanel}
-          className="inline-flex h-11 items-center gap-2 rounded-[11px] bg-primary px-4 text-[14px] font-extrabold text-primary-foreground transition hover:opacity-90"
+          className='inline-flex h-11 items-center gap-2 rounded-[11px] bg-primary px-4 text-[14px] font-extrabold text-primary-foreground transition hover:opacity-90'
         >
-          <Plus className="h-4 w-4" aria-hidden="true" />
+          <Plus className='h-4 w-4' aria-hidden='true' />
           Add Profile
         </button>
       </div>
 
       {loading ? (
-        <div className="paper-card flex min-h-[220px] items-center justify-center rounded-[18px] p-8">
-          <p className="text-[15px] text-muted-foreground">
-            Loading profiles...
-          </p>
+        <div className='paper-card flex min-h-[220px] items-center justify-center rounded-[18px] p-8'>
+          <p className='text-[15px] text-muted-foreground'>Loading profiles...</p>
         </div>
       ) : profiles.length === 0 ? (
-        <div className="paper-card flex min-h-[220px] flex-col items-center justify-center rounded-[18px] px-6 py-12 text-center">
-          <p className="font-display text-[28px] font-semibold text-foreground">
-            No profiles yet
-          </p>
-          <p className="mt-2 max-w-[420px] text-[14px] leading-relaxed text-muted-foreground">
+        <div className='paper-card flex min-h-[220px] flex-col items-center justify-center rounded-[18px] px-6 py-12 text-center'>
+          <p className='font-display text-[28px] font-semibold text-foreground'>No profiles yet</p>
+          <p className='mt-2 max-w-[420px] text-[14px] leading-relaxed text-muted-foreground'>
             Create a child profile to reuse details across book generation.
           </p>
         </div>
       ) : (
-        <div
-          className="grid grid-cols-1 gap-4 md:grid-cols-2"
-          data-testid="profiles-grid"
-        >
+        <div className='grid grid-cols-1 gap-4 md:grid-cols-2' data-testid='profiles-grid'>
           {profiles.map((profile) => (
             <ChildProfileCard
               key={profile.id}
