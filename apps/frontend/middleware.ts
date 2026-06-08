@@ -1,17 +1,28 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
+const defaultBackendUrl = process.env.BACKEND_URL || 'http://localhost:3001';
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Protect book creation routes
   if (pathname.startsWith('/books/new')) {
-    // In a real app, we would fetch this from the backend or a cookie
-    // For this task, we'll assume a mock check
-    const hasProfiles = false; // Mock value
+    try {
+      const response = await fetch(`${defaultBackendUrl}/child-profiles`, {
+        headers: { 'Content-Type': 'application/json' },
+        cache: 'no-store',
+      });
 
-    if (!hasProfiles) {
-      return NextResponse.redirect(new URL('/profiles', request.url));
+      if (response.ok) {
+        const profiles = await response.json();
+        const hasProfiles = Array.isArray(profiles) && profiles.length > 0;
+
+        if (!hasProfiles) {
+          return NextResponse.redirect(new URL('/profiles', request.url));
+        }
+      }
+    } catch {
+      // If backend is unreachable, allow access (don't block)
     }
   }
 

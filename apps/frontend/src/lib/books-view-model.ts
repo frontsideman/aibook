@@ -51,24 +51,18 @@ export function applyDashboardBookFilterSort(
     titleSearch?: string;
     status?: string;
     style?: string;
-    type?: string;
-    profile?: string;
     sort?: DashboardSort;
   },
 ): DashboardBookViewModel[] {
   const titleSearch = options?.titleSearch?.trim().toLowerCase() ?? '';
   const status = options?.status ?? '';
   const style = options?.style ?? '';
-  const type = options?.type ?? '';
-  const profile = options?.profile ?? '';
   const sort = options?.sort ?? 'updated';
 
   const filtered = books.filter((book) => {
     if (titleSearch && !book.title.toLowerCase().includes(titleSearch)) return false;
     if (status && book.status !== status) return false;
     if (style && book.style !== style) return false;
-    if (type && book.type !== type) return false;
-    if (profile && (book.childName ?? '') !== profile) return false;
     return true;
   });
 

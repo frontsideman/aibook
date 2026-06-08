@@ -23,6 +23,8 @@ export class BookController {
     if (query.style) where.style = query.style;
     if (query.status) where.status = query.status;
     if (query.childId) where.childId = query.childId;
+    if (query.type) where.type = query.type;
+    if (query.childName) where.child = { name: { contains: query.childName, mode: 'insensitive' } };
 
     return this.bookService.findAll({ skip, take: limit, where });
   }

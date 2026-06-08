@@ -23,6 +23,8 @@ export class SearchQueryDto {
   style?: string;
   status?: string;
   childId?: string;
+  type?: string;
+  childName?: string;
   page?: string | number;
   limit?: string | number;
 }

@@ -87,6 +87,8 @@ export default function DashboardPage() {
     if (search) params.set("search", search);
     if (status) params.set("status", status);
     if (style) params.set("style", style);
+    if (type) params.set("type", type);
+    if (profile) params.set("childName", profile);
     params.set("page", String(page));
     params.set("limit", "10");
 
@@ -123,7 +125,7 @@ export default function DashboardPage() {
         setLoading(false);
       }
     }
-  }, [search, status, style, page]);
+  }, [search, status, style, type, profile, page]);
 
   useEffect(() => {
     fetchBooks();
@@ -139,11 +141,9 @@ export default function DashboardPage() {
       titleSearch: search,
       status,
       style,
-      type,
-      profile,
       sort,
     });
-  }, [data, profile, search, sort, status, style, type]);
+  }, [data, search, sort, status, style]);
 
   const profileOptions = useMemo(() => {
     const names = new Set<string>();
