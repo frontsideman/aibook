@@ -1,15 +1,48 @@
+# Dependencies
 node_modules
+*/node_modules
+
+# Build outputs
 dist
+build
 .next
+*.tsbuildinfo
+
+# IDE/Editor
+.vscode
+.idea
+*.swp
+*.swo
+
+# Git
 .git
-.turbo
+.gitignore
+
+# Logs
 *.log
-.env
-.env.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
 .DS_Store
-Dockerfile*
-docker-compose*
-README.md
-GEMINI.md
-DRAFT.md
+Thumbs.db
+
+# Test/coverage
+coverage
+.nyc_output
+
+# Env files (use docker secrets/env files instead)
+.env
+.env.local
+.env.*.local
+
+# Turbo
+.turbo
+
+# Misc
+*.tgz
+.cache
+
+
 docs
