@@ -27,41 +27,41 @@ aiBook/
 | Database | PostgreSQL 16, Prisma 7 (PostgreSQL adapter) |
 | Queue | BullMQ / Redis |
 | Auth | Mock (transitional) — backend `MockAuthGuard`, frontend `AuthProvider` |
-| Container | Docker, Colima (macOS) |
+| Container | Docker Desktop |
 
 ## Prerequisites
 
-- **Node.js** 20+ (for local development without Docker)
-- **Docker** + **Colima** (macOS) or Docker Desktop
+- **Node.js** 20+ (for frontend local development and npm scripts)
+- **Docker Desktop**
 - **pnpm** 9+ (or npm 10+)
 
 ```bash
-# macOS with Colima
-brew install colima docker docker-compose
-colima start --cpu 4 --memory 8 --disk 60  # adjust as needed
+# macOS: install Docker Desktop from https://www.docker.com/products/docker-desktop/
 ```
 
-## Quick Start (Docker / Colima)
+## Quick Start (Docker)
 
 ### Development (hot-reload)
 
 ```bash
-# Start all services
+# Start backend, DB, and Redis in Docker
 docker compose -f docker-compose.dev.yml up -d
 
-# View logs
-docker compose -f docker-compose.dev.yml logs -f backend
-docker compose -f docker-compose.dev.yml logs -f frontend
+# Start the frontend locally
+npm run dev --workspace=apps/frontend
 
-# Stop
+# View backend logs
+docker compose -f docker-compose.dev.yml logs -f backend
+
+# Stop the Docker services
 docker compose -f docker-compose.dev.yml down
 ```
 
 **Access:**
 - Frontend: http://localhost:3000
 - Backend API: http://localhost:3001
-- PostgreSQL: localhost:5432
-- Redis: localhost:6379
+- PostgreSQL (Docker service): `db:5432`
+- Redis (Docker service): `redis:6379`
 
 ### Production-like (standalone build)
 
@@ -69,32 +69,31 @@ docker compose -f docker-compose.dev.yml down
 docker compose up -d --build
 ```
 
-## Local Development (without Docker)
+## Local Development
+
+The backend runs only in Docker. The frontend runs locally on your machine.
 
 ```bash
-# Install dependencies
-npm install
+# Start DB, Redis, and Backend in Docker
+docker compose -f docker-compose.dev.yml up -d
 
-# Generate Prisma client
-npm run db:generate
+# Start the frontend locally
+npm run dev --workspace=apps/frontend
 
-# Push schema to database (requires running Postgres)
-npm run db:push
+# View backend logs
+docker compose -f docker-compose.dev.yml logs -f backend
 
-# Start all workspaces in watch mode
-npm run dev
+# Stop the Docker services
+docker compose -f docker-compose.dev.yml down
 ```
 
 Individual workspace commands:
 
 ```bash
-# Backend only
-npm run start:dev --workspace=apps/backend
-
 # Frontend only
 npm run dev --workspace=apps/frontend
 
-# Database package
+# Database package (connects to Docker PostgreSQL)
 npm run generate --workspace=packages/database
 ```
 
@@ -102,7 +101,7 @@ npm run generate --workspace=packages/database
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start all workspaces in watch mode (Turborepo) |
+| `npm run dev` | Start frontend workspace in watch mode (Turborepo) |
 | `npm run build` | Build all workspaces |
 | `npm run lint` | Lint all workspaces |
 | `npm run typecheck` | Type-check all workspaces |
@@ -110,7 +109,7 @@ npm run generate --workspace=packages/database
 | `npm run db:generate` | Generate Prisma client |
 | `npm run db:migrate:dev` | Run Prisma migrations (dev) |
 | `npm run db:push` | Push schema without migration |
-| `npm run format` | Format with Prettier |
+| `npm run format` | Format with oxfmt |
 
 ## Project Structure Details
 
@@ -136,15 +135,15 @@ npm run generate --workspace=packages/database
 
 ### apps/backend/.env
 ```env
-DATABASE_URL=postgresql://user:password@localhost:5432/aibook?schema=public
-REDIS_HOST=localhost
+DATABASE_URL=postgresql://user:password@db:5432/aibook?schema=public
+REDIS_HOST=redis
 REDIS_PORT=6379
 PORT=3001
 MOCK_AUTH=true
 # Add LLM provider keys as needed
 ```
 
-### apps/frontend/.env.local
+### apps/frontend/.env.example
 ```env
 BACKEND_URL=http://localhost:3001
 ```
@@ -186,15 +185,12 @@ npm run test:e2e --workspace=apps/frontend
 - Uses `node:24-alpine` base images
 
 ### docker-compose.dev.yml (Development)
-- Bind mounts source code for hot-reload
-- Runs `npm install` and dev commands in containers
-- Uses `node:24-slim` for faster startup
+- Runs backend, PostgreSQL, and Redis in containers
+- Frontend runs locally with `npm run dev --workspace=apps/frontend`
+- Keeps polling-sensitive Next.js file watching out of Docker bind mounts
 
-### Colima Configuration
-Default Colima VM uses `~/.colima/default/`. For external volumes (e.g., `/Volumes/KIOXIA`):
-```bash
-colima start --mount /Volumes/KIOXIA:/Volumes/KIOXIA --cpu 4 --memory 8 --disk 60
-```
+### Docker Desktop (macOS)
+Install Docker Desktop from [docker.com](https://www.docker.com/products/docker-desktop/).
 
 ## Troubleshooting
 
@@ -203,7 +199,8 @@ colima start --mount /Volumes/KIOXIA:/Volumes/KIOXIA --cpu 4 --memory 8 --disk 6
 | Port conflicts | Ensure 3000, 3001, 5432, 6379 are free |
 | Prisma client out of date | Run `npm run db:generate` |
 | Docker build fails | Check `.dockerignore` excludes `node_modules` |
-| Colima disk full | `colima delete && colima start --disk 100` |
+| Docker Desktop won't start | Restart the app or run `killall Docker` then reopen Docker Desktop |
+| Frontend file watching is flaky in Docker | Run `npm run dev --workspace=apps/frontend` locally and keep only backend/db/redis in Docker |
 | Frontend can't reach backend | Verify `BACKEND_URL` in frontend env |
 
 ## License

@@ -54,5 +54,7 @@ Preserve the established visual language unless the task is explicitly a redesig
 - Frontend uses Vitest and Testing Library
 - Runtime MSW-backed API mocking has been removed; the frontend talks to the backend directly via `/api/*` rewrites, and tests mock `fetch` or exercise the backend responses explicitly
 - Playwright is installed and exposed through `apps/frontend` via `npm run test:e2e`
+- For local development, run the frontend outside Docker with `npm run dev --workspace=apps/frontend` when the backend is started via `docker-compose.dev.yml`; this avoids file-watching/polling issues in bind mounts
+- Profiles page responses should be normalized defensively before rendering; avoid assuming `/api/child-profiles` always returns a bare array in every environment.
 
 When changing route behavior, auth flow, or dashboard/book lifecycle logic, update or add frontend specs near the affected route/component.

@@ -1,5 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { AI_PROVIDER_TOKEN, AiProvider, StoryGenerationOptions } from './ai.provider.interface';
+import {
+  AI_PROVIDER_TOKEN,
+  type AiProvider,
+  type StoryGenerationOptions,
+} from './ai.provider.interface';
 
 @Injectable()
 export class AiService {

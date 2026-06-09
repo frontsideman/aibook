@@ -1,9 +1,9 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import { Job } from 'bullmq';
+import type { Job } from 'bullmq';
 import { PrismaService } from '../prisma.service';
 import { AiService } from '../ai/ai.service';
 import { PromptBuilderService } from './prompt-builder.service';
-import { BookStatus, Prisma } from '@repo/database';
+import { BookStatus, type Prisma } from '@repo/database';
 
 @Processor('book-generation')
 export class BookProcessor extends WorkerHost {
@@ -43,7 +43,7 @@ export class BookProcessor extends WorkerHost {
       // Support multiple LLM page formats: "Page 1:", "**Page 1:**", "Page 1.", etc.
       const cleaned = storyText.replace(/\*\*/g, '').trim();
       let pagesContent = cleaned
-        .split(/Page \d+[\.:]\s*/)
+        .split(/Page \d+[.:]\s*/)
         .map((c) => c.trim())
         .filter((content) => content.length > 0);
 

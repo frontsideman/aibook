@@ -24,16 +24,15 @@ export default function ViewModeToggle({ viewMode }: ViewModeToggleProps) {
   const cardsActive = viewMode === 'list';
 
   return (
-    <div
+    <fieldset
       className='inline-flex gap-[4px] rounded-[12px] border border-border bg-secondary p-[4px]'
-      role='group'
       aria-label='View mode'
     >
       <button
         type='button'
         onClick={() => setViewMode('grid')}
         aria-pressed={tableActive}
-        className={`inline-flex h-9 items-center gap-[7px] rounded-[9px] px-[12px] text-[13px] font-extrabold transition ${
+        className={`inline-flex h-9 items-center gap-[7px] rounded-4xl px-[12px] text-[13px] font-extrabold transition ${
           tableActive
             ? 'border border-border bg-background text-primary'
             : 'bg-transparent text-muted-foreground'
@@ -46,7 +45,7 @@ export default function ViewModeToggle({ viewMode }: ViewModeToggleProps) {
         type='button'
         onClick={() => setViewMode('list')}
         aria-pressed={cardsActive}
-        className={`inline-flex h-9 items-center gap-[7px] rounded-[9px] px-[12px] text-[13px] font-extrabold transition ${
+        className={`inline-flex h-9 items-center gap-[7px] rounded-4xl px-[12px] text-[13px] font-extrabold transition ${
           cardsActive
             ? 'border border-border bg-background text-primary'
             : 'bg-transparent text-muted-foreground'
@@ -55,6 +54,6 @@ export default function ViewModeToggle({ viewMode }: ViewModeToggleProps) {
         <LayoutGrid className='h-4 w-4' aria-hidden='true' />
         <span>Cards</span>
       </button>
-    </div>
+    </fieldset>
   );
 }

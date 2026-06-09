@@ -109,7 +109,7 @@ export function ProfileSelector({ profiles, selectedId, onSelect }: ProfileSelec
         <h2 className="text-base font-extrabold text-ab-text">1. Select child profile</h2>
         <button
           type="button"
-          className="rounded-[9px] border border-ab-border px-3 py-2 text-[13px] font-extrabold text-ab-primary transition-colors hover:bg-ab-card"
+          className="rounded-4xl border border-ab-border px-3 py-2 text-[13px] font-extrabold text-ab-primary transition-colors hover:bg-ab-card"
         >
           Create Child Profile
         </button>
@@ -121,7 +121,7 @@ export function ProfileSelector({ profiles, selectedId, onSelect }: ProfileSelec
           <span className="text-sm font-extrabold text-ab-text">No child profiles yet</span>
           <button
             type="button"
-            className="ml-auto rounded-[9px] bg-ab-primary px-3 py-2 text-[13px] font-extrabold text-white"
+            className="ml-auto rounded-4xl bg-ab-primary px-3 py-2 text-[13px] font-extrabold text-white"
           >
             Create Child Profile
           </button>

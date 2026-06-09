@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 
@@ -13,7 +13,7 @@ export default function GeneratingPage() {
   const router = useRouter();
   const [book, setBook] = useState<Book | null>(null);
   const [error, setError] = useState('');
-  const [retryCount, setRetryCount] = useState(0);
+  const [_retryCount, setRetryCount] = useState(0);
   const [pollingStopped, setPollingStopped] = useState(false);
 
   useEffect(() => {
@@ -50,9 +50,9 @@ export default function GeneratingPage() {
           router.replace(`/books/${params.id}`);
           return;
         }
-      } catch (err: any) {
+      } catch (fetchError: any) {
         if (!cancelled) {
-          setError(err.message);
+          setError(fetchError.message);
           setRetryCount(++retries);
         }
       }
@@ -90,7 +90,7 @@ export default function GeneratingPage() {
         <p className='mb-3 text-xs uppercase text-muted-foreground'>
           {isFailed ? 'Generation Failed' : 'Generating'}
         </p>
-        <h1 className='section-heading !text-3xl'>
+        <h1 className='section-heading text-3xl!'>
           {book?.title ?? 'Your book is being prepared'}
         </h1>
         {isFailed ? (

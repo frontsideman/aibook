@@ -1,4 +1,4 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, type TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@nestjs/config';
 import { StorageService } from './storage.service';
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
@@ -26,10 +26,7 @@ describe('StorageService', () => {
     s3Mock.reset();
     jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        StorageService,
-        { provide: ConfigService, useValue: mockConfigService },
-      ],
+      providers: [StorageService, { provide: ConfigService, useValue: mockConfigService }],
     }).compile();
 
     service = module.get<StorageService>(StorageService);

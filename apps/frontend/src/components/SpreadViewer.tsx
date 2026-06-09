@@ -29,7 +29,7 @@ export default function SpreadViewer({ pages }: SpreadViewerProps) {
   return (
     <div>
       <div className='paper-card overflow-hidden'>
-        <div className='aspect-[1.414/1] bg-gradient-to-br from-amber-50 via-rose-50/40 to-orange-50 relative flex items-center justify-center'>
+        <div className='aspect-[1.414/1] bg-linear-to-br from-amber-50 via-rose-50/40 to-orange-50 relative flex items-center justify-center'>
           {page.illustrations[0]?.url ? (
             <img
               src={page.illustrations[0].url}

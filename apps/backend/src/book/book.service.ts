@@ -1,13 +1,13 @@
+import type { Queue } from 'bullmq';
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
   ServiceUnavailableException,
 } from '@nestjs/common';
-import { PrismaService } from '../prisma.service';
-import { BookStatus, BookStyle, ReasoningEffort, Tone } from '@repo/database';
 import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
+import { BookStatus, BookStyle, ReasoningEffort, Tone } from '@repo/database';
+import { PrismaService } from '../prisma.service';
 import { PdfService } from '../pdf/pdf.service';
 import { StorageService } from '../storage/storage.service';
 import { ConfigService } from '@nestjs/config';
@@ -78,7 +78,7 @@ export class BookService {
     }
   }
 
-  async findAll(params: { skip?: number; take?: number; where?: any }) {
+  async findAll(params: { skip?: number; take?: number; where?: Record<string, unknown> }) {
     const { skip, take, where } = params;
     const staleGenerationCutoff = new Date(Date.now() - STALE_GENERATING_BOOK_AGE_MS);
 

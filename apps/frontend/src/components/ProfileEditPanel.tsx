@@ -21,6 +21,12 @@ type ProfileEditPanelProps = {
   onDelete: (id: string) => void;
 };
 
+const parseInterests = (raw: string): string[] =>
+  raw
+    .split(',')
+    .map((i) => i.trim())
+    .filter(Boolean);
+
 export default function ProfileEditPanel({
   open,
   profile,
@@ -55,12 +61,6 @@ export default function ProfileEditPanel({
       setSubmitting(false);
     }
   }, [open, profile]);
-
-  const parseInterests = (raw: string): string[] =>
-    raw
-      .split(',')
-      .map((i) => i.trim())
-      .filter(Boolean);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -114,8 +114,11 @@ export default function ProfileEditPanel({
         <form onSubmit={handleSubmit} className='flex flex-1 flex-col p-5'>
           <div className='flex flex-1 flex-col gap-4'>
             <div className='flex flex-col gap-1.5'>
-              <label className='text-[13px] font-extrabold text-foreground'>Name</label>
+              <label htmlFor='panel-name' className='text-[13px] font-extrabold text-foreground'>
+                Name
+              </label>
               <Input
+                id='panel-name'
                 placeholder='Name'
                 value={name}
                 onChange={(e) => {
@@ -128,8 +131,11 @@ export default function ProfileEditPanel({
             </div>
 
             <div className='flex flex-col gap-1.5'>
-              <label className='text-[13px] font-extrabold text-foreground'>Age</label>
+              <label htmlFor='panel-age' className='text-[13px] font-extrabold text-foreground'>
+                Age
+              </label>
               <Input
+                id='panel-age'
                 type='number'
                 placeholder='Age'
                 value={age}
@@ -145,8 +151,11 @@ export default function ProfileEditPanel({
             </div>
 
             <div className='flex flex-col gap-1.5'>
-              <label className='text-[13px] font-extrabold text-foreground'>Gender</label>
+              <label htmlFor='panel-gender' className='text-[13px] font-extrabold text-foreground'>
+                Gender
+              </label>
               <select
+                id='panel-gender'
                 value={gender}
                 onChange={(e) => {
                   setGender(e.target.value);
@@ -160,8 +169,14 @@ export default function ProfileEditPanel({
             </div>
 
             <div className='flex flex-col gap-1.5'>
-              <label className='text-[13px] font-extrabold text-foreground'>Interests</label>
+              <label
+                htmlFor='panel-interests'
+                className='text-[13px] font-extrabold text-foreground'
+              >
+                Interests
+              </label>
               <textarea
+                id='panel-interests'
                 data-testid='interests-input'
                 placeholder='gardens, moon stories, blue cars'
                 value={interests}
@@ -170,6 +185,7 @@ export default function ProfileEditPanel({
                   if (interestsError) setInterestsError(null);
                   if (submitError) setSubmitError(null);
                 }}
+                aria-label='Interests'
                 aria-invalid={interestsError ? 'true' : 'false'}
                 aria-describedby={interestsError ? 'panel-interests-error' : undefined}
                 className={cn(

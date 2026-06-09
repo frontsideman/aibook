@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ReasoningEffort } from '@repo/database';
 import { PrismaService } from '../prisma.service';
+import { ReasoningEffort } from '@repo/database';
 
 const DEFAULT_REASONING_EFFORT = ReasoningEffort.MEDIUM;
 
@@ -50,8 +50,9 @@ export class SettingsService {
           preferredLlmModel: true,
         },
       });
-    } catch (error: any) {
-      if (error?.code === 'P2025') {
+    } catch (error: unknown) {
+      const prismaError = error as { code?: string } | null;
+      if (prismaError?.code === 'P2025') {
         throw new NotFoundException('User not found');
       }
 

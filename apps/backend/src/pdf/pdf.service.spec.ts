@@ -1,4 +1,4 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, type TestingModule } from '@nestjs/testing';
 import { PdfService } from './pdf.service';
 
 describe('PdfService', () => {
@@ -18,7 +18,7 @@ describe('PdfService', () => {
         headers: {
           get: (name: string) => (name === 'Content-Type' ? 'image/png' : null),
         },
-      } as any)
+      } as unknown as Response)
     );
   });
 
@@ -59,7 +59,7 @@ describe('PdfService', () => {
       headers: {
         get: () => 'text/html',
       },
-    } as any);
+    } as unknown as Response);
 
     const pages = [{ text: 'Page 1', imageUrl: 'https://example.com/not-image' }];
     const buffer = await service.generateBookPdf(pages);

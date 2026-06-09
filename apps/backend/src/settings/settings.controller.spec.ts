@@ -1,8 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, type TestingModule } from '@nestjs/testing';
 import { SettingsController } from './settings.controller';
 import { SettingsService } from './settings.service';
 import { PrismaService } from '../prisma.service';
 import { ConfigService } from '@nestjs/config';
+import { MockAuthGuard } from '../mock-auth.guard';
 import { ReasoningEffort } from '@repo/database';
 
 describe('SettingsController', () => {
@@ -16,13 +17,15 @@ describe('SettingsController', () => {
 
   const mockPrismaService = {
     client: {
-      user: { findUnique: jest.fn() },
+      user: { findUnique: jest.fn(), upsert: jest.fn() },
     },
   };
 
   const mockConfigService = {
     get: jest.fn().mockReturnValue('true'),
   };
+
+  const mockMockAuthGuard = { canActivate: jest.fn().mockReturnValue(true) };
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -32,6 +35,7 @@ describe('SettingsController', () => {
         { provide: SettingsService, useValue: mockSettingsService },
         { provide: PrismaService, useValue: mockPrismaService },
         { provide: ConfigService, useValue: mockConfigService },
+        { provide: MockAuthGuard, useValue: mockMockAuthGuard },
       ],
     }).compile();
 
@@ -49,7 +53,9 @@ describe('SettingsController', () => {
       reasoningEffort: ReasoningEffort.MEDIUM,
     });
 
-    await controller.getGenerationSettings({ user: { id: 'user-1' } });
+    await controller.getGenerationSettings({
+      user: { id: 'user-1', email: 'test@example.com', name: 'Test User' },
+    });
 
     expect(service.getGenerationSettings).toHaveBeenCalledWith('user-1');
   });
@@ -60,7 +66,9 @@ describe('SettingsController', () => {
       reasoningEffort: ReasoningEffort.HIGH,
     };
 
-    await controller.updateGenerationSettings(body, { user: { id: 'user-1' } });
+    await controller.updateGenerationSettings(body, {
+      user: { id: 'user-1', email: 'test@example.com', name: 'Test User' },
+    });
 
     expect(service.updateGenerationSettings).toHaveBeenCalledWith('user-1', body);
   });

@@ -126,14 +126,14 @@ export default function BooksDataTable({ books }: BooksDataTableProps) {
                   {primary ? (
                     <Link
                       href={href}
-                      className='inline-flex h-[34px] items-center rounded-[9px] bg-primary px-2.5 text-[12px] font-extrabold text-primary-foreground transition hover:opacity-90'
+                      className='inline-flex h-[34px] items-center rounded-4xl bg-primary px-2.5 text-[12px] font-extrabold text-primary-foreground transition hover:opacity-90'
                     >
                       {actionLabel}
                     </Link>
                   ) : (
                     <Link
                       href={href}
-                      className='inline-flex h-[34px] items-center rounded-[9px] border border-border bg-transparent px-2.5 text-[12px] font-extrabold text-foreground transition hover:bg-[var(--dashboard-table-header)]'
+                      className='inline-flex h-[34px] items-center rounded-4xl border border-border bg-transparent px-2.5 text-[12px] font-extrabold text-foreground transition hover:bg-(--dashboard-table-header)'
                     >
                       {actionLabel}
                     </Link>

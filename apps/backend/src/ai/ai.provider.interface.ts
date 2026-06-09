@@ -1,4 +1,4 @@
-import { ReasoningEffort } from '@repo/database';
+import type { ReasoningEffort } from '@repo/database';
 
 export interface StoryGenerationOptions {
   /**

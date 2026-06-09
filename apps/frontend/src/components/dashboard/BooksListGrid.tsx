@@ -23,7 +23,7 @@ export default function BooksListGrid({ books, viewMode }: BooksListGridProps) {
           <BookCard
             id={book.id}
             title={book.title}
-            style={book.style}
+            bookStyle={book.style}
             status={book.status}
             childName={book.childName}
             createdAt={book.createdAt}

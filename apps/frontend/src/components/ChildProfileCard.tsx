@@ -71,7 +71,7 @@ export default function ChildProfileCard({ profile, onEdit, onDelete }: ChildPro
           type='button'
           onClick={onEdit}
           aria-label={`Edit ${profile.name}`}
-          className='inline-flex h-9 items-center gap-[7px] rounded-[9px] border border-border bg-secondary px-3 text-[13px] font-extrabold text-secondary-foreground transition hover:bg-secondary/80'
+          className='inline-flex h-9 items-center gap-[7px] rounded-4xl border border-border bg-secondary px-3 text-[13px] font-extrabold text-secondary-foreground transition hover:bg-secondary/80'
         >
           <Pencil className='h-[14px] w-[14px] text-muted-foreground' aria-hidden='true' />
           <span>Edit</span>
@@ -80,7 +80,7 @@ export default function ChildProfileCard({ profile, onEdit, onDelete }: ChildPro
           type='button'
           onClick={onDelete}
           aria-label={`Delete ${profile.name}`}
-          className='inline-flex h-9 items-center gap-[7px] rounded-[9px] border border-border bg-transparent px-3 text-[13px] font-extrabold text-destructive transition hover:bg-secondary/70'
+          className='inline-flex h-9 items-center gap-[7px] rounded-4xl border border-border bg-transparent px-3 text-[13px] font-extrabold text-destructive transition hover:bg-secondary/70'
         >
           <Trash2 className='h-[14px] w-[14px] text-destructive' aria-hidden='true' />
           <span>Delete</span>

@@ -1,6 +1,6 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, type TestingModule } from '@nestjs/testing';
 import { AiService } from './ai.service';
-import { AI_PROVIDER_TOKEN, AiProvider } from './ai.provider.interface';
+import { AI_PROVIDER_TOKEN, type AiProvider } from './ai.provider.interface';
 import { ReasoningEffort } from '@repo/database';
 
 describe('AiService', () => {

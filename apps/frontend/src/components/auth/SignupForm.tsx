@@ -10,6 +10,8 @@ import { BrandMark } from '@/components/ui/brand-mark';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
+const isValidEmail = (value: string) => /\S+@\S+\.\S+/.test(value);
+
 export function SignupForm() {
   const router = useRouter();
   const { signupDemo } = useAuth();
@@ -18,8 +20,6 @@ export function SignupForm() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const isValidEmail = (value: string) => /\S+@\S+\.\S+/.test(value);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -55,10 +55,13 @@ export function SignupForm() {
 
       <form className='mt-[18px] space-y-[14px]' onSubmit={handleSubmit}>
         <div className='space-y-1.5'>
-          <label className='text-[13px] font-extrabold text-foreground'>Name</label>
+          <label htmlFor='signup-name' className='text-[13px] font-extrabold text-foreground'>
+            Name
+          </label>
           <div className='relative'>
             <User className='pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
             <Input
+              id='signup-name'
               aria-label='Name'
               type='text'
               value={name}
@@ -75,10 +78,13 @@ export function SignupForm() {
         </div>
 
         <div className='space-y-1.5'>
-          <label className='text-[13px] font-extrabold text-foreground'>Email</label>
+          <label htmlFor='signup-email' className='text-[13px] font-extrabold text-foreground'>
+            Email
+          </label>
           <div className='relative'>
             <Mail className='pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
             <Input
+              id='signup-email'
               aria-label='Email'
               type='email'
               value={email}
@@ -95,10 +101,13 @@ export function SignupForm() {
         </div>
 
         <div className='space-y-1.5'>
-          <label className='text-[13px] font-extrabold text-foreground'>Password</label>
+          <label htmlFor='signup-password' className='text-[13px] font-extrabold text-foreground'>
+            Password
+          </label>
           <div className='relative'>
             <Lock className='pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
             <Input
+              id='signup-password'
               aria-label='Password'
               type='password'
               value={password}

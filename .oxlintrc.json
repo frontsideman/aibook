@@ -30,7 +30,8 @@
       },
       "rules": {
         "import/no-unassigned-import": "warn",
-        "unicorn/catch-error-name": "warn"
+        "unicorn/catch-error-name": "warn",
+        "react/react-in-jsx-scope": "off"
       }
     },
     {
@@ -42,7 +43,8 @@
       },
       "rules": {
         "typescript/no-explicit-any": "warn",
-        "typescript/consistent-type-imports": "warn",
+        "typescript/consistent-type-imports": "off",
+        "typescript/no-extraneous-class": ["warn", { "allowWithDecorator": true }],
         "unicorn/prefer-node-protocol": "error",
         "unicorn/filename-case": "off",
         "import/no-named-export": "off",
@@ -55,7 +57,8 @@
       "files": ["**/*.spec.{ts,tsx}", "**/*.test.{ts,tsx}"],
       "rules": {
         "eslint/no-unused-vars": "warn",
-        "unicorn/prefer-global-this": "off"
+        "unicorn/prefer-global-this": "off",
+        "no-underscore-dangle": ["warn", { "allow": ["_queue", "_configService"] }]
       }
     }
   ]

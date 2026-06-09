@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { StoryCombobox } from '@/components/books/StoryCombobox';
 
 const STORIES_PAGE_SIZE = 10;
@@ -16,9 +16,12 @@ export function StoryStep({ value, onChange }: StoryStepProps) {
   const [offset, setOffset] = useState(0);
   const [canLoadMore, setCanLoadMore] = useState(false);
   const latestQueryRef = useRef('');
+  const offsetRef = useRef(offset);
 
-  const loadStories = async ({ query, append }: { query: string; append: boolean }) => {
-    const currentOffset = append ? offset : 0;
+  offsetRef.current = offset;
+
+  const loadStories = useCallback(async ({ query, append }: { query: string; append: boolean }) => {
+    const currentOffset = append ? offsetRef.current : 0;
     setLoading(true);
     try {
       const response = await fetch(
@@ -40,7 +43,7 @@ export function StoryStep({ value, onChange }: StoryStepProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     const query = value.trim();
@@ -49,7 +52,7 @@ export function StoryStep({ value, onChange }: StoryStepProps) {
       void loadStories({ query, append: false });
     }, 200);
     return () => clearTimeout(timeoutId);
-  }, [value]);
+  }, [value, loadStories]);
 
   return (
     <section className='space-y-3'>

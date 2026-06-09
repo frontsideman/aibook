@@ -1,13 +1,13 @@
 'use client';
 
 type ProgressBarProps = {
-  currentStep: number;
-  totalSteps: number;
-  stepLabel: string;
+  _currentStep: number;
+  _totalSteps: number;
+  _stepLabel: string;
   percent: number;
 };
 
-export function ProgressBar({ currentStep, totalSteps, stepLabel, percent }: ProgressBarProps) {
+export function ProgressBar({ _currentStep, _totalSteps, _stepLabel, percent }: ProgressBarProps) {
   return (
     <div className='rounded-2xl border border-border bg-card p-3.5 h-[82px]'>
       <div className='flex items-center justify-between'>

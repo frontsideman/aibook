@@ -384,7 +384,7 @@ function BrandMark({
 }) {
   const sizeMap = {
     sm: { box: "size-[26px]", rounded: "rounded-[7px]", icon: 14, text: "text-[20px]" },
-    md: { box: "size-[34px]", rounded: "rounded-[9px]", icon: 18, text: "text-[27px]" },
+    md: { box: "size-[34px]", rounded: "rounded-4xl", icon: 18, text: "text-[27px]" },
     lg: { box: "size-[44px]", rounded: "rounded-[11px]", icon: 24, text: "text-[34px]" },
   }
 

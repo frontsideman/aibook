@@ -13,7 +13,7 @@
 | `npm run db:migrate:dev` | Prisma migrate dev in `packages/database` |
 | `npm run db:push` | Prisma db push in `packages/database` |
 | `npm run lint:fix` | `turbo run lint:fix` — auto-fix lint issues |
-| `npm run format` | oxfmt on `*.{ts,tsx,js,jsx,json,md}` |
+| `npm run format` | oxfmt on `*.{ts,tsx,js,jsx,json}` |
 
 ## Backend (`apps/backend`)
 
@@ -47,15 +47,19 @@
 | Command | Description |
 |---------|-------------|
 | `docker compose up` | Production-like standalone build |
-| `docker compose -f docker-compose.dev.yml up` | Hot-reload development |
+| `docker compose -f docker-compose.dev.yml up -d` | Start backend/db/redis for local frontend dev |
 | `docker compose down` | Stop and remove containers |
 | `docker compose logs -f <service>` | Follow logs for service |
 
-## Colima (macOS)
+## Docker Desktop (macOS)
+
+| Action | Description |
+|--------|-------------|
+| Open Docker Desktop app | Starts Docker Engine |
+| Quit Docker Desktop | Stops Docker Engine |
+
+## Frontend Dev
 
 | Command | Description |
 |---------|-------------|
-| `colima start` | Start Colima VM |
-| `colima stop` | Stop Colima VM |
-| `colima status` | Show VM status |
-| `colima delete` | Delete VM (frees disk space) |
+| `npm run dev --workspace=apps/frontend` | Run Next.js locally for reliable file watching |

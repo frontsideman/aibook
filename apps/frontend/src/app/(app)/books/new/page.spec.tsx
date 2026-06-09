@@ -110,6 +110,20 @@ describe('CreateBookPage', () => {
     expect(storyInput.value).toBe('My custom bedtime story');
   });
 
+  it('normalizes wrapped child profile payloads from the backend', async () => {
+    global.fetch = createFetchMock({
+      '/api/child-profiles': {
+        ok: true,
+        json: async () => ({ profiles: [{ id: 'p1', name: 'Nina', age: 7 }] }),
+      } as Response,
+    });
+
+    render(<CreateBookPage />);
+
+    expect(await screen.findByRole('button', { name: /Nina/ })).toBeInTheDocument();
+    expect(screen.getByText('0%')).toBeInTheDocument();
+  });
+
   it('shows an error message when book generation fails', async () => {
     global.fetch = vi.fn(async (input: RequestInfo | URL) => {
       const url = typeof input === 'string' ? input : input.toString();

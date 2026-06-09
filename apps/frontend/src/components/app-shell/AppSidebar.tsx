@@ -25,7 +25,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <div className='flex h-full min-h-0 flex-col p-[18px]'>
         {/* Brand */}
         <div className='flex shrink-0 items-center gap-[10px]'>
-          <div className='size-9 rounded-[9px] bg-primary' />
+          <div className='size-9 rounded-4xl bg-primary' />
           <span className='font-display text-[27px] font-semibold text-foreground'>aiBook</span>
         </div>
 

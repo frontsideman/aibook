@@ -10,6 +10,8 @@ import { BrandMark } from '@/components/ui/brand-mark';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
+const isValidEmail = (value: string) => /\S+@\S+\.\S+/.test(value);
+
 export function LoginForm() {
   const router = useRouter();
   const { loginDemo } = useAuth();
@@ -17,8 +19,6 @@ export function LoginForm() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const isValidEmail = (value: string) => /\S+@\S+\.\S+/.test(value);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -50,10 +50,13 @@ export function LoginForm() {
 
       <form className='mt-[18px] space-y-[14px]' onSubmit={handleSubmit}>
         <div className='space-y-1.5'>
-          <label className='text-[13px] font-extrabold text-foreground'>Email</label>
+          <label htmlFor='login-email' className='text-[13px] font-extrabold text-foreground'>
+            Email
+          </label>
           <div className='relative'>
             <Mail className='pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
             <Input
+              id='login-email'
               aria-label='Email'
               type='email'
               value={email}
@@ -70,10 +73,13 @@ export function LoginForm() {
         </div>
 
         <div className='space-y-1.5'>
-          <label className='text-[13px] font-extrabold text-foreground'>Password</label>
+          <label htmlFor='login-password' className='text-[13px] font-extrabold text-foreground'>
+            Password
+          </label>
           <div className='relative'>
             <Lock className='pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground' />
             <Input
+              id='login-password'
               aria-label='Password'
               type='password'
               value={password}

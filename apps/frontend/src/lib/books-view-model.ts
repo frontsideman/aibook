@@ -66,7 +66,7 @@ export function applyDashboardBookFilterSort(
     return true;
   });
 
-  return [...filtered].sort((a, b) => {
+  return [...filtered].toSorted((a, b) => {
     if (sort === 'title') {
       return a.title.localeCompare(b.title, undefined, { sensitivity: 'base' });
     }

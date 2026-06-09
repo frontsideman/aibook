@@ -7,6 +7,27 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import ChildProfileCard, { type ChildProfile } from '@/components/ChildProfileCard';
 import ProfileEditPanel from '@/components/ProfileEditPanel';
 
+type ChildProfilePayload =
+  | ChildProfile[]
+  | {
+      profiles?: ChildProfile[];
+      data?: ChildProfile[];
+      childProfiles?: ChildProfile[];
+    };
+
+const normalizeProfiles = (payload: unknown): ChildProfile[] => {
+  if (Array.isArray(payload)) {
+    return payload;
+  }
+
+  if (payload && typeof payload === 'object') {
+    const response = payload as ChildProfilePayload;
+    return response.profiles ?? response.data ?? response.childProfiles ?? [];
+  }
+
+  return [];
+};
+
 export default function ProfilesPage() {
   const [profiles, setProfiles] = useState<ChildProfile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -18,8 +39,8 @@ export default function ProfilesPage() {
   const fetchProfiles = () => {
     fetch('/api/child-profiles')
       .then((r) => r.json())
-      .then(setProfiles)
-      .catch(() => {})
+      .then((payload) => setProfiles(normalizeProfiles(payload)))
+      .catch(() => setProfiles([]))
       .finally(() => setLoading(false));
   };
 

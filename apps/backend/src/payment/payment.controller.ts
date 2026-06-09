@@ -1,13 +1,13 @@
 import { Controller, Post, Body, Res, HttpStatus } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { Response } from 'express';
+import type { Response } from 'express';
 
 @Controller('payments')
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
   @Post('webhook')
-  async webhook(@Body() event: any, @Res() res: Response) {
+  async webhook(@Body() event: unknown, @Res() res: Response) {
     // In production, you would use the raw body to verify Stripe signature
     // For this prototype, we'll accept the JSON body directly
     try {

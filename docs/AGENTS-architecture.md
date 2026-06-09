@@ -26,8 +26,8 @@ aiBook/
 | Queue | BullMQ / Redis |
 | Auth | Mock (transitional) — backend `MockAuthGuard`, frontend `AuthProvider` |
 | Linting | oxlint (multi-workspace config) |
-| Formatting | oxfmt (Prettier-compatible) |
-| Container | Docker, Colima (macOS) |
+| Formatting | oxfmt |
+| Container | Docker Desktop |
 
 ## API Communication
 
@@ -46,7 +46,7 @@ Frontend API calls go through `apps/frontend/next.config.mjs`, which rewrites `/
 | Root | `npm run db:migrate:dev` | Runs `prisma migrate dev` in `packages/database` |
 | Root | `npm run db:push` | Runs `prisma db push` in `packages/database` |
 | Root | `npm run lint:fix` | `turbo run lint:fix` — auto-fix lint issues |
-| Root | `npm run format` | oxfmt on `*.{ts,tsx,js,jsx,json,md}` |
+| Root | `npm run format` | oxfmt on `*.{ts,tsx,js,jsx,json}` |
 
 Turbo `build` depends on upstream package builds first.
 

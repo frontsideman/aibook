@@ -25,7 +25,7 @@ export function ProfileSelector({ profiles, selectedId, onSelect }: ProfileSelec
         <button
           type='button'
           onClick={() => router.push('/profiles?new=true')}
-          className='rounded-[9px] border border-border bg-background px-3 py-2 text-[13px] font-extrabold text-primary transition-colors hover:bg-secondary'
+          className='rounded-4xl border border-border bg-background px-3 py-2 text-[13px] font-extrabold text-primary transition-colors hover:bg-secondary'
         >
           Create Child Profile
         </button>
@@ -59,6 +59,7 @@ export function ProfileSelector({ profiles, selectedId, onSelect }: ProfileSelec
                 key={profile.id}
                 type='button'
                 onClick={() => onSelect(profile.id)}
+                aria-label={`Select ${profile.name}, ${profile.age} years old`}
                 className={`flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all ${
                   isSelected
                     ? 'border-primary bg-secondary shadow-[0_8px_18px_-14px_oklch(0.22_0.03_56/0.45)]'

@@ -1,6 +1,6 @@
 import { ReasoningEffort } from '@repo/database';
 import { LlmGateway } from './llm.gateway';
-import { LlmConfig } from './llm.config';
+import type { LlmConfig } from './llm.config';
 
 describe('LlmGateway', () => {
   const config: LlmConfig = {

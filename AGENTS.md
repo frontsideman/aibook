@@ -9,7 +9,7 @@
 | [AGENTS-frontend.md](./docs/AGENTS-frontend.md) | Routes, routing rules, styling (Tailwind), testing |
 | [AGENTS-backend.md](./docs/AGENTS-backend.md) | Backend modules, HTTP API surface, product state |
 | [AGENTS-auth.md](./docs/AGENTS-auth.md) | Auth state, mock guards, key quirks |
-| [AGENTS-docker.md](./docs/AGENTS-docker.md) | Docker Compose files, multi-stage builds, Colima |
+| [AGENTS-docker.md](./docs/AGENTS-docker.md) | Docker Compose files, multi-stage builds, Docker Desktop |
 | [AGENTS-docs-git.md](./docs/AGENTS-docs-git.md) | Docs location, Git conventions, commit format |
 | [AGENTS-quickref.md](./docs/AGENTS-quickref.md) | All command tables (high-frequency reference) |
 | [AGENTS-backlog.md](./docs/AGENTS-backlog.md) | Backlog reference (future work) |
@@ -47,7 +47,7 @@ The app is still a prototype, but the current flow is more advanced than the ori
 | Frontend routes, routing rules, styling, testing | `docs/AGENTS-frontend.md` |
 | Backend modules, HTTP API surface, product state | `docs/AGENTS-backend.md` |
 | Auth state, mock guards, key quirks | `docs/AGENTS-auth.md` |
-| Docker Compose, Dockerfiles, Colima config | `docs/AGENTS-docker.md` |
+| Docker Compose, Dockerfiles, Docker Desktop config | `docs/AGENTS-docker.md` |
 | Docs location, Git conventions, commit format | `docs/AGENTS-docs-git.md` |
 | Command tables | `docs/AGENTS-quickref.md` |
 | Backlog items (add/remove/update) | `docs/AGENTS-backlog.md` |

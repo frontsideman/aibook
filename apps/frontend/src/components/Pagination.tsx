@@ -32,7 +32,7 @@ export default function Pagination({
           type='button'
           onClick={() => onPageChange(page - 1)}
           disabled={page <= 1}
-          className='inline-flex h-9 items-center rounded-[9px] border border-border bg-card px-[11px] text-[13px] font-bold text-foreground transition hover:bg-[var(--dashboard-table-header)] disabled:cursor-not-allowed disabled:opacity-30'
+          className='inline-flex h-9 items-center rounded-4xl border border-border bg-card px-[11px] text-[13px] font-bold text-foreground transition hover:bg-(--dashboard-table-header) disabled:cursor-not-allowed disabled:opacity-30'
         >
           Prev
         </button>
@@ -41,10 +41,10 @@ export default function Pagination({
             key={p}
             type='button'
             onClick={() => onPageChange(p)}
-            className={`inline-flex h-9 items-center rounded-[9px] px-[11px] text-sm font-bold transition ${
+            className={`inline-flex h-9 items-center rounded-4xl px-[11px] text-sm font-bold transition ${
               p === page
                 ? 'bg-primary text-primary-foreground'
-                : 'border border-border bg-surface text-foreground hover:bg-[var(--dashboard-table-header)]'
+                : 'border border-border bg-surface text-foreground hover:bg-(--dashboard-table-header)'
             }`}
           >
             {p}
@@ -54,7 +54,7 @@ export default function Pagination({
           type='button'
           onClick={() => onPageChange(page + 1)}
           disabled={page >= totalPages}
-          className='inline-flex h-9 items-center rounded-[9px] border border-border bg-card px-[11px] text-[13px] font-bold text-foreground transition hover:bg-[var(--dashboard-table-header)] disabled:cursor-not-allowed disabled:opacity-30'
+          className='inline-flex h-9 items-center rounded-4xl border border-border bg-card px-[11px] text-[13px] font-bold text-foreground transition hover:bg-(--dashboard-table-header) disabled:cursor-not-allowed disabled:opacity-30'
         >
           Next
         </button>

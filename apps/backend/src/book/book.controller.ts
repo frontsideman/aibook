@@ -10,15 +10,14 @@ import {
   Req,
   ParseIntPipe,
 } from '@nestjs/common';
-import {
-  BookService,
-  CreateBookDto,
-  SearchQueryDto,
-  PageEditDto,
-  RegenerateDto,
-} from './book.service';
+import { BookService } from './book.service';
+import type { CreateBookDto, SearchQueryDto, PageEditDto, RegenerateDto } from './book.service';
 import { SubscriptionGuard } from '../payment/subscription.guard';
 import { MockAuthGuard } from '../mock-auth.guard';
+
+interface AuthenticatedRequest {
+  user: { id: string; email: string; name: string };
+}
 
 @Controller('books')
 @UseGuards(MockAuthGuard)
@@ -26,12 +25,12 @@ export class BookController {
   constructor(private readonly bookService: BookService) {}
 
   @Get()
-  async findAll(@Query() query: SearchQueryDto, @Req() req: any) {
+  async findAll(@Query() query: SearchQueryDto, @Req() req: AuthenticatedRequest) {
     const page = parseInt(query.page as string) || 1;
     const limit = parseInt(query.limit as string) || 10;
     const skip = (page - 1) * limit;
 
-    const where: any = { userId: req.user.id };
+    const where: Record<string, unknown> = { userId: req.user.id };
     const titleFilter = query.title || query.search;
     if (titleFilter) where.title = { contains: titleFilter, mode: 'insensitive' };
     if (query.style) where.style = query.style;
@@ -45,17 +44,17 @@ export class BookController {
 
   @Post('generate')
   @UseGuards(SubscriptionGuard)
-  async generate(@Body() body: CreateBookDto, @Req() req: any) {
+  async generate(@Body() body: CreateBookDto, @Req() req: AuthenticatedRequest) {
     return this.bookService.createAndGenerate(body, req.user.id);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string, @Req() req: any) {
+  async findOne(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     return this.bookService.getById(id, req.user.id);
   }
 
   @Get(':id/preview')
-  async preview(@Param('id') id: string, @Req() req: any) {
+  async preview(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     return this.bookService.getPreview(id, req.user.id);
   }
 
@@ -64,24 +63,28 @@ export class BookController {
     @Param('id') id: string,
     @Param('pageNumber', ParseIntPipe) pageNumber: number,
     @Body() body: PageEditDto,
-    @Req() req: any
+    @Req() req: AuthenticatedRequest
   ) {
     return this.bookService.editPage(id, pageNumber, body, req.user.id);
   }
 
   @Patch(':id/regenerate')
-  async regenerate(@Param('id') id: string, @Body() body: RegenerateDto, @Req() req: any) {
+  async regenerate(
+    @Param('id') id: string,
+    @Body() body: RegenerateDto,
+    @Req() req: AuthenticatedRequest
+  ) {
     return this.bookService.regenerate(id, body, req.user.id);
   }
 
   @Post(':id/approve')
   @UseGuards(SubscriptionGuard)
-  async approve(@Param('id') id: string, @Req() req: any) {
+  async approve(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     return this.bookService.approveBook(id, req.user.id);
   }
 
   @Get(':id/pdf')
-  async getPdf(@Param('id') id: string, @Req() req: any) {
+  async getPdf(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     return this.bookService.getPdfUrl(id, req.user.id);
   }
 }

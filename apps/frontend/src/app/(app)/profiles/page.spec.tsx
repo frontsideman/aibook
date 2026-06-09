@@ -33,6 +33,22 @@ const mockFetch = (impl: (url: string, init?: RequestInit) => Promise<Response> 
   }) as unknown as typeof fetch;
 };
 
+const openForm = () => {
+  fireEvent.click(screen.getByRole('button', { name: 'Add Profile' }));
+};
+
+const fillForm = (overrides: Record<string, string> = {}) => {
+  fireEvent.change(screen.getByPlaceholderText('Name'), {
+    target: { value: overrides.name ?? 'Sam' },
+  });
+  fireEvent.change(screen.getByPlaceholderText('Age'), {
+    target: { value: overrides.age ?? '6' },
+  });
+  fireEvent.change(screen.getByTestId('interests-input'), {
+    target: { value: overrides.interests ?? '  , , ' },
+  });
+};
+
 describe('ProfilesPage — form validation', () => {
   beforeEach(() => {
     mockFetch((url) => {
@@ -52,22 +68,6 @@ describe('ProfilesPage — form validation', () => {
     searchParamNew = null;
     replace.mockReset();
   });
-
-  const openForm = () => {
-    fireEvent.click(screen.getByRole('button', { name: 'Add Profile' }));
-  };
-
-  const fillForm = (overrides: Record<string, string> = {}) => {
-    fireEvent.change(screen.getByPlaceholderText('Name'), {
-      target: { value: overrides.name ?? 'Sam' },
-    });
-    fireEvent.change(screen.getByPlaceholderText('Age'), {
-      target: { value: overrides.age ?? '6' },
-    });
-    fireEvent.change(screen.getByTestId('interests-input'), {
-      target: { value: overrides.interests ?? '  , , ' },
-    });
-  };
 
   it('blocks submit and shows an error when interests are empty', async () => {
     render(<ProfilesPage />);
@@ -174,6 +174,24 @@ describe('ProfilesPage — form validation', () => {
     });
 
     expect(await screen.findByText('Sam')).toBeInTheDocument();
+  });
+
+  it('normalizes wrapped child profile payloads from the backend', async () => {
+    mockFetch((url) => {
+      if (url === '/api/child-profiles' || url.startsWith('/api/child-profiles?')) {
+        return {
+          ok: true,
+          json: async () => ({ profiles: mockProfiles }),
+        } as Response;
+      }
+
+      return { ok: true, json: async () => ({}) } as Response;
+    });
+
+    render(<ProfilesPage />);
+
+    expect(await screen.findByText('Noah')).toBeInTheDocument();
+    expect(screen.getByTestId('profiles-grid')).toBeInTheDocument();
   });
 
   it('shows a submit error when profile creation fails', async () => {

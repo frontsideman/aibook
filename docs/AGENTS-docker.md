@@ -3,29 +3,30 @@
 ## Commands
 
 ```bash
-# Production-like standalone build
+# Production-like standalone build (all services in Docker)
 docker compose up
 
-# Hot-reload development
-docker compose -f docker-compose.dev.yml up
+# Development: DB, Redis, and Backend in Docker; frontend runs locally
+docker compose -f docker-compose.dev.yml up -d
+npm run dev --workspace=apps/frontend
 ```
 
 ## Compose Files
 
 - `docker-compose.yml` — production-like standalone build path (multi-stage Dockerfiles)
-- `docker-compose.dev.yml` — hot-reload development path (bind mounts, `npm install` in container)
+- `docker-compose.dev.yml` — Docker-only backend path; frontend runs locally to avoid Docker file-watch polling
+
+## Environment Variables
+
+- `apps/backend/.env` uses Docker service names by default (`db`, `redis`)
+- Backend runs only in Docker; local backend execution is not supported
+- Frontend connects to `http://localhost:3001` via `apps/frontend/.env.example`
 
 ## Dockerfiles
 
 - `Dockerfile.backend` — targets Node 24 Alpine, multi-stage (builder + runner)
 - `Dockerfile.frontend` — targets Node 24 Alpine, multi-stage with Next.js standalone output
 
-## Colima Configuration (macOS)
+## Docker Desktop (macOS)
 
-Default Colima VM uses `~/.colima/default/`. For external volumes (e.g., `/Volumes/KIOXIA`):
-
-```bash
-colima start --mount /Volumes/KIOXIA:/Volumes/KIOXIA --cpu 4 --memory 8 --disk 60
-```
-
-Data path: `LIMA_HOME="/Volumes/KIOXIA/Colima/colima_data"`
+Install Docker Desktop from [docker.com](https://www.docker.com/products/docker-desktop/). It includes the Docker Engine, Docker Compose, and a GUI for managing containers.

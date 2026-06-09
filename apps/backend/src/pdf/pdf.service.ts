@@ -57,8 +57,8 @@ export class PdfService {
             align: 'center',
           });
       }
-    } catch (err) {
-      doc.emit('error', err);
+    } catch (error) {
+      doc.emit('error', error);
     } finally {
       doc.end();
     }

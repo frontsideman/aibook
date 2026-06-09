@@ -53,14 +53,14 @@ export default function BookDetailPage() {
         ← Back to Dashboard
       </a>
 
-      <div className='paper-card mb-6 flex aspect-[1.414/1] items-center justify-center overflow-hidden bg-gradient-to-br from-amber-100/80 via-orange-50 to-rose-100/70'>
+      <div className='paper-card mb-6 flex aspect-[1.414/1] items-center justify-center overflow-hidden bg-linear-to-br from-amber-100/80 via-orange-50 to-rose-100/70'>
         <div className='text-center'>
           <div className='mb-4 text-6xl'>📖</div>
           <p className='text-sm text-muted-foreground'>{book.style}</p>
         </div>
       </div>
 
-      <h1 className='section-heading !text-3xl mb-2'>{book.title}</h1>
+      <h1 className='section-heading text-3xl! mb-2'>{book.title}</h1>
 
       <div className='mb-6 flex gap-2'>
         <span className='rounded bg-primary/15 px-2 py-1 text-xs font-medium text-primary'>

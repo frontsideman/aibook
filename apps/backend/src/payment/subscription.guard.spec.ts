@@ -1,7 +1,14 @@
-import { ForbiddenException, ExecutionContext } from '@nestjs/common';
-import { Test, TestingModule } from '@nestjs/testing';
+import { ForbiddenException, type ExecutionContext } from '@nestjs/common';
+import { Test, type TestingModule } from '@nestjs/testing';
 import { PrismaService } from '../prisma.service';
 import { SubscriptionGuard } from './subscription.guard';
+
+const createContext = (request: Record<string, unknown>) =>
+  ({
+    switchToHttp: () => ({
+      getRequest: () => request,
+    }),
+  }) as ExecutionContext;
 
 describe('SubscriptionGuard', () => {
   let guard: SubscriptionGuard;
@@ -13,13 +20,6 @@ describe('SubscriptionGuard', () => {
       },
     },
   };
-
-  const createContext = (request: Record<string, unknown>) =>
-    ({
-      switchToHttp: () => ({
-        getRequest: () => request,
-      }),
-    }) as ExecutionContext;
 
   beforeEach(async () => {
     jest.clearAllMocks();

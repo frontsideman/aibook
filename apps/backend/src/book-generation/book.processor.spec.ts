@@ -1,9 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, type TestingModule } from '@nestjs/testing';
 import { BookProcessor } from './book.processor';
 import { PromptBuilderService } from './prompt-builder.service';
 import { PrismaService } from '../prisma.service';
 import { AiService } from '../ai/ai.service';
-import { Job } from 'bullmq';
+import type { Job } from 'bullmq';
 import { BookStatus, ReasoningEffort } from '@repo/database';
 
 describe('BookProcessor', () => {

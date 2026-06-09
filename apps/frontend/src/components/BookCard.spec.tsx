@@ -7,7 +7,7 @@ describe('BookCard', () => {
       <BookCard
         id='book-1'
         title='Draft Book'
-        style='CARTOON'
+        bookStyle='CARTOON'
         status='DRAFT'
         createdAt='2026-01-01T00:00:00.000Z'
       />
@@ -21,7 +21,7 @@ describe('BookCard', () => {
       <BookCard
         id='book-1'
         title='Review Book'
-        style='CARTOON'
+        bookStyle='CARTOON'
         status='REVIEW'
         createdAt='2026-01-01T00:00:00.000Z'
       />
@@ -33,7 +33,7 @@ describe('BookCard', () => {
       <BookCard
         id='book-1'
         title='Completed Book'
-        style='CARTOON'
+        bookStyle='CARTOON'
         status='COMPLETED'
         createdAt='2026-01-01T00:00:00.000Z'
       />

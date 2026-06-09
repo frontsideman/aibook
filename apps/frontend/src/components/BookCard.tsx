@@ -5,7 +5,7 @@ import Link from 'next/link';
 type BookCardProps = {
   id: string;
   title: string;
-  style: string;
+  bookStyle: string;
   status: string;
   childName?: string;
   createdAt: string;
@@ -21,7 +21,7 @@ const statusColors: Record<string, string> = {
 export default function BookCard({
   id,
   title,
-  style,
+  bookStyle,
   status,
   childName,
   createdAt,
@@ -38,10 +38,10 @@ export default function BookCard({
       href={href}
       className='paper-card block overflow-hidden transition hover:-translate-y-0.5 hover:shadow-lg'
     >
-      <div className='aspect-[1.414/1] bg-gradient-to-br from-amber-100/80 via-orange-50 to-rose-100/70 flex items-center justify-center border-b border-border/70'>
+      <div className='aspect-[1.414/1] bg-linear-to-br from-amber-100/80 via-orange-50 to-rose-100/70 flex items-center justify-center border-b border-border/70'>
         <div className='text-center p-4'>
           <div className='text-4xl mb-2'>📖</div>
-          <p className='text-xs uppercase tracking-wide text-muted-foreground'>{style}</p>
+          <p className='text-xs uppercase tracking-wide text-muted-foreground'>{bookStyle}</p>
         </div>
       </div>
       <div className='p-5'>

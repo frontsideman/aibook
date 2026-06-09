@@ -15,8 +15,8 @@
     "db:generate": "npm --workspace packages/database run generate",
     "db:migrate:dev": "npm --workspace packages/database run migrate:dev",
     "db:push": "npm --workspace packages/database run db:push",
-    "format": "oxfmt --write \"**/*.{ts,tsx,js,jsx,json,md}\"",
-    "format:check": "oxfmt --check \"**/*.{ts,tsx,js,jsx,json,md}\""
+    "format": "oxfmt --write \"**/*.{ts,tsx,js,jsx,json}\"",
+    "format:check": "oxfmt --check \"**/*.{ts,tsx,js,jsx,json}\""
   },
   "devDependencies": {
     "oxfmt": "^0.53.0",

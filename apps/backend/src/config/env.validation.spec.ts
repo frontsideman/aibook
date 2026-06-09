@@ -45,7 +45,7 @@ describe('validateEnv', () => {
     ).toThrow(/LLM_API_URL is required/);
   });
 
-  it('fails when LLM_API_URL is not an absolute http\/https URL', () => {
+  it('fails when LLM_API_URL is not an absolute http/https URL', () => {
     expect(() =>
       validateEnv({
         DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',

@@ -114,7 +114,7 @@ export default function SettingsPage() {
             <input
               type='text'
               aria-label='Confirm account deletion'
-              className='mt-3 h-9 w-full rounded-[9px] border border-input bg-input-bg px-3 text-sm text-foreground opacity-80 outline-none disabled:cursor-not-allowed disabled:opacity-80'
+              className='mt-3 h-9 w-full rounded-4xl border border-input bg-input-bg px-3 text-sm text-foreground opacity-80 outline-none disabled:cursor-not-allowed disabled:opacity-80'
               disabled
               readOnly
               value={dangerZoneContent.confirmationValue}

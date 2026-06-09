@@ -13,6 +13,11 @@
 - `queue`
 - `ai`
 
+## Nest DI Quirk
+
+- Keep constructor-injected Nest dependencies as runtime imports, not `import type`.
+- Type-only imports on injectable controllers/services erase the runtime metadata Nest uses for DI and can surface as `Function` resolution errors during bootstrap.
+
 ## HTTP API Surface (BookController)
 
 - `GET /books`

@@ -13,6 +13,27 @@ type ChildProfile = {
   age: number;
 };
 
+type ChildProfilePayload =
+  | ChildProfile[]
+  | {
+      profiles?: ChildProfile[];
+      data?: ChildProfile[];
+      childProfiles?: ChildProfile[];
+    };
+
+const normalizeProfiles = (payload: unknown): ChildProfile[] => {
+  if (Array.isArray(payload)) {
+    return payload;
+  }
+
+  if (payload && typeof payload === 'object') {
+    const response = payload as ChildProfilePayload;
+    return response.profiles ?? response.data ?? response.childProfiles ?? [];
+  }
+
+  return [];
+};
+
 const STEP_LABELS = ['Select child profile', 'Choose story', 'Select style & tone'];
 
 export default function CreateBookPage() {
@@ -27,7 +48,7 @@ export default function CreateBookPage() {
   useEffect(() => {
     fetch('/api/child-profiles')
       .then((r) => r.json())
-      .then((data) => setProfiles(data))
+      .then((data) => setProfiles(normalizeProfiles(data)))
       .catch(() => setProfiles([]));
   }, []);
 
@@ -85,9 +106,9 @@ export default function CreateBookPage() {
       </header>
 
       <ProgressBar
-        currentStep={currentStep}
-        totalSteps={3}
-        stepLabel={STEP_LABELS[currentStep - 1]}
+        _currentStep={currentStep}
+        _totalSteps={3}
+        _stepLabel={STEP_LABELS[currentStep - 1]}
         percent={percent}
       />
 

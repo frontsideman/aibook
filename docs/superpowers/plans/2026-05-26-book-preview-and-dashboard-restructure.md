@@ -1076,7 +1076,7 @@ export default function BookCard({ id, title, style, status, childName, createdA
 
   return (
     <Link href={href} className="block border rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-      <div className="aspect-[1.414/1] bg-gradient-to-br from-blue-50 to-purple-50 flex items-center justify-center">
+      <div className="aspect-[1.414/1] bg-linear-to-br from-blue-50 to-purple-50 flex items-center justify-center">
         <div className="text-center p-4">
           <div className="text-4xl mb-2">📖</div>
           <p className="text-xs text-gray-400">{style}</p>
@@ -1945,7 +1945,7 @@ export default function BookDetailPage() {
     <div className="max-w-2xl mx-auto">
       <a href="/" className="text-sm text-gray-600 hover:text-gray-900 mb-4 inline-block">← Back to Dashboard</a>
 
-      <div className="aspect-[1.414/1] bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg flex items-center justify-center mb-6">
+      <div className="aspect-[1.414/1] bg-linear-to-br from-blue-50 to-purple-50 rounded-lg flex items-center justify-center mb-6">
         <div className="text-center">
           <div className="text-6xl mb-4">📖</div>
           <p className="text-gray-400 text-sm">{book.style}</p>

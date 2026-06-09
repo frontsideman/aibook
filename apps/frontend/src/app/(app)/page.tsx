@@ -142,7 +142,7 @@ export default function DashboardPage() {
     for (const book of data.books) {
       if (book.child?.name) names.add(book.child.name);
     }
-    return [...names].sort((a, b) => a.localeCompare(b));
+    return [...names].toSorted((a, b) => a.localeCompare(b));
   }, [data]);
 
   const statusCounts = useMemo(() => {

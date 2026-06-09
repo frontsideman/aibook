@@ -1,20 +1,20 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, type TestingModule } from '@nestjs/testing';
 import { BookService } from './book.service';
 import { PrismaService } from '../prisma.service';
 import { PdfService } from '../pdf/pdf.service';
 import { StorageService } from '../storage/storage.service';
 import { BookStatus, ReasoningEffort } from '@repo/database';
-import { Queue } from 'bullmq';
+import type { Queue } from 'bullmq';
 import { NotFoundException, ServiceUnavailableException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 describe('BookService', () => {
   let service: BookService;
-  let prisma: any;
+  let prisma: PrismaService;
   let pdfService: PdfService;
   let storageService: StorageService;
-  let queue: Queue;
-  let configService: ConfigService;
+  let _queue: Queue;
+  let _configService: ConfigService;
 
   const mockPrismaClient = {
     user: {
@@ -61,8 +61,8 @@ describe('BookService', () => {
     prisma = module.get<PrismaService>(PrismaService);
     pdfService = module.get<PdfService>(PdfService);
     storageService = module.get<StorageService>(StorageService);
-    queue = module.get<Queue>('BullQueue_book-generation');
-    configService = module.get<ConfigService>(ConfigService);
+    _queue = module.get<Queue>('BullQueue_book-generation');
+    _configService = module.get<ConfigService>(ConfigService);
   });
 
   it('should be defined', () => {

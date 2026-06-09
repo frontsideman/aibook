@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Book, ChildProfile, BookStyle, Tone } from '@repo/database';
+import { type Book, type ChildProfile, BookStyle, Tone } from '@repo/database';
 
 const styleLabel: Record<BookStyle, string> = {
   [BookStyle.WATERCOLOR]: 'watercolor',

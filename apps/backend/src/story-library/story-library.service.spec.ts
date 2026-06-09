@@ -1,4 +1,4 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, type TestingModule } from '@nestjs/testing';
 import { StoryLibraryService } from './story-library.service';
 import { PrismaService } from '../prisma.service';
 

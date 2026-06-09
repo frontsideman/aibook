@@ -1,8 +1,15 @@
-import { ExecutionContext } from '@nestjs/common';
+import type { ExecutionContext } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, type TestingModule } from '@nestjs/testing';
 import { PrismaService } from './prisma.service';
 import { MockAuthGuard } from './mock-auth.guard';
+
+const createContext = () =>
+  ({
+    switchToHttp: () => ({
+      getRequest: () => ({}),
+    }),
+  }) as ExecutionContext;
 
 describe('MockAuthGuard', () => {
   let guard: MockAuthGuard;
@@ -18,13 +25,6 @@ describe('MockAuthGuard', () => {
       },
     },
   };
-
-  const createContext = () =>
-    ({
-      switchToHttp: () => ({
-        getRequest: () => ({}),
-      }),
-    }) as ExecutionContext;
 
   beforeEach(async () => {
     jest.clearAllMocks();

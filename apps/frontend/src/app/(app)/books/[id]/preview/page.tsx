@@ -56,8 +56,8 @@ export default function PreviewPage() {
         }
 
         setData(previewJson);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (fetchError: any) {
+        setError(fetchError.message);
       } finally {
         setLoading(false);
       }
@@ -131,8 +131,8 @@ export default function PreviewPage() {
       const res = await fetch(`/api/books/${params.id}/approve`, { method: 'POST' });
       if (!res.ok) throw new Error('Failed to approve book');
       router.push(`/books/${params.id}`);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (fetchError: any) {
+      setError(fetchError.message);
       setSubmitting(false);
     }
   };
@@ -147,7 +147,7 @@ export default function PreviewPage() {
     <div>
       <div className='mb-6 flex items-center justify-between'>
         <div>
-          <h1 className='section-heading !text-3xl'>{data.book.title}</h1>
+          <h1 className='section-heading text-3xl!'>{data.book.title}</h1>
           <p className='text-sm text-muted-foreground'>
             {data.book.style} · {data.book.tone?.toLowerCase()}
             <span className='ml-2 rounded bg-primary/15 px-2 py-0.5 text-xs font-medium text-primary'>
@@ -191,6 +191,7 @@ export default function PreviewPage() {
                 setPageFeedback((prev) => ({ ...prev, [page.pageNumber]: e.target.value }))
               }
               rows={2}
+              aria-label={`Feedback for page ${page.pageNumber}`}
               className='mt-2 hidden w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm'
             />
           </div>
@@ -198,12 +199,15 @@ export default function PreviewPage() {
       </div>
 
       <div className='paper-card mt-6 p-4'>
-        <h3 className='mb-2 text-sm font-medium'>✏️ Global Changes</h3>
+        <h3 id='global-feedback-label' className='mb-2 text-sm font-medium'>
+          ✏️ Global Changes
+        </h3>
         <textarea
           placeholder='Describe changes that affect the whole book...'
           value={globalFeedback}
           onChange={(e) => setGlobalFeedback(e.target.value)}
           rows={3}
+          aria-labelledby='global-feedback-label'
           className='w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm'
         />
       </div>

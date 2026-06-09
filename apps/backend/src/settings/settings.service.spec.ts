@@ -1,6 +1,6 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test, type TestingModule } from '@nestjs/testing';
 import { ReasoningEffort } from '@repo/database';
 import { PrismaService } from '../prisma.service';
 import { SettingsService } from './settings.service';

@@ -614,7 +614,7 @@ export function LoginForm() {
     <Card className="w-full max-w-[430px] rounded-[22px] border-[#E3D5C2] bg-[#FFFDF8] py-7 shadow-[0_16px_34px_rgba(58,40,20,0.1)]">
       <CardHeader className="space-y-4 px-7">
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-[9px] bg-[#9B5E1A]" />
+          <div className="h-8 w-8 rounded-4xl bg-[#9B5E1A]" />
           <span className="font-heading text-[27px] font-semibold text-[#2F261D]">aiBook</span>
         </div>
         <div className="space-y-2">
@@ -772,7 +772,7 @@ export function SignupForm() {
     <Card className="w-full max-w-[430px] rounded-[22px] border-[#E3D5C2] bg-[#FFFDF8] py-7 shadow-[0_16px_34px_rgba(58,40,20,0.1)]">
       <CardHeader className="space-y-4 px-7">
         <div className="flex items-center gap-3">
-          <div className="h-8 w-8 rounded-[9px] bg-[#9B5E1A]" />
+          <div className="h-8 w-8 rounded-4xl bg-[#9B5E1A]" />
           <span className="font-heading text-[27px] font-semibold text-[#2F261D]">aiBook</span>
         </div>
         <div className="space-y-2">

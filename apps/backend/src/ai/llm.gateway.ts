@@ -1,5 +1,5 @@
-import { StoryGenerationOptions } from './ai.provider.interface';
-import { LlmConfig } from './llm.config';
+import type { StoryGenerationOptions } from './ai.provider.interface';
+import type { LlmConfig } from './llm.config';
 
 type ProviderResponse = {
   storyText?: string;
