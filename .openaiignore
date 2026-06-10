@@ -28,3 +28,5 @@ backend/node_modules
 frontend/dist/
 frontend/.turbo
 frontend/node_modules
+
+learn
