@@ -62,3 +62,12 @@ See [`docs/AGENTS-docs-git.md`](./docs/AGENTS-docs-git.md) for full rules.
 
 - **Code Review Standards**: Verify Conventional Commits format before commit; suggest corrections; ask for confirmation
 - **Git Workflow**: Review changes first → generate conventional message → never commit non-conventional unless explicitly requested
+
+## Agent Context Configuration
+
+| File | Purpose | Tool |
+|------|---------|------|
+| `.agentignore` | Patterns to exclude from agent context | opencode |
+| `.openaiignore` | Patterns to exclude from agent context | OpenAI/Codex |
+
+Both files currently contain identical rules ignoring secrets, logs, build outputs, `node_modules`, and `learn/`.
