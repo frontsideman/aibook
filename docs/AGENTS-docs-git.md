@@ -55,3 +55,12 @@ When I ask you to commit changes:
 1. Always review the changes first
 2. Generate a conventional commit message
 3. Never create commits with non-conventional messages unless explicitly requested
+
+## PR Quality Gates (`.github/workflows/pr-checks.yml`)
+
+Automated checks on every PR:
+- **Commitlint**: All commits must follow Conventional Commits format
+- **PR Size**: Warning if >500 lines changed
+- **Labels**: At least one label required (feat, fix, docs, chore, refactor, test, perf)
+
+These run via GitHub Actions and block merge if failed (configure branch protection).

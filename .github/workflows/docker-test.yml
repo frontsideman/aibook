@@ -1,0 +1,65 @@
+name: Docker Test
+
+on:
+  workflow_dispatch:
+  pull_request:
+    types: [labeled, unlabeled, synchronize, opened, reopened]
+
+jobs:
+  docker-test:
+    name: Docker Build & Test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'docker-test')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile.backend
+          load: true
+          tags: aiBook-backend:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test Backend container
+        run: |
+          docker run --rm -d \
+            --name backend-test \
+            -p 3001:3001 \
+            -e DATABASE_URL=postgresql://user:password@host.docker.internal:5432/aibook \
+            -e REDIS_HOST=host.docker.internal \
+            -e REDIS_PORT=6379 \
+            -e MOCK_AUTH=true \
+            -e PORT=3001 \
+            aiBook-backend:test
+          sleep 10
+          curl -f http://localhost:3001/health || (docker logs backend-test && exit 1)
+          docker stop backend-test
+
+      - name: Build Frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile.frontend
+          load: true
+          tags: aiBook-frontend:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test Frontend container
+        run: |
+          docker run --rm -d \
+            --name frontend-test \
+            -p 3000:3000 \
+            -e BACKEND_URL=http://host.docker.internal:3001 \
+            -e PORT=3000 \
+            aiBook-frontend:test
+          sleep 10
+          curl -f http://localhost:3000 || (docker logs frontend-test && exit 1)
+          docker stop frontend-test

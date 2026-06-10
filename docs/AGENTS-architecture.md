@@ -61,3 +61,50 @@ Turbo `build` depends on upstream package builds first.
 | `packages/database` | `npm run generate` | `prisma generate` |
 | `packages/database` | `npm run migrate:dev` | Prisma dev migration |
 | `packages/database` | `npm run db:push` | Push schema without migration |
+
+## CI/CD Architecture
+
+### Workflows (`.github/workflows/`)
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `ci.yml` | Push/PR to any branch | Lint, typecheck, test (unit + E2E), build, security audit |
+| `cd.yml` | Push to `main` | Build & push multi-arch Docker images to GHCR, Trivy scan, SBOM |
+| `docker-test.yml` | Manual / PR label `docker-test` | Validate Docker builds & container startup |
+| `pr-checks.yml` | PR opened/updated | Conventional commits, PR size, required labels |
+
+### CI Pipeline (`ci.yml`)
+
+**Parallel Jobs:**
+- `lint` — oxlint + oxfmt check
+- `typecheck` — TypeScript strict mode
+- `test-backend` — Jest with PostgreSQL 16 + Redis 7 services
+- `test-frontend` — Vitest
+- `test-e2e` — Playwright (Chromium) after full build
+- `build` — Turbo build (all workspaces)
+- `security-audit` — `npm audit --audit-level=high`
+- `deps-check` — `npm outdated --all` (warn only)
+
+**Caching:** npm cache + Turbo remote cache (`.turbo`)
+
+**Node:** 24 LTS (from `.nvmrc`)
+
+### CD Pipeline (`cd.yml`)
+
+**Jobs (parallel):**
+- `build-backend` — Docker Buildx → GHCR → Trivy scan (SARIF)
+- `build-frontend` — Docker Buildx → GHCR → Trivy scan (SARIF)
+- `sbom` — Anchore Syft → SPDX JSON artifacts (90-day retention)
+
+**Image Tags:** `sha-<short-sha>`, `latest` (main only)
+
+**Platforms:** `linux/amd64`, `linux/arm64`
+
+**Cache:** GitHub Actions cache (`type=gha`)
+
+### Security
+
+- Dependency audit on every CI run
+- Container vulnerability scan (Trivy) on every CD run
+- SBOM generation for supply chain transparency
+- SARIF upload to GitHub Security tab for visibility

@@ -1,0 +1,59 @@
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited, labeled, unlabeled]
+
+jobs:
+  commitlint:
+    name: Commitlint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+
+      - name: Install commitlint
+        run: npm install -g @commitlint/cli @commitlint/config-conventional
+
+      - name: Validate commit messages
+        run: commitlint --from=${{ github.event.pull_request.base.sha }} --to=${{ github.event.pull_request.head.sha }} --verbose
+
+  pr-size:
+    name: PR Size Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check PR size
+        run: |
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | wc -l)
+          CHANGED_LINES=$(git diff --numstat ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | awk '{sum+=$1+$2} END {print sum}')
+          echo "Files changed: $CHANGED_FILES"
+          echo "Lines changed: $CHANGED_LINES"
+          if [ "$CHANGED_LINES" -gt 500 ]; then
+            echo "::warning::PR is large (>500 lines changed: $CHANGED_LINES). Consider splitting into smaller PRs."
+          fi
+
+  pr-labels:
+    name: PR Labels Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check labels
+        run: |
+          LABELS=$(echo '${{ toJson(github.event.pull_request.labels) }}' | jq -r '.[].name')
+          if [ -z "$LABELS" ]; then
+            echo "::error::PR must have at least one label (e.g., feat, fix, docs, chore, refactor, test, perf)"
+            exit 1
+          fi
+          echo "Labels found: $LABELS"

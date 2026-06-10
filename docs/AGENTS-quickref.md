@@ -63,3 +63,22 @@
 | Command | Description |
 |---------|-------------|
 | `npm run dev --workspace=apps/frontend` | Run Next.js locally for reliable file watching |
+
+## CI/CD (GitHub Actions)
+
+| Command | Description |
+|---------|-------------|
+| `gh workflow run ci.yml` | Trigger CI manually |
+| `gh workflow run cd.yml` | Trigger CD manually (main branch only) |
+| `gh workflow run docker-test.yml` | Trigger Docker build test manually |
+| `gh run list --workflow=ci.yml` | List CI runs |
+| `gh run view --log` | View latest run logs |
+| `gh run watch` | Watch running workflow |
+
+## Security
+
+| Command | Description |
+|---------|-------------|
+| `npm audit --audit-level=high` | Check for high/critical vulnerabilities |
+| `npm outdated --all` | List all outdated dependencies |
+| `trivy image <image>` | Scan Docker image for vulnerabilities |
