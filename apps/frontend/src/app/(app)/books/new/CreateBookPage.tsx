@@ -13,22 +13,17 @@ type ChildProfile = {
   age: number;
 };
 
-type ChildProfilePayload =
-  | ChildProfile[]
-  | {
-      profiles?: ChildProfile[];
-      data?: ChildProfile[];
-      childProfiles?: ChildProfile[];
-    };
-
 const normalizeProfiles = (payload: unknown): ChildProfile[] => {
   if (Array.isArray(payload)) {
     return payload;
   }
 
   if (payload && typeof payload === 'object') {
-    const response = payload as ChildProfilePayload;
-    return response.profiles ?? response.data ?? response.childProfiles ?? [];
+    const response = payload as Record<string, unknown>;
+    const profiles = response.profiles as ChildProfile[] | undefined;
+    const data = response.data as ChildProfile[] | undefined;
+    const childProfiles = response.childProfiles as ChildProfile[] | undefined;
+    return profiles ?? data ?? childProfiles ?? [];
   }
 
   return [];
