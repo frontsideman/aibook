@@ -58,16 +58,18 @@ jobs:
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
 
+      - name: Pull and save Backend image
+        run: |
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:sha-${{ github.sha }}
+          docker save ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:sha-${{ github.sha }} -o /tmp/image-backend.tar
+
       - name: Trivy scan Backend
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_BACKEND }}:sha-${{ github.sha }}
+          input: /tmp/image-backend.tar
           format: 'sarif'
           output: 'trivy-backend.sarif'
           severity: 'HIGH,CRITICAL'
-        env:
-          TRIVY_USERNAME: ${{ github.actor }}
-          TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Trivy results Backend
         uses: github/codeql-action/upload-sarif@v4
@@ -119,16 +121,18 @@ jobs:
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64
 
+      - name: Pull and save Frontend image
+        run: |
+          docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:sha-${{ github.sha }}
+          docker save ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:sha-${{ github.sha }} -o /tmp/image-frontend.tar
+
       - name: Trivy scan Frontend
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME_FRONTEND }}:sha-${{ github.sha }}
+          input: /tmp/image-frontend.tar
           format: 'sarif'
           output: 'trivy-frontend.sarif'
           severity: 'HIGH,CRITICAL'
-        env:
-          TRIVY_USERNAME: ${{ github.actor }}
-          TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Trivy results Frontend
         uses: github/codeql-action/upload-sarif@v4
