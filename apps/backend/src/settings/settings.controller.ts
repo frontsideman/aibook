@@ -8,8 +8,8 @@ interface AuthenticatedRequest {
 }
 
 export class UpdateGenerationSettingsDto {
-  llmModel: string;
-  reasoningEffort: ReasoningEffort;
+  llmModel!: string;
+  reasoningEffort!: ReasoningEffort;
 }
 
 @Controller('settings')
