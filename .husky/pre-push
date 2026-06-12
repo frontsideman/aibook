@@ -1,0 +1,85 @@
+#!/bin/sh
+
+# Only run on push to main
+remote="$1"
+url="$2"
+
+main_pushed=false
+while read local_ref local_sha remote_ref remote_sha; do
+  if [ "$remote_ref" = "refs/heads/main" ]; then
+    main_pushed=true
+    break
+  fi
+done
+
+if [ "$main_pushed" = false ]; then
+  exit 0
+fi
+
+echo "🚀 Pre-push checks for main branch..."
+echo ""
+
+# 1. Uncommitted changes check
+echo "📋 Checking for uncommitted changes..."
+if ! git diff --quiet || ! git diff --cached --quiet; then
+  echo "❌ You have uncommitted changes. Commit or stash them first."
+  exit 1
+fi
+echo "✅ Working tree clean"
+echo ""
+
+# 2. Lint
+echo "🔍 Running linter..."
+npm run lint || exit 1
+echo "✅ Lint passed"
+echo ""
+
+# 3. Format check
+echo "🎨 Checking formatting..."
+npm run format:check || exit 1
+echo "✅ Format check passed"
+echo ""
+
+# 4. Typecheck
+echo "📐 Running typecheck..."
+npm run typecheck || exit 1
+echo "✅ Typecheck passed"
+echo ""
+
+# 5. Unit tests
+echo "🧪 Running tests..."
+npm run test || exit 1
+echo "✅ Tests passed"
+echo ""
+
+# 6. Security audit
+echo "🔒 Running security audit..."
+npm audit --audit-level=critical || exit 1
+echo "✅ Security audit passed"
+echo ""
+
+# 7. Commitlint (validate all unpushed commits)
+echo "📝 Checking commit messages..."
+MERGE_BASE=$(git merge-base origin/main HEAD)
+npx commitlint --from "$MERGE_BASE" --to HEAD || exit 1
+echo "✅ Commit messages valid"
+echo ""
+
+# 8. Lock file sync
+echo "🔒 Checking lock file sync..."
+npm install --package-lock-only --ignore-scripts 2>/dev/null
+if ! git diff --quiet package-lock.json; then
+  echo "❌ package-lock.json is out of sync. Run 'npm install' and commit the lock file."
+  exit 1
+fi
+echo "✅ Lock file in sync"
+echo ""
+
+# 9. Docker build
+echo "🐳 Building Docker images..."
+docker build -f Dockerfile.backend -t aibook-backend-check . || exit 1
+docker build -f Dockerfile.frontend -t aibook-frontend-check . || exit 1
+echo "✅ Docker builds passed"
+echo ""
+
+echo "✅ All pre-push checks passed!"

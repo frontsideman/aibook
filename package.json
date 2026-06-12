@@ -16,9 +16,13 @@
     "db:migrate:dev": "npm --workspace packages/database run migrate:dev",
     "db:push": "npm --workspace packages/database run db:push",
     "format": "oxfmt --write \"**/*.{ts,tsx,js,jsx,json}\"",
-    "format:check": "oxfmt --check \"**/*.{ts,tsx,js,jsx,json}\""
+    "format:check": "oxfmt --check \"**/*.{ts,tsx,js,jsx,json}\"",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
+    "husky": "^9.1.7",
     "oxfmt": "^0.53.0",
     "oxlint": "^1.68.0",
     "prisma": "^7.8.0",
