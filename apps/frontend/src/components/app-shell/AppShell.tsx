@@ -38,7 +38,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </header>
         )}
         <main className={cn(
-          'min-w-0 pt-[76px] md:pt-0 p-5 md:p-7 lg:p-6',
+          'min-w-0 p-5 md:p-7 lg:p-6 pt-[76px] md:pt-0',
           !header && 'p-4 md:p-4 lg:p-6'
         )}>
           {children}
