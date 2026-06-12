@@ -166,9 +166,9 @@ export default function DashboardPage() {
     <div className='flex flex-col gap-[20px]'>
       <div className='relative'>
         <div className='max-w-[780px] space-y-2'>
-          <p className='font-mono text-[12px] font-semibold uppercase text-primary'>YOUR LIBRARY</p>
-          <h1 className='font-display text-[48px] font-semibold text-foreground'>My Books</h1>
-          <p className='font-sans text-[16px] font-normal text-muted-foreground'>
+          <p className='font-mono text-[10px] font-semibold uppercase text-primary md:text-[12px]'>YOUR LIBRARY</p>
+          <h1 className='font-display text-3xl font-semibold text-foreground md:text-4xl lg:text-[48px]'>My Books</h1>
+          <p className='font-sans text-sm font-normal text-muted-foreground md:text-base'>
             Curate, review, and publish each story from draft to finished keepsake.
           </p>
         </div>
