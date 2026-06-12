@@ -94,8 +94,10 @@ export default function CreateBookPage() {
         <p className='font-mono text-xs font-extrabold uppercase tracking-[0.18em] text-primary'>
           BOOK CREATION
         </p>
-        <h1 className='font-display text-[48px] font-semibold text-foreground'>Create New Book</h1>
-        <p className='max-w-2xl text-base text-muted-foreground'>
+        <h1 className='font-display text-3xl font-semibold text-foreground md:text-4xl lg:text-[48px]'>
+          Create New Book
+        </h1>
+        <p className='max-w-2xl text-sm text-muted-foreground md:text-base'>
           Choose the essentials, then generate a first draft for review.
         </p>
       </header>
@@ -107,7 +109,7 @@ export default function CreateBookPage() {
         percent={percent}
       />
 
-      <div className='flex gap-5'>
+      <div className='flex flex-col gap-5 lg:flex-row'>
         <main className='flex-1 space-y-5'>
           <ProfileSelector
             profiles={profiles}
