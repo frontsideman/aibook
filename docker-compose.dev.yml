@@ -18,7 +18,7 @@ services:
       - "6379:6379"
 
   backend:
-    image: node:24-slim
+    image: node:24-alpine
     working_dir: /app
     command: /bin/sh -lc "npm install && npm run db:generate && npm run db:push && npm --workspace packages/database run seed && npm --workspace apps/backend run start:dev"
     volumes:

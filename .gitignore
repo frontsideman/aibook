@@ -50,3 +50,6 @@ yarn-error.log*
 next-env.d.ts
 
 learn
+.agents
+.continue
+skills-lock.json

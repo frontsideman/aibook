@@ -22,10 +22,11 @@
     "oxfmt": "^0.53.0",
     "oxlint": "^1.68.0",
     "prisma": "^7.8.0",
-    "turbo": "^1.10.15"
+    "turbo": "^2.9.18"
   },
   "overrides": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
-  }
+  },
+  "packageManager": "npm@11.6.2"
 }
