@@ -19,15 +19,15 @@ const STATUS_CONFIG: {
 
 export default function StatusSummary({ counts }: StatusSummaryProps) {
   return (
-    <div className='flex gap-[14px]' data-testid='status-summary'>
+    <div className='grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-[14px]' data-testid='status-summary'>
       {STATUS_CONFIG.map(({ key, label, colorClass }) => (
         <div
           key={key}
-          className='flex min-w-[120px] flex-1 flex-col gap-[5px] rounded-[14px] border border-border bg-card p-[14px]'
+          className='flex min-w-0 flex-col gap-[5px] rounded-[14px] border border-border bg-card p-3 md:min-w-[120px] md:p-[14px]'
           data-testid={`status-card-${key}`}
         >
-          <span className={`font-mono text-[11px] font-extrabold ${colorClass}`}>{label}</span>
-          <span className='font-display text-[36px] font-medium leading-none text-foreground'>
+          <span className={`font-mono text-[10px] font-extrabold md:text-[11px] ${colorClass}`}>{label}</span>
+          <span className='font-display text-[28px] font-medium leading-none text-foreground md:text-[36px]'>
             {counts[key] ?? 0}
           </span>
         </div>
