@@ -33,9 +33,9 @@ export function SummaryPanel({
   onSubmit,
 }: SummaryPanelProps) {
   return (
-    <div className='paper-card sticky top-6 flex w-[340px] flex-col gap-5 rounded-[18px] p-5'>
+    <div className='paper-card w-full md:sticky md:top-6 md:w-[340px] flex flex-col gap-5 rounded-[18px] p-5'>
       <div>
-        <h2 className='font-[var(--font-display)] text-[32px] font-semibold text-foreground'>
+        <h2 className='font-[var(--font-display)] text-[28px] font-semibold text-foreground md:text-[32px]'>
           Summary
         </h2>
         <p className='text-[13px] text-muted-foreground'>Confirm the choices before generation.</p>
