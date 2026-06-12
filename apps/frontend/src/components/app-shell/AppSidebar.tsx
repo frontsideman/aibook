@@ -11,7 +11,10 @@ import { cn } from '@/lib/utils';
 import { ThemeToggle } from './ThemeToggle';
 import { navItems } from './nav-items';
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ 
+  onNavigate,
+  ...props 
+}: React.ComponentProps<typeof Sidebar> & { onNavigate?: () => void }) {
   const pathname = usePathname();
 
   return (
@@ -38,6 +41,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <Link
                   key={item.href}
                   href={item.href}
+                  onClick={onNavigate}
                   className={cn(
                     'flex items-center gap-[10px] rounded-[10px] px-[12px] h-11 transition-colors border border-transparent',
                     isActive
@@ -84,6 +88,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           {/* Logout */}
           <Link
             href='/logout'
+            onClick={onNavigate}
             className={cn(
               'flex h-[42px] w-full items-center gap-[8px] rounded-[10px] border border-border bg-background px-[12px] text-[13px] font-bold text-destructive transition-colors hover:bg-secondary',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
