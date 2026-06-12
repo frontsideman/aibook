@@ -223,3 +223,15 @@
     @apply mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base;
   }
 }
+
+/* Responsive utilities for mobile breakpoints */
+@layer components {
+  @media (max-width: 768px) {
+    .section-heading {
+      @apply text-2xl;
+    }
+    .section-subtitle {
+      @apply text-sm;
+    }
+  }
+}
