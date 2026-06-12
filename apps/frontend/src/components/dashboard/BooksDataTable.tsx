@@ -59,7 +59,8 @@ export default function BooksDataTable({ books }: BooksDataTableProps) {
       className='overflow-hidden rounded-[16px] border border-border bg-card'
       data-testid='books-table-mode'
     >
-      <table className='w-full min-w-[680px] border-collapse text-sm'>
+      {/* Desktop table view */}
+      <table className='hidden w-full min-w-[680px] border-collapse text-sm md:table'>
         <caption className='sr-only'>Books in table view</caption>
         <thead>
           <tr className='border-b border-border bg-[var(--dashboard-table-header)] text-left text-[12px] font-extrabold uppercase tracking-wider text-muted-foreground'>
@@ -144,6 +145,53 @@ export default function BooksDataTable({ books }: BooksDataTableProps) {
           })}
         </tbody>
       </table>
+
+      {/* Mobile card view */}
+      <div className='flex flex-col gap-3 p-3 md:hidden'>
+        {books.map((book) => {
+          const href = getStatusHref(book.status, book.id);
+          const badge = STATUS_BADGE[book.status] ?? STATUS_BADGE.DRAFT;
+          const actionLabel = getActionLabel(book.status);
+          const primary = isPrimaryAction(book.status);
+
+          return (
+            <div
+              key={book.id}
+              className='flex flex-col gap-2 rounded-[12px] border border-border bg-background p-3'
+            >
+              <div className='flex items-start justify-between gap-2'>
+                <Link
+                  href={href}
+                  className='text-[14px] font-extrabold text-foreground hover:underline'
+                >
+                  {book.title}
+                </Link>
+                <span
+                  className={`inline-flex h-6 shrink-0 items-center rounded-full border bg-[var(--dashboard-badge-bg)] px-2 text-[10px] font-extrabold ${badge.text} ${badge.border}`}
+                >
+                  {badge.label}
+                </span>
+              </div>
+              <div className='flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-muted-foreground'>
+                <span>{book.childName ?? '-'}</span>
+                <span>{book.type}</span>
+                <span>{book.style}</span>
+                <span>{formatDate(book.updatedAt)}</span>
+              </div>
+              <Link
+                href={href}
+                className={`inline-flex h-[34px] w-full items-center justify-center rounded-4xl text-[12px] font-extrabold transition ${
+                  primary
+                    ? 'bg-primary text-primary-foreground hover:opacity-90'
+                    : 'border border-border bg-transparent text-foreground hover:bg-(--dashboard-table-header)'
+                }`}
+              >
+                {actionLabel}
+              </Link>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
