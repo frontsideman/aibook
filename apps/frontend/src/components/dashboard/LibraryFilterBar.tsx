@@ -49,7 +49,7 @@ function FilterDropdown({
     <Select value={value || '__all'} onValueChange={(v) => onChange(v === '__all' ? '' : v)}>
       <SelectTrigger
         aria-label={`Filter by ${label.toLowerCase()}`}
-        className='h-[42px] min-w-[100px] rounded-[10px] border-border bg-input-bg px-[11px] text-[13px] font-bold text-foreground'
+        className='h-[42px] min-w-0 flex-1 md:min-w-[100px] md:flex-none rounded-[10px] border-border bg-input-bg px-[11px] text-[13px] font-bold text-foreground'
       >
         <SelectValue placeholder={label} />
       </SelectTrigger>
@@ -81,8 +81,8 @@ export default function LibraryFilterBar({
   onSortChange,
 }: LibraryFilterBarProps) {
   return (
-    <div className='flex items-center gap-[8px] rounded-[16px] border border-border bg-card p-[8px]'>
-      <div className='relative flex-1 min-w-[200px]'>
+    <div className='flex flex-col gap-2 rounded-[16px] border border-border bg-card p-2 md:flex-row md:items-center md:gap-[8px]'>
+      <div className='relative flex-1 min-w-0'>
         <Search
           className='pointer-events-none absolute left-3 top-1/2 h-[16px] w-[16px] -translate-y-1/2 text-muted-foreground'
           aria-hidden='true'
@@ -96,42 +96,44 @@ export default function LibraryFilterBar({
         />
       </div>
 
-      <FilterDropdown
-        label='Status'
-        value={status}
-        options={STATUSES}
-        allLabel='All Status'
-        onChange={onStatusChange}
-      />
-      <FilterDropdown
-        label='Style'
-        value={style}
-        options={STYLES}
-        allLabel='All Styles'
-        onChange={onStyleChange}
-      />
-      <FilterDropdown
-        label='Type'
-        value={type}
-        options={TYPES}
-        allLabel='All Types'
-        onChange={onTypeChange}
-      />
-      <FilterDropdown
-        label='Profile'
-        value={profile}
-        options={null}
-        allLabel='All Profiles'
-        profiles={profiles}
-        onChange={onProfileChange}
-      />
-      <FilterDropdown
-        label='Sort'
-        value={sort}
-        options={['updated', 'title']}
-        allLabel=''
-        onChange={(v) => onSortChange(v as 'updated' | 'title')}
-      />
+      <div className='grid grid-cols-2 gap-2 md:flex md:flex-row md:gap-[8px]'>
+        <FilterDropdown
+          label='Status'
+          value={status}
+          options={STATUSES}
+          allLabel='All Status'
+          onChange={onStatusChange}
+        />
+        <FilterDropdown
+          label='Style'
+          value={style}
+          options={STYLES}
+          allLabel='All Styles'
+          onChange={onStyleChange}
+        />
+        <FilterDropdown
+          label='Type'
+          value={type}
+          options={TYPES}
+          allLabel='All Types'
+          onChange={onTypeChange}
+        />
+        <FilterDropdown
+          label='Profile'
+          value={profile}
+          options={null}
+          allLabel='All Profiles'
+          profiles={profiles}
+          onChange={onProfileChange}
+        />
+        <FilterDropdown
+          label='Sort'
+          value={sort}
+          options={['updated', 'title']}
+          allLabel=''
+          onChange={(v) => onSortChange(v as 'updated' | 'title')}
+        />
+      </div>
     </div>
   );
 }
