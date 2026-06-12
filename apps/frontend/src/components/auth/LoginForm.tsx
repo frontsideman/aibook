@@ -41,7 +41,7 @@ export function LoginForm() {
   }
 
   return (
-    <div className='w-full max-w-[430px] rounded-[22px] border border-border bg-card p-7 shadow-[0_16px_34px_#3A28141A]'>
+    <div className='w-full max-w-[430px] rounded-[22px] border border-border bg-card p-5 shadow-[0_16px_34px_#3A28141A] md:p-7'>
       <BrandMark className='mb-[18px]' />
 
       <h1 className='font-display text-[34px] font-semibold text-foreground'>Welcome back</h1>
