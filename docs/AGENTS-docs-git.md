@@ -42,6 +42,16 @@ Always use Conventional Commits format for git commit messages:
 - Group logically related changes together
 - Avoid mixing unrelated frontend, backend, and docs work in the same commit unless they are part of one cohesive change
 
+## Analytics Reports
+
+Track system metrics over time in `docs/analytics/`:
+
+- **Naming:** `YYYY-MM-DD-<feature-name>.md`
+- **When to create:** Build-affecting changes, major version updates of key packages
+- **Content:** Version changes, performance metrics, bundle size, test coverage, dependencies, CI/CD results, security status
+- **Language:** English (like all documentation)
+- **Template:** See `docs/analytics/README.md`
+
 ## Code Review Standards
 
 Before any git commit:
