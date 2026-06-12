@@ -30,11 +30,11 @@ export default function SettingsPage() {
   return (
     <div className='flex max-w-[1140px] flex-col gap-5 px-1'>
       <header className='space-y-2'>
-        <p className='font-mono text-xs font-extrabold uppercase tracking-[0.12em] text-primary'>
+        <p className='font-mono text-xs font-extrabold uppercase tracking-[0.12em] text-primary md:text-[12px]'>
           ACCOUNT
         </p>
-        <h1 className='font-display text-5xl font-semibold text-foreground'>Settings</h1>
-        <p className='text-base text-muted-foreground'>
+        <h1 className='font-display text-3xl font-semibold text-foreground md:text-4xl lg:text-5xl'>Settings</h1>
+        <p className='text-sm text-muted-foreground md:text-base'>
           Manage subscription, billing, and account preferences.
         </p>
       </header>
