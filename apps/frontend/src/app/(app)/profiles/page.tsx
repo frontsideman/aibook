@@ -119,21 +119,21 @@ export default function ProfilesPage() {
 
   return (
     <div className='flex flex-col gap-5'>
-      <div className='flex items-end justify-between gap-4'>
+      <div className='flex flex-col gap-4 md:flex-row md:items-end md:justify-between'>
         <div className='max-w-[720px] space-y-2'>
-          <p className='font-mono text-[12px] font-extrabold uppercase text-primary'>
+          <p className='font-mono text-[10px] font-extrabold uppercase text-primary md:text-[12px]'>
             PERSONALIZATION
           </p>
-          <h1 className='font-display text-[48px] font-semibold leading-none text-foreground'>
+          <h1 className='font-display text-3xl font-semibold leading-none text-foreground md:text-4xl lg:text-[48px]'>
             Child Profiles
           </h1>
-          <p className='text-[16px] text-muted-foreground'>
+          <p className='text-sm text-muted-foreground md:text-base'>
             Manage reusable child details for personalized book generation.
           </p>
         </div>
         <button
           onClick={openCreatePanel}
-          className='inline-flex h-11 items-center gap-2 rounded-[11px] bg-primary px-4 text-[14px] font-extrabold text-primary-foreground transition hover:opacity-90'
+          className='inline-flex h-11 w-full items-center justify-center gap-2 rounded-[11px] bg-primary px-4 text-[14px] font-extrabold text-primary-foreground transition hover:opacity-90 md:w-auto'
         >
           <Plus className='h-4 w-4' aria-hidden='true' />
           Add Profile
