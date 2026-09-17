@@ -20,6 +20,9 @@ describe('BookService', () => {
     user: {
       findUnique: jest.fn(),
     },
+    childProfile: {
+      findFirst: jest.fn(),
+    },
     book: {
       findMany: jest.fn(),
       findUnique: jest.fn(),
@@ -46,6 +49,7 @@ describe('BookService', () => {
   beforeEach(async () => {
     jest.clearAllMocks();
     mockQueue.waitUntilReady.mockResolvedValue(undefined);
+    mockPrismaClient.childProfile.findFirst.mockResolvedValue({ id: 'child-1' });
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BookService,
@@ -146,6 +150,19 @@ describe('BookService', () => {
           }),
         })
       );
+    });
+
+    it('rejects a childId owned by another user', async () => {
+      mockPrismaClient.childProfile.findFirst.mockResolvedValue(null);
+
+      await expect(
+        service.createAndGenerate(
+          { childId: 'foreign-child', type: 'AI_ADAPTED', style: 'cartoon' },
+          'user-1'
+        )
+      ).rejects.toThrow(NotFoundException);
+      expect(mockPrismaClient.book.create).not.toHaveBeenCalled();
+      expect(mockQueue.add).not.toHaveBeenCalled();
     });
 
     it('fails fast when the generation queue is unavailable', async () => {

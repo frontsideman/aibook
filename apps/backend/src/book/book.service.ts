@@ -129,6 +129,12 @@ export class BookService {
       throw new BadRequestException('Book style is required');
     }
 
+    const child = await this.prisma.client.childProfile.findFirst({
+      where: { id: dto.childId, userId },
+      select: { id: true },
+    });
+    if (!child) throw new NotFoundException('Child profile not found');
+
     await this.ensureGenerationQueueReady();
 
     const book = await this.prisma.client.book.create({
