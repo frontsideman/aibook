@@ -1,6 +1,7 @@
 import type { Queue } from 'bullmq';
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
   ServiceUnavailableException,
@@ -44,6 +45,7 @@ export class RegenerateDto {
 
 const DEFAULT_REASONING_EFFORT = ReasoningEffort.MEDIUM;
 const STALE_GENERATING_BOOK_AGE_MS = 10 * 60 * 1000;
+const MAX_PARENT_EDIT_LENGTH = 2000;
 
 function normalizeEnumValue<T extends string>(
   value: string | undefined,
@@ -81,12 +83,13 @@ export class BookService {
   async findAll(params: { skip?: number; take?: number; where?: Record<string, unknown> }) {
     const { skip, take, where } = params;
     const staleGenerationCutoff = new Date(Date.now() - STALE_GENERATING_BOOK_AGE_MS);
+    const scopeUserId = (where as { userId?: unknown } | undefined)?.userId;
 
     await this.prisma.client.book.updateMany({
       where: {
         status: BookStatus.GENERATING,
         updatedAt: { lt: staleGenerationCutoff },
-        // TODO: Add userId filter when multi-tenant auth is implemented
+        ...(typeof scopeUserId === 'string' ? { userId: scopeUserId } : {}),
       },
       data: { status: BookStatus.FAILED },
     });
@@ -100,6 +103,7 @@ export class BookService {
           child: { select: { name: true } },
           pages: {
             take: 1,
+            orderBy: { pageNumber: 'asc' },
             include: { illustrations: { take: 1 } },
           },
         },
@@ -165,9 +169,9 @@ export class BookService {
     return { bookId: book.id, status: 'GENERATING' };
   }
 
-  async getById(bookId: string, userId?: string) {
-    const book = await this.prisma.client.book.findUnique({
-      where: { id: bookId, ...(userId ? { userId } : {}) },
+  async getById(bookId: string, userId: string) {
+    const book = await this.prisma.client.book.findFirst({
+      where: { id: bookId, userId },
       include: {
         child: { select: { id: true, name: true, age: true } },
         pages: { orderBy: { pageNumber: 'asc' } },
@@ -178,15 +182,9 @@ export class BookService {
     return book;
   }
 
-  async triggerGeneration(bookId: string) {
-    await this.ensureGenerationQueueReady();
-    await this.bookQueue.add('generate-book', { bookId });
-    return { bookId, status: 'QUEUED' };
-  }
-
-  async getPreview(bookId: string, userId?: string) {
-    const book = await this.prisma.client.book.findUnique({
-      where: { id: bookId, ...(userId ? { userId } : {}) },
+  async getPreview(bookId: string, userId: string) {
+    const book = await this.prisma.client.book.findFirst({
+      where: { id: bookId, userId },
       include: {
         pages: {
           orderBy: { pageNumber: 'asc' },
@@ -197,7 +195,7 @@ export class BookService {
 
     if (!book) throw new NotFoundException('Book not found');
     if (book.status === BookStatus.DRAFT || book.status === BookStatus.GENERATING) {
-      throw new NotFoundException('Book is still being generated');
+      throw new ConflictException('Book is still being generated');
     }
 
     if (book.status === BookStatus.COMPLETED) {
@@ -207,38 +205,40 @@ export class BookService {
     return { book };
   }
 
-  async approveBook(bookId: string, userId?: string) {
-    const book = await this.prisma.client.book.findUnique({
-      where: { id: bookId, ...(userId ? { userId } : {}) },
-    });
-
-    if (!book) throw new NotFoundException('Book not found');
-    if (book.status !== BookStatus.REVIEW) {
-      throw new NotFoundException('Book must be in REVIEW status to approve');
-    }
-
-    await this.prisma.client.book.update({
-      where: { id: bookId },
+  async approveBook(bookId: string, userId: string) {
+    const updated = await this.prisma.client.book.updateMany({
+      where: { id: bookId, userId, status: BookStatus.REVIEW },
       data: { status: BookStatus.COMPLETED, approvedAt: new Date() },
     });
+
+    if (updated.count === 0) {
+      const book = await this.prisma.client.book.findFirst({
+        where: { id: bookId, userId },
+        select: { id: true, status: true },
+      });
+      if (!book) throw new NotFoundException('Book not found');
+      throw new ConflictException('Book must be in REVIEW status to approve');
+    }
 
     return { status: BookStatus.COMPLETED };
   }
 
-  async editPage(bookId: string, pageNumber: number, dto: PageEditDto, userId?: string) {
+  async editPage(bookId: string, pageNumber: number, dto: PageEditDto, userId: string) {
+    if (dto.feedback && dto.feedback.length > MAX_PARENT_EDIT_LENGTH) {
+      throw new BadRequestException('Parent feedback is too long');
+    }
+
     const page = await this.prisma.client.page.findUnique({
       where: { bookId_pageNumber: { bookId, pageNumber } },
     });
 
     if (!page) throw new NotFoundException('Page not found');
 
-    if (userId) {
-      const book = await this.prisma.client.book.findUnique({
-        where: { id: bookId, userId },
-        select: { id: true },
-      });
-      if (!book) throw new NotFoundException('Book not found');
-    }
+    const book = await this.prisma.client.book.findFirst({
+      where: { id: bookId, userId },
+      select: { id: true },
+    });
+    if (!book) throw new NotFoundException('Book not found');
 
     const updated = await this.prisma.client.page.update({
       where: { id: page.id },
@@ -253,9 +253,10 @@ export class BookService {
     return updated;
   }
 
-  async regenerate(bookId: string, dto: RegenerateDto, userId?: string) {
-    const book = await this.prisma.client.book.findUnique({
-      where: { id: bookId, ...(userId ? { userId } : {}) },
+  async regenerate(bookId: string, dto: RegenerateDto, userId: string) {
+    const book = await this.prisma.client.book.findFirst({
+      where: { id: bookId, userId },
+      select: { id: true },
     });
     if (!book) throw new NotFoundException('Book not found');
 
@@ -279,9 +280,9 @@ export class BookService {
     return { bookId, status: 'REGENERATING' };
   }
 
-  async getPdfUrl(bookId: string, userId?: string) {
-    const book = await this.prisma.client.book.findUnique({
-      where: { id: bookId, ...(userId ? { userId } : {}) },
+  async getPdfUrl(bookId: string, userId: string) {
+    const book = await this.prisma.client.book.findFirst({
+      where: { id: bookId, userId },
       select: { pdfUrl: true },
     });
     if (!book?.pdfUrl) throw new NotFoundException('PDF not available');

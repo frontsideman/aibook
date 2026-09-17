@@ -5,7 +5,12 @@ import { PdfService } from '../pdf/pdf.service';
 import { StorageService } from '../storage/storage.service';
 import { BookStatus, ReasoningEffort } from '@repo/database';
 import type { Queue } from 'bullmq';
-import { NotFoundException, ServiceUnavailableException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+  ServiceUnavailableException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 describe('BookService', () => {
@@ -25,6 +30,7 @@ describe('BookService', () => {
     },
     book: {
       findMany: jest.fn(),
+      findFirst: jest.fn(),
       findUnique: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
@@ -82,11 +88,12 @@ describe('BookService', () => {
       mockPrismaClient.book.count.mockResolvedValue(1);
       mockPrismaClient.book.updateMany.mockResolvedValue({ count: 0 });
 
-      const result = await service.findAll({ skip: 0, take: 10, where: {} });
+      const result = await service.findAll({ skip: 0, take: 10, where: { userId: 'user-1' } });
       expect(mockPrismaClient.book.updateMany).toHaveBeenCalledWith(
         expect.objectContaining({
           where: expect.objectContaining({
             status: BookStatus.GENERATING,
+            userId: 'user-1',
           }),
           data: { status: BookStatus.FAILED },
         })
@@ -217,11 +224,11 @@ describe('BookService', () => {
         child: { id: 'child-1', name: 'Alice', age: 7 },
         pages: [],
       };
-      mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
+      mockPrismaClient.book.findFirst.mockResolvedValue(mockBook);
 
       const result = await service.getById('book-1', 'user-1');
 
-      expect(mockPrismaClient.book.findUnique).toHaveBeenCalledWith({
+      expect(mockPrismaClient.book.findFirst).toHaveBeenCalledWith({
         where: { id: 'book-1', userId: 'user-1' },
         include: {
           child: { select: { id: true, name: true, age: true } },
@@ -232,7 +239,7 @@ describe('BookService', () => {
     });
 
     it('throws when the scoped book does not exist', async () => {
-      mockPrismaClient.book.findUnique.mockResolvedValue(null);
+      mockPrismaClient.book.findFirst.mockResolvedValue(null);
 
       await expect(service.getById('missing', 'user-1')).rejects.toThrow(NotFoundException);
     });
@@ -241,15 +248,15 @@ describe('BookService', () => {
   describe('getPreview', () => {
     it('should return book with pages for REVIEW status', async () => {
       const mockBook = { id: 'b1', status: BookStatus.REVIEW, pages: [] };
-      mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
+      mockPrismaClient.book.findFirst.mockResolvedValue(mockBook);
 
       const result = await service.getPreview('b1', 'user-1');
       expect(result).toEqual({ book: mockBook });
     });
 
-    it('should throw for DRAFT status', async () => {
-      mockPrismaClient.book.findUnique.mockResolvedValue({ id: 'b1', status: BookStatus.DRAFT });
-      await expect(service.getPreview('b1', 'user-1')).rejects.toThrow(NotFoundException);
+    it('should throw Conflict for DRAFT status', async () => {
+      mockPrismaClient.book.findFirst.mockResolvedValue({ id: 'b1', status: BookStatus.DRAFT });
+      await expect(service.getPreview('b1', 'user-1')).rejects.toThrow(ConflictException);
     });
 
     it('should return pdfUrl for COMPLETED status', async () => {
@@ -259,7 +266,7 @@ describe('BookService', () => {
         pdfUrl: 'https://s3.com/book.pdf',
         pages: [],
       };
-      mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
+      mockPrismaClient.book.findFirst.mockResolvedValue(mockBook);
 
       const result = await service.getPreview('b1', 'user-1');
       expect(result).toEqual({
@@ -271,18 +278,30 @@ describe('BookService', () => {
   });
 
   describe('approveBook', () => {
-    it('should mark a review book as completed without generating pdf', async () => {
-      const mockBook = {
+    it('throws Conflict when approving a non-REVIEW book', async () => {
+      mockPrismaClient.book.updateMany.mockResolvedValue({ count: 0 });
+      mockPrismaClient.book.findFirst.mockResolvedValue({
         id: 'b1',
-        status: BookStatus.REVIEW,
-      };
-      mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
+        status: BookStatus.GENERATING,
+      });
+
+      await expect(service.approveBook('b1', 'user-1')).rejects.toThrow(ConflictException);
+    });
+
+    it('throws NotFound when approving a foreign book', async () => {
+      mockPrismaClient.book.updateMany.mockResolvedValue({ count: 0 });
+      mockPrismaClient.book.findFirst.mockResolvedValue(null);
+
+      await expect(service.approveBook('b1', 'user-1')).rejects.toThrow(NotFoundException);
+    });
+    it('should mark a review book as completed without generating pdf', async () => {
+      mockPrismaClient.book.updateMany.mockResolvedValue({ count: 1 });
 
       const result = await service.approveBook('b1', 'user-1');
       expect(pdfService.generateBookPdf).not.toHaveBeenCalled();
       expect(storageService.upload).not.toHaveBeenCalled();
-      expect(prisma.client.book.update).toHaveBeenCalledWith({
-        where: { id: 'b1' },
+      expect(prisma.client.book.updateMany).toHaveBeenCalledWith({
+        where: { id: 'b1', userId: 'user-1', status: BookStatus.REVIEW },
         data: expect.objectContaining({
           status: BookStatus.COMPLETED,
           approvedAt: expect.any(Date),
@@ -292,9 +311,21 @@ describe('BookService', () => {
     });
   });
 
+  describe('editPage', () => {
+    it('rejects overlong parent edits', async () => {
+      mockPrismaClient.page.findUnique.mockResolvedValue({ id: 'p1', textContent: 'x' });
+
+      await expect(
+        service.editPage('b1', 1, { feedback: 'y'.repeat(2001) }, 'user-1')
+      ).rejects.toThrow(BadRequestException);
+      expect(mockPrismaClient.book.findFirst).not.toHaveBeenCalled();
+      expect(mockPrismaClient.page.update).not.toHaveBeenCalled();
+    });
+  });
+
   describe('regenerate', () => {
     it('should delete pages and enqueue new job', async () => {
-      mockPrismaClient.book.findUnique.mockResolvedValue({ id: 'b1', userId: 'user-1' });
+      mockPrismaClient.book.findFirst.mockResolvedValue({ id: 'b1', userId: 'user-1' });
       mockQueue.waitUntilReady.mockResolvedValue(undefined);
       const result = await service.regenerate(
         'b1',
