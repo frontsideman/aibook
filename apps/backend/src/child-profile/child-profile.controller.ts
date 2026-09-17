@@ -36,17 +36,21 @@ export class ChildProfileController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.childProfileService.findOne(id);
+  findOne(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    return this.childProfileService.findOne(id, req.user.id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDto: UpdateChildProfileDto) {
-    return this.childProfileService.update(id, updateDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateDto: UpdateChildProfileDto,
+    @Req() req: AuthenticatedRequest
+  ) {
+    return this.childProfileService.update(id, req.user.id, updateDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.childProfileService.remove(id);
+  remove(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    return this.childProfileService.remove(id, req.user.id);
   }
 }
