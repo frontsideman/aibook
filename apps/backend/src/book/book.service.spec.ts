@@ -1,5 +1,6 @@
 import { Test, type TestingModule } from '@nestjs/testing';
-import { BookService } from './book.service';
+import { BookService, CreateBookDto, RegenerateDto } from './book.service';
+import { validate } from 'class-validator';
 import { PrismaService } from '../prisma.service';
 import { PdfService } from '../pdf/pdf.service';
 import { StorageService } from '../storage/storage.service';
@@ -320,6 +321,26 @@ describe('BookService', () => {
       ).rejects.toThrow(BadRequestException);
       expect(mockPrismaClient.book.findFirst).not.toHaveBeenCalled();
       expect(mockPrismaClient.page.update).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('DTO validation', () => {
+    it('rejects a CreateBookDto with empty style', async () => {
+      const dto = new CreateBookDto();
+      dto.childId = 'c1';
+      dto.type = 'AI_ADAPTED';
+      dto.style = '';
+
+      const errors = await validate(dto, { forbidUnknownValues: false });
+      expect(errors.length).toBeGreaterThan(0);
+    });
+
+    it('rejects a RegenerateDto with empty feedback', async () => {
+      const dto = new RegenerateDto();
+      dto.parentFeedback = '';
+
+      const errors = await validate(dto, { forbidUnknownValues: false });
+      expect(errors.length).toBeGreaterThan(0);
     });
   });
 

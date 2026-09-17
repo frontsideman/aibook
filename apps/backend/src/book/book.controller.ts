@@ -11,7 +11,12 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { BookService } from './book.service';
-import type { CreateBookDto, SearchQueryDto, PageEditDto, RegenerateDto } from './book.service';
+import {
+  CreateBookDto,
+  PageEditDto,
+  RegenerateDto,
+  SearchQueryDto,
+} from './book.service';
 import { SubscriptionGuard } from '../payment/subscription.guard';
 import { MockAuthGuard } from '../mock-auth.guard';
 

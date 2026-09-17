@@ -8,39 +8,98 @@ import {
 } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bullmq';
 import { BookStatus, BookStyle, ReasoningEffort, Tone } from '@repo/database';
+import {
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 import { PrismaService } from '../prisma.service';
 import { PdfService } from '../pdf/pdf.service';
 import { StorageService } from '../storage/storage.service';
 import { ConfigService } from '@nestjs/config';
 
 export class CreateBookDto {
-  childId: string;
-  type: 'AI_ADAPTED' | 'MANUAL';
+  @IsString()
+  @IsNotEmpty()
+  childId!: string;
+
+  @IsIn(['AI_ADAPTED', 'MANUAL'])
+  type!: 'AI_ADAPTED' | 'MANUAL';
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
   storyTitle?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(5000)
   userContent?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(2000)
   parentComments?: string;
+
+  @IsOptional()
+  @IsString()
   tone?: string;
-  style: string;
+
+  @IsString()
+  @IsNotEmpty()
+  style!: string;
 }
 
 export class SearchQueryDto {
+  @IsOptional()
+  @IsString()
   title?: string;
+
+  @IsOptional()
+  @IsString()
   search?: string;
+
+  @IsOptional()
+  @IsString()
   style?: string;
+
+  @IsOptional()
+  @IsString()
   status?: string;
+
+  @IsOptional()
+  @IsString()
   childId?: string;
+
+  @IsOptional()
+  @IsString()
   type?: string;
+
+  @IsOptional()
+  @IsString()
   childName?: string;
+
+  @IsOptional()
   page?: string | number;
+
+  @IsOptional()
   limit?: string | number;
 }
 
 export class PageEditDto {
+  @IsOptional()
+  @IsString()
+  @MaxLength(2000)
   feedback?: string;
 }
 
 export class RegenerateDto {
-  parentFeedback: string;
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(2000)
+  parentFeedback!: string;
 }
 
 const DEFAULT_REASONING_EFFORT = ReasoningEffort.MEDIUM;
