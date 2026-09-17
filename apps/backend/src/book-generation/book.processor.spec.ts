@@ -14,7 +14,7 @@ describe('BookProcessor', () => {
   const mockPrismaClient = {
     book: { findUnique: jest.fn(), update: jest.fn() },
     storyLibrary: { findUnique: jest.fn() },
-    page: { create: jest.fn() },
+    page: { create: jest.fn(), deleteMany: jest.fn() },
     illustration: { create: jest.fn() },
     $transaction: jest.fn(),
   };
@@ -57,6 +57,7 @@ describe('BookProcessor', () => {
     const bookId = 'test-book-id';
     const mockBook = {
       id: bookId,
+      status: BookStatus.GENERATING,
       title: 'Test Book',
       style: 'WATERCOLOR',
       llmModel: 'provider:model-mini',
@@ -116,6 +117,7 @@ describe('BookProcessor', () => {
     const bookId = 'tone-book-id';
     const mockBook = {
       id: bookId,
+      status: BookStatus.GENERATING,
       title: 'Tone Test',
       style: 'CARTOON',
       tone: 'PLAYFUL',
@@ -148,6 +150,7 @@ describe('BookProcessor', () => {
     const bookId = 'regen-book-id';
     const mockBook = {
       id: bookId,
+      status: BookStatus.GENERATING,
       title: 'Regen Test',
       style: 'CARTOON',
       llmModel: 'provider:model-nano',
@@ -177,6 +180,7 @@ describe('BookProcessor', () => {
     const error = new Error('provider unavailable');
     const mockBook = {
       id: bookId,
+      status: BookStatus.GENERATING,
       title: 'Failure Test',
       style: 'CARTOON',
       llmModel: 'provider:model-mini',
@@ -207,6 +211,7 @@ describe('BookProcessor', () => {
     const error = new Error('review update failed');
     const mockBook = {
       id: bookId,
+      status: BookStatus.GENERATING,
       title: 'Rollback Test',
       style: 'CARTOON',
       llmModel: 'provider:model-mini',
@@ -232,7 +237,7 @@ describe('BookProcessor', () => {
       try {
         return await callback({
           book: { update: txBookUpdate },
-          page: { create: txPageCreate },
+          page: { create: txPageCreate, deleteMany: jest.fn(async () => ({ count: 0 })) },
         });
       } catch (transactionError) {
         createdPages.length = 0;
@@ -267,5 +272,50 @@ describe('BookProcessor', () => {
     await expect(processor.process(job)).rejects.toThrow('Book with id missing-book not found');
 
     expect(mockPrismaClient.book.update).not.toHaveBeenCalled();
+  });
+
+  it('should not retry when the book is already reviewed', async () => {
+    const { UnrecoverableError } = await import('bullmq');
+    mockPrismaClient.book.findUnique.mockResolvedValue({
+      id: 'reviewed-book',
+      status: BookStatus.REVIEW,
+    });
+
+    const job = { data: { bookId: 'reviewed-book' } } as Job;
+    await expect(processor.process(job)).rejects.toThrow(UnrecoverableError);
+
+    expect(mockAiService.generateStory).not.toHaveBeenCalled();
+    expect(mockPrismaClient.$transaction).not.toHaveBeenCalled();
+  });
+
+  it('should replace old pages inside the transaction on regenerate', async () => {
+    const bookId = 'regen-pages-book';
+    const mockBook = {
+      id: bookId,
+      status: BookStatus.GENERATING,
+      title: 'Regen Pages',
+      style: 'CARTOON',
+      llmModel: 'provider:model-mini',
+      reasoningEffort: ReasoningEffort.MEDIUM,
+      child: { name: 'Gus', age: 5, gender: 'male', interests: ['trains'] },
+    };
+    const txPageCreate = jest.fn(async ({ data }) => ({ id: `page-${data.pageNumber}`, ...data }));
+    const txPageDeleteMany = jest.fn(async () => ({ count: 2 }));
+    const txBookUpdate = jest.fn(async ({ data }) => ({ id: bookId, ...data }));
+
+    mockPrismaClient.book.findUnique.mockResolvedValue(mockBook);
+    mockAiService.generateStory.mockResolvedValue('Page 1: New 1\nPage 2: New 2');
+    mockPrismaClient.$transaction.mockImplementationOnce(async (callback) =>
+      callback({
+        page: { create: txPageCreate, deleteMany: txPageDeleteMany },
+        book: { update: txBookUpdate },
+      })
+    );
+
+    const job = { data: { bookId, parentFeedback: 'shorter' } } as Job;
+    await processor.process(job);
+
+    expect(txPageDeleteMany).toHaveBeenCalledWith({ where: { bookId } });
+    expect(txPageCreate).toHaveBeenCalledTimes(2);
   });
 });

@@ -112,7 +112,11 @@ describe('BookService', () => {
       const result = await service.createAndGenerate(dto, 'user-1');
       expect(prisma.client.book.create).toHaveBeenCalled();
       expect(mockQueue.waitUntilReady).toHaveBeenCalled();
-      expect(mockQueue.add).toHaveBeenCalledWith('generate-book', { bookId: 'book-1' });
+      expect(mockQueue.add).toHaveBeenCalledWith(
+        'generate-book',
+        { bookId: 'book-1' },
+        expect.objectContaining({ jobId: expect.stringContaining('book-1') })
+      );
       expect(result).toEqual({ bookId: 'book-1', status: 'GENERATING' });
       expect(prisma.client.book.create).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -345,7 +349,7 @@ describe('BookService', () => {
   });
 
   describe('regenerate', () => {
-    it('should delete pages and enqueue new job', async () => {
+    it('keeps pages in the service and enqueues a deduplicated job', async () => {
       mockPrismaClient.book.findFirst.mockResolvedValue({ id: 'b1', userId: 'user-1' });
       mockQueue.waitUntilReady.mockResolvedValue(undefined);
       const result = await service.regenerate(
@@ -353,13 +357,28 @@ describe('BookService', () => {
         { parentFeedback: 'Make it funnier' },
         'user-1'
       );
-      expect(prisma.client.page.deleteMany).toHaveBeenCalledWith({ where: { bookId: 'b1' } });
+      expect(mockPrismaClient.page.deleteMany).not.toHaveBeenCalled();
       expect(mockQueue.waitUntilReady).toHaveBeenCalled();
-      expect(mockQueue.add).toHaveBeenCalledWith('generate-book', {
-        bookId: 'b1',
-        parentFeedback: 'Make it funnier',
-      });
+      expect(mockQueue.add).toHaveBeenCalledWith(
+        'generate-book',
+        { bookId: 'b1', parentFeedback: 'Make it funnier' },
+        expect.objectContaining({ jobId: expect.stringContaining('b1') })
+      );
       expect(result).toEqual({ bookId: 'b1', status: 'REGENERATING' });
+    });
+
+    it('marks the book failed when the queue rejects a regenerate job', async () => {
+      mockPrismaClient.book.findFirst.mockResolvedValue({ id: 'b1', userId: 'user-1' });
+      mockQueue.waitUntilReady.mockResolvedValue(undefined);
+      mockQueue.add.mockRejectedValue(new Error('redis down'));
+
+      await expect(
+        service.regenerate('b1', { parentFeedback: 'Make it funnier' }, 'user-1')
+      ).rejects.toThrow(ServiceUnavailableException);
+      expect(mockPrismaClient.book.update).toHaveBeenCalledWith({
+        where: { id: 'b1' },
+        data: { status: BookStatus.FAILED },
+      });
     });
   });
 });

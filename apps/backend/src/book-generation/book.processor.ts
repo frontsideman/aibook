@@ -1,5 +1,5 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import type { Job } from 'bullmq';
+import { UnrecoverableError, type Job } from 'bullmq';
 import { PrismaService } from '../prisma.service';
 import { AiService } from '../ai/ai.service';
 import { PromptBuilderService } from './prompt-builder.service';
@@ -24,7 +24,13 @@ export class BookProcessor extends WorkerHost {
     });
 
     if (!book) {
-      throw new Error(`Book with id ${bookId} not found`);
+      throw new UnrecoverableError(`Book with id ${bookId} not found`);
+    }
+
+    if (book.status !== BookStatus.GENERATING) {
+      throw new UnrecoverableError(
+        `Book ${bookId} is not GENERATING (status=${book.status})`
+      );
     }
 
     await this.prisma.client.book.update({
@@ -56,12 +62,14 @@ export class BookProcessor extends WorkerHost {
       }
 
       if (pagesContent.length <= 1) {
-        throw new Error(
+        throw new UnrecoverableError(
           `Failed to parse story into pages — only ${pagesContent.length} segment(s) found`
         );
       }
 
       await this.prisma.client.$transaction(async (tx: Prisma.TransactionClient) => {
+        await tx.page.deleteMany({ where: { bookId: book.id } });
+
         for (let i = 0; i < pagesContent.length; i++) {
           const trimmedContent = pagesContent[i];
           const pageNumber = i + 1;

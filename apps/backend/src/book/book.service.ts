@@ -216,7 +216,11 @@ export class BookService {
     });
 
     try {
-      await this.bookQueue.add('generate-book', { bookId: book.id });
+      await this.bookQueue.add(
+        'generate-book',
+        { bookId: book.id },
+        { jobId: `generate-${book.id}` }
+      );
     } catch {
       await this.prisma.client.book.update({
         where: { id: book.id },
@@ -329,12 +333,22 @@ export class BookService {
       },
     });
 
-    await this.prisma.client.page.deleteMany({ where: { bookId } });
-
-    await this.bookQueue.add('generate-book', {
-      bookId,
-      parentFeedback: dto.parentFeedback,
-    });
+    try {
+      await this.bookQueue.add(
+        'generate-book',
+        {
+          bookId,
+          parentFeedback: dto.parentFeedback,
+        },
+        { jobId: `generate-${bookId}` }
+      );
+    } catch {
+      await this.prisma.client.book.update({
+        where: { id: bookId },
+        data: { status: BookStatus.FAILED },
+      });
+      throw new ServiceUnavailableException('Book generation queue is unavailable');
+    }
 
     return { bookId, status: 'REGENERATING' };
   }
