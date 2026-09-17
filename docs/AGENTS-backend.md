@@ -29,6 +29,39 @@
 - `POST /books/:id/approve`
 - `GET /books/:id/pdf`
 
+Status codes: `404` only for missing/foreign resources; wrong-status transitions
+(preview of `DRAFT`/`GENERATING`, approve of non-`REVIEW`) return `409 Conflict`.
+
+## Validation
+
+- Global `ValidationPipe({ whitelist: true, transform: true })` in `main.ts`.
+- `CreateBookDto`/`SearchQueryDto`/`PageEditDto`/`RegenerateDto` (`book.service.ts`)
+  and child-profile DTOs carry `class-validator` decorators.
+- Controllers must import DTO classes as runtime values, not `import type`,
+  otherwise pipe metadata is lost (same reason as the Nest DI quirk below).
+
+## Ownership & Scoping Rules
+
+- All `BookService` read/write methods take mandatory `userId: string` and scope
+  queries via `findFirst({ where: { id, userId } })` (`findUnique` cannot filter
+  by non-unique `userId`; `update` needs a unique `where`).
+- `createAndGenerate` rejects a `childId` not owned by the caller (`404`).
+- `ChildProfileService.findOne/update/remove` are user-scoped; foreign access → `404`.
+- `approveBook` uses atomic `updateMany({ where: { id, userId, status: REVIEW } })`
+  to avoid scoped-read → unscoped-write TOCTOU.
+- `findAll` scopes the stale-`GENERATING` → `FAILED` sweep by the request `userId`.
+- `editPage` parent feedback is capped at 2000 chars (`400` when exceeded).
+
+## Generation Queue Contract
+
+- `queue.add('generate-book', ...)` always passes `{ jobId: 'generate-<bookId>' }`
+  for dedupe.
+- The service never deletes pages; `BookProcessor` runs
+  `page.deleteMany({ bookId })` + inserts + `REVIEW` transition inside one `$transaction`.
+- The processor only handles `GENERATING` books; missing/terminal-state books and
+  unparsable LLM output throw BullMQ `UnrecoverableError` (no retry).
+  AI transport failures stay retryable.
+
 ## Generation Settings HTTP Surface
 
 - `GET /settings/generation`
