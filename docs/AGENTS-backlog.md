@@ -67,9 +67,10 @@ seeded. Optional follow-up:
    provisioned PostgreSQL/Redis/MinIO services.
 2. Add an integration test for child-profile deletion keeping books with
    `childId = NULL`.
-3. Upgrade NestJS 10 → 12, Prisma, and CLI tooling to clear remaining `high`
-   `npm audit` findings.
-4. Add a migration check against a real PostgreSQL instance in CI.
+3. Revisit TypeScript 7 for the backend when `@nestjs/cli` exposes the TS 7
+   compiler API; backend stays on TypeScript 6.0 because Nest CLI requires it.
+4. Adopt Prisma 8 after a stable release (currently only `8.0.0-rc`).
+5. Add a migration check against a real PostgreSQL instance in CI.
 
 ## Update Rule
 

@@ -50,9 +50,10 @@ with private objects plus signed URLs before production.
 
 ## Dockerfiles
 
-- `Dockerfile.backend` — Node 24 Alpine, multi-stage (builder + runner),
-  production dependencies only, runs as `node` (non-root).
-- `Dockerfile.frontend` — Node 24 Alpine, multi-stage with Next.js standalone
+- `Dockerfile.backend` — Node 26 Alpine, multi-stage (builder + runner),
+  production dependencies only, runs as `node` (non-root). The runner copies
+  workspace manifests before `npm prune` so hoisted Nest packages survive pruning.
+- `Dockerfile.frontend` — Node 26 Alpine, multi-stage with Next.js standalone
   output, runs as `node` (non-root).
 
 ## Health
@@ -86,10 +87,10 @@ Trigger: manual (`workflow_dispatch`) or PR label `docker-test`
 
 ### Security
 
-- Base images: `node:24-alpine`
+- Base images: `node:26-alpine`
 - Multi-stage builds: no dev dependencies in the runner stage
 - Backend and frontend run as the non-root `node` user
 - Trivy scan on every CD run
 - SBOM for supply-chain transparency
-- `npm audit` gate runs at `critical` severity; high/moderate transitive findings
+- `npm audit` gate runs at `high` severity; moderate transitive findings
   remain and are tracked as follow-up work

@@ -52,7 +52,9 @@ removed the unused MSW dependency from the frontend.
 | Total advisories | 64 | 34 |
 
 Remaining high/moderate findings are largely transitive tooling dependencies
-(NestJS 10 CLI, Prisma CLI, Jest) and require major upgrades.
+(NestJS 10 CLI, Prisma CLI, Jest) and require major upgrades. See the
+[Node 26 / major upgrades report](./2026-11-11-node26-major-upgrades.md) for the
+follow-up that removed the high findings.
 
 ## Functional Fixes
 
@@ -84,4 +86,5 @@ Remaining high/moderate findings are largely transitive tooling dependencies
 - The default E2E test stubs `/api/*`. The opt-in live test
   (`E2E_REAL_BACKEND=1` + `PLAYWRIGHT_PORT`) expects a running backend, DB, Redis,
   MinIO, and a stubbed LLM endpoint.
-- `npm audit --audit-level=high` is still failing; the CI gate remains at `critical`.
+- `npm audit --audit-level=high` was still failing at that point; the follow-up
+  Node 26 upgrade removed the high findings and raised the CI gate to `high`.

@@ -77,5 +77,6 @@ Each report follows this structure (sections can be added or removed as needed):
 
 | Date | Report | Type |
 |------|--------|------|
+| 2026-11-11 | [Node 26 and major dependency upgrades](./2026-11-11-node26-major-upgrades.md) | Infrastructure / Dependency Update |
 | 2026-11-11 | [Stability Hardening](./2026-11-11-stability-hardening.md) | Infrastructure / Stability |
 | 2026-06-12 | [Turborepo v1 → v2](./2026-06-12-turbo-v2-migration.md) | Infrastructure |

@@ -92,7 +92,7 @@ There is no backend `test:e2e` script.
 
 | Command | Description |
 |---------|-------------|
-| `npm audit --audit-level=critical` | CI gate |
-| `npm audit --audit-level=high` | Show high/critical findings (currently non-blocking) |
+| `npm audit --audit-level=high` | CI gate |
+| `npm audit --audit-level=moderate` | Show moderate and higher findings |
 | `npm outdated --all` | List all outdated dependencies |
 | `trivy image <image>` | Scan a Docker image for vulnerabilities |

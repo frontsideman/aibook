@@ -20,9 +20,10 @@ aiBook/
 
 | Layer | Technology |
 |-------|------------|
-| API | NestJS 10, Prisma ORM, BullMQ, PostgreSQL, Redis, class-validator |
+| API | NestJS 12, Prisma ORM, BullMQ, PostgreSQL, Redis, class-validator |
 | Frontend | Next.js 16 (App Router), React 19, Tailwind CSS v4 |
 | Database | PostgreSQL 16, Prisma 7 (PostgreSQL driver adapter) |
+| TypeScript | 7.0 for frontend/database; 6.0 for backend (Nest CLI requires the TS 6 compiler API) |
 | Queue | BullMQ / Redis |
 | Object storage | MinIO (S3-compatible) |
 | PDF | PDFKit, generated on demand and stored in MinIO |
@@ -89,12 +90,12 @@ Turbo `build` depends on upstream package builds first.
   does not start the backend. An opt-in lifecycle test runs with
   `E2E_REAL_BACKEND=1` against a real backend and stubbed LLM.
 - `build` — Turbo build (all workspaces)
-- `security-audit` — `npm audit --audit-level=critical`
+- `security-audit` — `npm audit --audit-level=high`
 - `deps-check` — `npm outdated` (warn only)
 
 **Caching:** npm cache + Turbo cache
 
-**Node:** 24 (from `.nvmrc`)
+**Node:** 26 (from `.nvmrc`)
 
 ### CD Pipeline (`cd.yml`)
 
@@ -107,10 +108,9 @@ Turbo `build` depends on upstream package builds first.
 
 ### Security
 
-- Dependency audit on every CI run at `critical` severity
+- Dependency audit on every CI run at `high` severity
 - Container vulnerability scan (Trivy) on every CD run
 - SBOM generation for supply-chain transparency
 - Docker images run as the non-root `node` user
-- The audit still reports `high` and `moderate` findings in transitive tooling
-  dependencies. Upgrading NestJS 10 to 12, Prisma, and the CLI toolchain is tracked
-  as follow-up work.
+- The audit is clean at `high` and `critical`; remaining moderate findings are
+  transitive tooling dependencies.

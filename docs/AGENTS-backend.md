@@ -22,6 +22,17 @@
 - DTO classes in controllers must also be runtime imports; `ValidationPipe` needs
   their decorator metadata.
 
+## Nest 12 / Toolchain Quirks
+
+- Nest 12 packages are ESM-only. Jest runs with
+  `NODE_OPTIONS=--experimental-vm-modules` so Node's native `require(esm)` path works.
+- `@nestjs/platform-express` is declared at the workspace root so the hoisted Nest
+  core can resolve the HTTP adapter; keep it there.
+- The backend uses TypeScript 6.0 because `@nestjs/cli` 12 requires the TS 6 compiler
+  API. Frontend and database use TypeScript 7.0.
+- Docker runner copies workspace manifests before `npm prune` so backend production
+  dependencies survive pruning.
+
 ## Validation
 
 - `main.ts` enables `ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true })`.

@@ -24,7 +24,8 @@ aiBook/
 
 | Layer | Technology |
 |-------|------------|
-| API | NestJS 10, Prisma ORM, BullMQ, PostgreSQL, Redis, class-validator |
+| Runtime | Node.js 26 |
+| API | NestJS 12, Prisma ORM, BullMQ, PostgreSQL, Redis, class-validator |
 | Frontend | Next.js 16 (App Router), React 19, Tailwind CSS v4 |
 | Database | PostgreSQL 16, Prisma 7 (PostgreSQL driver adapter) |
 | Queue | BullMQ / Redis |
@@ -35,7 +36,7 @@ aiBook/
 
 ## Prerequisites
 
-- **Node.js 24** (see `.nvmrc`; Node 26 is also used locally)
+- **Node.js 26** (see `.nvmrc`)
 - **npm 11** (see `packageManager` in `package.json`)
 - **Docker Desktop**
 

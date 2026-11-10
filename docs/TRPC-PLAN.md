@@ -8,7 +8,7 @@
 
 | Layer | What exists |
 |-------|-------------|
-| Backend | NestJS 10, 5 REST controllers, `MockAuthGuard`, `SubscriptionGuard`, no data validation library (no Zod) |
+| Backend | NestJS 12, REST controllers, `MockAuthGuard`, `SubscriptionGuard`, class-validator DTOs |
 | Frontend | Next.js 16 App Router, native `fetch` in `useEffect` hooks, no React Query/SWR, no centralized API client |
 | Communication | Next.js rewrite proxy `/api/*` → backend:3001 |
 
