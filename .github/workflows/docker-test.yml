@@ -10,6 +10,23 @@ jobs:
     name: Docker Build & Test
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'docker-test')
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: aibook
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,16 +48,28 @@ jobs:
         run: |
           docker run --rm -d \
             --name backend-test \
+            --add-host=host.docker.internal:host-gateway \
             -p 3001:3001 \
             -e DATABASE_URL=postgresql://user:password@host.docker.internal:5432/aibook \
             -e REDIS_HOST=host.docker.internal \
             -e REDIS_PORT=6379 \
             -e MOCK_AUTH=true \
             -e PORT=3001 \
+            -e LLM_API_URL=https://api.example.com \
+            -e LLM_API_KEY=test-key \
+            -e LLM_MODEL_NAME=test-model \
+            -e LLM_DEFAULT_PROMPT="Write a children's story." \
             aiBook-backend:test
-          sleep 10
-          curl -f http://localhost:3001/health || (docker logs backend-test && exit 1)
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:3001/health; then
+              docker stop backend-test
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs backend-test
           docker stop backend-test
+          exit 1
 
       - name: Build Frontend image
         uses: docker/build-push-action@v6
@@ -60,6 +89,13 @@ jobs:
             -e BACKEND_URL=http://host.docker.internal:3001 \
             -e PORT=3000 \
             aiBook-frontend:test
-          sleep 10
-          curl -f http://localhost:3000 || (docker logs frontend-test && exit 1)
+          for i in $(seq 1 30); do
+            if curl -fsS http://localhost:3000 >/dev/null; then
+              docker stop frontend-test
+              exit 0
+            fi
+            sleep 2
+          done
+          docker logs frontend-test
           docker stop frontend-test
+          exit 1
