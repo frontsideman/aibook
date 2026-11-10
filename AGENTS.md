@@ -29,12 +29,15 @@
 
 ## Current Product State
 
-The app is still a prototype, but the current flow is more advanced than the original scaffold:
+The app is a working text-only MVP:
 
 - New books are created with user-level generation defaults and queued for background generation.
 - The frontend has explicit generating, review, failed, and completed states in the book flow.
 - Review/approval is part of the main flow before a book becomes `COMPLETED`.
-- PDF access is a separate backend lookup once a completed book has a stored `pdfUrl`.
+- Completed books can generate a PDF on first download; the file is stored in MinIO and `Book.pdfUrl` is saved.
+- Illustrations are not generated.
+- `/settings` is presentation-only; generation settings are API-only and model selection is inactive.
+- Payment handling is a prototype without Stripe signature verification.
 
 ## Update Rule for AGENTS Documentation
 

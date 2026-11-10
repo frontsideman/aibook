@@ -1,5 +1,9 @@
 # Book Creation Flow Design
 
+> **Update (2026-11-11):** PDF download is now implemented as an on-demand action for
+> completed books (MinIO storage). The rest of this document still describes the
+> text-only generation/review flow.
+
 ## Summary
 
 Implement the end-to-end text-first book creation flow:

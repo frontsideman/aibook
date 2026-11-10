@@ -8,7 +8,7 @@ The primary user is a parent or caregiver. Their main jobs are:
 
 - Create and maintain child profiles.
 - Generate a book from a known story or custom prompt.
-- Review generated pages and illustrations.
+- Review generated pages.
 - Request page-level or global edits.
 - Approve a book and download the final PDF.
 
@@ -22,12 +22,12 @@ The frontend currently uses:
 - Tailwind CSS v4 via `@import "tailwindcss"` with `@theme inline` configuration in `globals.css`.
 - Three-font system: Inter (`--font-sans`) for UI, Newsreader (`--font-display`) for headings and editorial moments, IBM Plex Mono (`--font-mono`) for labels and section eyebrows.
 - shadcn-style primitives: button, input, textarea, select, card, badge, dialog, dropdown-menu, sidebar, breadcrumb, separator, skeleton, sonner (toast), and a custom combobox compound component.
-- Additional custom components: `BrandMark`, `StateCard`, `SpreadViewer`, `ProfileEditPanel`, `DashboardFilters`, `StatusSummary`, `ViewModeToggle`, `Pagination`, `StoryCombobox`, `CreateBookForm`, `ChildProfileCard`.
+- Additional custom components: `BrandMark`, `StateCard`, `SpreadViewer`, `ProfileEditPanel`, `LibraryFilterBar`, `StatusSummary`, `ViewModeToggle`, `Pagination`, `StoryCombobox`, `StoryStep`, `StyleToneSelector`, `SummaryPanel`, `ChildProfileCard`.
 - lucide-react icons for navigation and common actions.
 - A left sidebar app shell (`AppShell`) with `SidebarProvider`, compact top header, and auto-generated breadcrumbs from `navItems`.
 - Warm paper-like surfaces using `paper-card` CSS class, soft borders, and muted amber/brown tokens.
 - Light and dark themes through CSS variables and `next-themes`.
-- MSW for API mocking in development.
+- No runtime API mocking: tests mock `fetch`, and the app talks to the real backend through `/api/*` rewrites.
 
 The existing visual language is best described as a warm editorial workspace: paper surfaces, soft shadows, quiet controls, and book-preview areas that use A-series aspect ratios.
 
@@ -152,7 +152,7 @@ Purpose: manage the user's book library.
 Implemented design:
 
 - Section header: "YOUR LIBRARY" mono eyebrow + "My Books" in font-display + description subtitle.
-- **Status summary**: 4 equal-width cards (DRAFT, GENERATING, REVIEW, COMPLETED) showing counts with colored labels.
+- **Status summary**: 5 equal-width cards (DRAFT, GENERATING, REVIEW, COMPLETED, FAILED) showing counts with colored labels.
 - **Filter bar**: Rounded container with search input + 5 Select dropdowns (Status, Style, Type, Profile, Sort).
 - **View toggle**: Table vs Cards mode, persisted via `?view=` search param.
 - **Table view**: Full HTML table with columns: Title, Profile, Type, Style, Status badge, Updated, Action. Alternating row colors.
@@ -167,21 +167,21 @@ Improvements to explore:
 
 ### Create Book: `/books/new`
 
-Purpose: start a generation flow with profile and story selection.
+Purpose: start a generation flow with profile, story, style, and tone selection.
 
 Implemented design:
 
-- Max-width 4xl centered layout.
-- **Step 1 — Profile selection**: 2-column grid of `ChildProfileCard` components with ring highlight on selection. No-profile state shows a link to profile creation.
-- **Step 2 — Story selection**: Custom `StoryCombobox` with search, load-more pagination, loading/empty/selected states. Fetches from `/api/stories`.
-- Generation settings warning `StateCard` shown when user has custom model preferences.
-- Primary "Create Book" submit button with loading state.
+- Centered layout with a progress bar and a sticky summary panel.
+- **Step 1 — Profile selection**: selectable profile cards with ring highlight on selection. No-profile state links to profile creation.
+- **Step 2 — Story selection**: custom `StoryCombobox` with search, load-more pagination, loading/empty/selected states. It fetches from `/api/stories`.
+- **Step 3 — Style and tone**: selectable `BookStyle` and `Tone` chips.
+- **Summary**: profile, story, style, tone, and a "Create Book" action that is disabled until the required fields are present.
+- Submit redirects to `/books/:id/generating`.
 
 Improvements to explore:
 
-- Add style (`BookStyle`) and tone (`Tone`) selection to match the backend enums (currently not in the frontend form).
 - Show generated-book expectations: page count, output format, and estimated generation time as compact metadata.
-- Consider a step indicator (1-2-3) for visual progress.
+- Improve the mobile layout.
 
 ### Generating Book: `/books/:id/generating`
 
@@ -255,16 +255,16 @@ Improvements to explore:
 
 ### Settings: `/settings`
 
-Purpose: generation preferences and account management.
+Purpose: account and subscription presentation.
 
 Implemented design:
 
-- "Workspace" label + "Settings" heading.
-- Single paper-card with "Generation Settings" title.
-- Two native `<select>` elements: Model (GPT-5.4 Mini) and Reasoning Effort (Medium).
-- Save button with loading state.
+- "ACCOUNT" eyebrow + "Settings" heading.
+- Subscription and billing panels.
+- Account preferences, notification preferences, and danger zone.
+- All controls are intentionally disabled; the page is presentation-only and does not call the generation settings API.
 
-Currently minimal. Future work should add subscription state, plan, billing action, and account controls grouped into clear sections. Keep this quiet and utilitarian — trust and clarity matter more than decoration.
+Currently minimal. Future work should decide whether generation settings return to the UI. Keep it quiet and utilitarian — trust and clarity matter more than decoration.
 
 ### Auth: `/login`, `/signup`
 
@@ -334,7 +334,7 @@ Use this prompt in Pencil or another AI design tool to generate designs aligned 
 Design a responsive SaaS web app for "aiBook", a parent-facing workspace for creating personalized AI-generated children's books.
 
 Product context:
-aiBook lets parents manage child profiles, generate personalized children's books, review generated pages and illustrations, request edits, approve the final book, and download a PDF. The user is an adult parent or caregiver, so the UI should feel warm, trustworthy, editorial, and efficient rather than childish or toy-like.
+aiBook lets parents manage child profiles, generate personalized children's books, review generated pages, request edits, approve the final book, and download a PDF. The user is an adult parent or caregiver, so the UI should feel warm, trustworthy, editorial, and efficient rather than childish or toy-like.
 
 Design direction:
 Create a warm editorial workspace with subtle paper texture, soft borders, quiet shadows, and a restrained off-white / sepia / amber palette balanced with green for completed states, amber for review/pending states, blue-gray for neutral information, and red only for errors or destructive actions. Avoid a generic purple SaaS look. Avoid a marketing landing page. The authenticated dashboard is the primary experience.
@@ -391,24 +391,27 @@ Core screens to design:
 - Book cover/detail summary area
 - Status, style, tone, child profile badges
 - Page list with text content
-- "Download PDF" action when status is COMPLETED
+- "Download PDF" action that creates the PDF on first click and opens the stored URL
 
 6. Child Profiles
 - 3-column grid of profile cards with initials avatar, name, age, gender, interest chips
 - Slide-over edit panel (right-aligned, overlay) with form fields
 - Edit/Delete actions, delete visually separated at bottom
-- Empty state for first profile
+- Deleting a profile keeps existing books; their child reference becomes empty
 
 7. Settings
-- Quiet screen with generation settings (model, reasoning effort)
-- Save button with loading state
+- Presentation-only account, subscription, billing, notification, and danger-zone sections
+- No live generation settings UI
 
 8. Auth
 - Centered card on warm gradient background
 - BrandMark at top, "Welcome back" heading
 - Email/password inputs with icons
 - "Continue" button, Google auth placeholder
-- Forgot password and create account links
+- Forgot password page and create account link
+
+9. Notifications
+- Empty-state placeholder linked from the dashboard header
 
 Component requirements:
 Use: sidebar, breadcrumbs, tables, filter bar, cards, badges, buttons, selects, combobox, slide-over panel, toast (sonner), pagination, skeleton loaders, StateCard, SpreadViewer. Use icon buttons with lucide icons. Keep cards purposeful and do not nest cards inside cards.
@@ -428,33 +431,33 @@ This section documents what is implemented versus what remains as prototype/plac
 
 - Full app shell with sidebar, header, breadcrumbs, and light/dark theme.
 - Dashboard with filters, table/card views, status summary, pagination, and empty/loading/error states.
-- Book creation flow with profile selection and story combobox.
-- Book generation polling page with auto-redirect.
-- Book preview with SpreadViewer, per-page feedback, global feedback, and approve/submit actions.
-- Book detail with status-based redirect logic.
-- Child profiles CRUD with card grid and slide-over edit panel.
-- Settings page with model/reasoning preferences.
+- Book creation flow with profile, story, style, and tone selection.
+- Book generation polling page with auto-redirect and retry.
+- Book preview with SpreadViewer, per-page feedback, combined global feedback, and approve/submit actions.
+- Completed book detail with status-based redirect logic and on-demand PDF download.
+- Child profiles CRUD with card grid and slide-over edit panel; deleting a profile keeps books.
 - Auth pages with BrandMark, form validation, and mock localStorage sessions.
 - Full Prisma schema with User, ChildProfile, Book, Page, Illustration, StoryLibrary models.
-- Backend API for books, child profiles, settings, stories, and payments.
-- BullMQ book generation processor with AI service abstraction.
+- Backend API for books, child profiles, settings, stories, payments, and health.
+- BullMQ book generation processor with an OpenAI-compatible AI gateway.
+- MinIO-backed PDF storage.
 
 **Prototype / placeholder:**
 
 - Auth is frontend-only mock (localStorage). Backend uses `MockAuthGuard` injecting a static user.
-- AI service returns placeholder content (`MockAiService`). No real story or image generation.
 - Illustrations are never generated in the current flow.
-- PDF generation service exists but is not wired into the generation flow.
+- The settings page is presentation-only; generation settings are API-only.
 - Stripe webhook handler has no signature verification.
-- "Sarah K." in sidebar is hardcoded, not connected to auth user.
-- Google auth button is non-functional.
-- Settings page has only 1 model and 1 effort option.
+- Google auth and password reset are non-functional placeholders.
+- Model selection is not active; the LLM model comes from `LLM_MODEL_NAME`.
+- MinIO objects are public-read in Docker.
 
-**Follow-up work tracked in `backlog.md`:**
+**Follow-up work tracked in `docs/AGENTS-backlog.md`:**
 
 - Real backend authentication replacing mock.
-- Logout behavior in app shell.
 - Dynamic book title in breadcrumbs.
+- Real E2E coverage with a stubbed LLM provider.
+- Dependency upgrades for remaining audit findings.
 - Polished generating page design.
 - Illustration generation integration.
 - PDF download for completed books.

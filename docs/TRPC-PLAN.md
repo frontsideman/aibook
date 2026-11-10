@@ -1,5 +1,9 @@
 # tRPC Integration Plan for aiBook
 
+> **Status:** Not implemented. This is an exploratory plan, not a description of the
+> current API. The app currently uses NestJS REST controllers and `fetch` through the
+> Next.js `/api/*` rewrite.
+
 ## Current State
 
 | Layer | What exists |

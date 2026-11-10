@@ -1,5 +1,8 @@
 # Book Creation Flow Implementation Plan
 
+> **Update (2026-11-11):** PDF download is now implemented as an on-demand action for
+> completed books (MinIO storage). The rest of this plan remains a historical record.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Implement the full text-only book creation flow from child profile selection through generating, preview, approval, and dashboard visibility, with global generation settings stored in `Settings`.

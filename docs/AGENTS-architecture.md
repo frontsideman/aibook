@@ -10,7 +10,7 @@ aiBook/
 ├── packages/
 │   └── database/         # Shared Prisma package (@repo/database)
 ├── docker-compose.yml            # Production-like standalone build
-├── docker-compose.dev.yml        # Hot-reload development
+├── docker-compose.dev.yml        # Backend, PostgreSQL, Redis, MinIO
 ├── Dockerfile.backend
 ├── Dockerfile.frontend
 └── .dockerignore
@@ -20,10 +20,12 @@ aiBook/
 
 | Layer | Technology |
 |-------|------------|
-| API | NestJS, Prisma ORM, BullMQ, PostgreSQL, Redis |
-| Frontend | Next.js 16 (App Router), React 19, Tailwind CSS v4, Turbopack |
-| Database | PostgreSQL 16, Prisma 7 (PostgreSQL adapter) |
+| API | NestJS 10, Prisma ORM, BullMQ, PostgreSQL, Redis, class-validator |
+| Frontend | Next.js 16 (App Router), React 19, Tailwind CSS v4 |
+| Database | PostgreSQL 16, Prisma 7 (PostgreSQL driver adapter) |
 | Queue | BullMQ / Redis |
+| Object storage | MinIO (S3-compatible) |
+| PDF | PDFKit, generated on demand and stored in MinIO |
 | Auth | Mock (transitional) — backend `MockAuthGuard`, frontend `AuthProvider` |
 | Linting | oxlint (multi-workspace config) |
 | Formatting | oxfmt |
@@ -31,13 +33,15 @@ aiBook/
 
 ## API Communication
 
-Frontend API calls go through `apps/frontend/next.config.mjs`, which rewrites `/api/:path*` to `BACKEND_URL`.
+Frontend API calls go through `apps/frontend/next.config.mjs`, which rewrites
+`/api/:path*` to `BACKEND_URL`. In Docker the default is `http://backend:3001`;
+locally it is `http://localhost:3001`.
 
 ## Turborepo Commands
 
 | Scope | Command | Notes |
 |-------|---------|-------|
-| Root | `npm run dev` | `turbo run dev` |
+| Root | `npm run dev` | `turbo run dev` — currently the frontend only (backend has no `dev` task) |
 | Root | `npm run build` | `turbo run build` |
 | Root | `npm run lint` | `turbo run lint` |
 | Root | `npm run typecheck` | `turbo run typecheck` |
@@ -57,7 +61,7 @@ Turbo `build` depends on upstream package builds first.
 | `apps/backend` | `npm run start:dev` | Nest watch mode |
 | `apps/backend` | `npm run test` | Jest, `src/**/*.spec.ts` |
 | `apps/frontend` | `npm run test` | Vitest |
-| `apps/frontend` | `npm run test:e2e` | Playwright |
+| `apps/frontend` | `npm run test:e2e` | Playwright smoke test with stubbed API |
 | `packages/database` | `npm run generate` | `prisma generate` |
 | `packages/database` | `npm run migrate:dev` | Prisma dev migration |
 | `packages/database` | `npm run db:push` | Push schema without migration |
@@ -68,43 +72,44 @@ Turbo `build` depends on upstream package builds first.
 
 | Workflow | Trigger | Purpose |
 |----------|---------|---------|
-| `ci.yml` | Push/PR to any branch | Lint, typecheck, test (unit + E2E), build, security audit |
-| `cd.yml` | Push to `main` | Build & push multi-arch Docker images to GHCR, Trivy scan, SBOM |
-| `docker-test.yml` | Manual / PR label `docker-test` | Validate Docker builds & container startup |
+| `ci.yml` | Push/PR to any branch | Lint, typecheck, tests, build, dependency audit |
+| `cd.yml` | Push to `main` | Build & push Docker images to GHCR, Trivy scan, SBOM |
+| `docker-test.yml` | Manual / PR label `docker-test` | Validate Docker builds and `/health` startup |
 | `pr-checks.yml` | PR opened/updated | Conventional commits, PR size, required labels |
 
 ### CI Pipeline (`ci.yml`)
 
-**Parallel Jobs:**
+**Parallel jobs:**
+
 - `lint` — oxlint + oxfmt check
 - `typecheck` — TypeScript strict mode
 - `test-backend` — Jest with PostgreSQL 16 + Redis 7 services
 - `test-frontend` — Vitest
-- `test-e2e` — Playwright (Chromium) after full build
+- `test-e2e` — Playwright after a full build; the current test stubs `/api/*` and
+  does not start the backend or exercise real generation
 - `build` — Turbo build (all workspaces)
-- `security-audit` — `npm audit --audit-level=high`
-- `deps-check` — `npm outdated --all` (warn only)
+- `security-audit` — `npm audit --audit-level=critical`
+- `deps-check` — `npm outdated` (warn only)
 
-**Caching:** npm cache + Turbo remote cache (`.turbo`)
+**Caching:** npm cache + Turbo cache
 
-**Node:** 24 LTS (from `.nvmrc`)
+**Node:** 24 (from `.nvmrc`)
 
 ### CD Pipeline (`cd.yml`)
 
-**Jobs (parallel):**
-- `build-backend` — Docker Buildx → GHCR → Trivy scan (SARIF)
-- `build-frontend` — Docker Buildx → GHCR → Trivy scan (SARIF)
-- `sbom` — Anchore Syft → SPDX JSON artifacts (90-day retention)
-
-**Image Tags:** `sha-<short-sha>`, `latest` (main only)
-
-**Platforms:** `linux/amd64`, `linux/arm64`
-
-**Cache:** GitHub Actions cache (`type=gha`)
+- Builds single-arch images with `docker build` and pushes to GHCR
+- Tags: `sha-<full-sha>`, `latest` (main only)
+- Trivy scan for HIGH/CRITICAL findings, SARIF upload to GitHub Security
+- Anchore Syft SBOM in SPDX JSON (90-day artifact retention)
+- Layer caching is provided by the GitHub Actions runner (Docker build cache);
+  the workflow does not use Buildx multi-arch builds
 
 ### Security
 
-- Dependency audit on every CI run
+- Dependency audit on every CI run at `critical` severity
 - Container vulnerability scan (Trivy) on every CD run
-- SBOM generation for supply chain transparency
-- SARIF upload to GitHub Security tab for visibility
+- SBOM generation for supply-chain transparency
+- Docker images run as the non-root `node` user
+- The audit still reports `high` and `moderate` findings in transitive tooling
+  dependencies. Upgrading NestJS 10 to 12, Prisma, and the CLI toolchain is tracked
+  as follow-up work.
