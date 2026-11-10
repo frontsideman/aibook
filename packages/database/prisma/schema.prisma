@@ -7,15 +7,15 @@ datasource db {
 }
 
 model User {
-  id                       String            @id @default(cuid())
-  email                    String            @unique
-  subscriptionActive       Boolean           @default(false)
-  preferredLlmModel        String            @default("openai:gpt-5.4-mini")
-  preferredReasoningEffort ReasoningEffort  @default(MEDIUM)
+  id                       String          @id @default(cuid())
+  email                    String          @unique
+  subscriptionActive       Boolean         @default(false)
+  preferredLlmModel        String          @default("openai:gpt-5.4-mini")
+  preferredReasoningEffort ReasoningEffort @default(MEDIUM)
   childProfiles            ChildProfile[]
   books                    Book[]
-  createdAt                DateTime          @default(now())
-  updatedAt                DateTime          @updatedAt
+  createdAt                DateTime        @default(now())
+  updatedAt                DateTime        @updatedAt
 }
 
 model ChildProfile {
@@ -80,39 +80,39 @@ model StoryLibrary {
 }
 
 model Book {
-  id               String            @id @default(cuid())
-  title            String
-  status           BookStatus        @default(DRAFT)
-  type             BookType          @default(AI_ADAPTED)
-  style            BookStyle
-  llmModel         String
-  reasoningEffort  ReasoningEffort
-  tone       Tone?
-  parentComments String?
-  parentFeedback Json?
-  pdfUrl     String?
-  approvedAt DateTime?
-  pages     Page[]
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  child     ChildProfile @relation(fields: [childId], references: [id], onDelete: Cascade)
-  childId   String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  id              String          @id @default(cuid())
+  title           String
+  status          BookStatus      @default(DRAFT)
+  type            BookType        @default(AI_ADAPTED)
+  style           BookStyle
+  llmModel        String
+  reasoningEffort ReasoningEffort
+  tone            Tone?
+  parentComments  String?
+  parentFeedback  Json?
+  pdfUrl          String?
+  approvedAt      DateTime?
+  pages           Page[]
+  user            User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String
+  child           ChildProfile?   @relation(fields: [childId], references: [id], onDelete: SetNull)
+  childId         String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
 
   @@index([userId])
   @@index([childId])
 }
 
 model Page {
-  id           String         @id @default(cuid())
-  pageNumber   Int
-  textContent  String
+  id            String         @id @default(cuid())
+  pageNumber    Int
+  textContent   String
   illustrations Illustration[]
-  book         Book           @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  bookId       String
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  book          Book           @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  bookId        String
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   @@unique([bookId, pageNumber])
   @@index([bookId])
