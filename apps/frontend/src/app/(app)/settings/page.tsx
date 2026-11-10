@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button';
+import GenerationSettingsPanel from '@/components/settings/GenerationSettingsPanel';
 import SettingsPanel from '@/components/settings/SettingsPanel';
 import SettingsStaticField from '@/components/settings/SettingsStaticField';
 import SettingsToggleRow from '@/components/settings/SettingsToggleRow';
@@ -38,6 +39,8 @@ export default function SettingsPage() {
           Manage subscription, billing, and account preferences.
         </p>
       </header>
+
+      <GenerationSettingsPanel />
 
       <section className='grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]'>
         <SettingsPanel>

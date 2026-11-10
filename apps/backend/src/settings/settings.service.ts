@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma.service';
 import { ReasoningEffort } from '@repo/database';
+import { getAvailableLlmModels } from '../ai/llm.config';
 
 const DEFAULT_REASONING_EFFORT = ReasoningEffort.MEDIUM;
 
@@ -16,6 +17,7 @@ export class SettingsService {
     const user = await this.prisma.client.user.findUnique({
       where: { id: userId },
       select: {
+        preferredLlmModel: true,
         preferredReasoningEffort: true,
       },
     });
@@ -24,14 +26,27 @@ export class SettingsService {
       throw new NotFoundException('User not found');
     }
 
+    const availableModels = this.getAvailableModels();
+    const activeModel = this.resolveModel(user.preferredLlmModel, availableModels);
+
     return {
-      llmModel: this.getActiveLlmModel(),
+      llmModel: activeModel,
       reasoningEffort: user.preferredReasoningEffort ?? DEFAULT_REASONING_EFFORT,
+      availableModels,
     };
   }
 
-  async updateGenerationSettings(userId: string, input: { reasoningEffort: ReasoningEffort }) {
+  async updateGenerationSettings(
+    userId: string,
+    input: { llmModel?: string; reasoningEffort: ReasoningEffort }
+  ) {
     this.validateReasoningEffort(input.reasoningEffort);
+
+    const availableModels = this.getAvailableModels();
+    const requestedModel = input.llmModel?.trim();
+    if (requestedModel) {
+      this.validateLlmModel(requestedModel, availableModels);
+    }
 
     let user;
     try {
@@ -39,8 +54,10 @@ export class SettingsService {
         where: { id: userId },
         data: {
           preferredReasoningEffort: input.reasoningEffort,
+          ...(requestedModel ? { preferredLlmModel: requestedModel } : {}),
         },
         select: {
+          preferredLlmModel: true,
           preferredReasoningEffort: true,
         },
       });
@@ -54,13 +71,30 @@ export class SettingsService {
     }
 
     return {
-      llmModel: this.getActiveLlmModel(),
+      llmModel: this.resolveModel(user.preferredLlmModel, availableModels),
       reasoningEffort: user.preferredReasoningEffort,
+      availableModels,
     };
   }
 
-  private getActiveLlmModel() {
-    return this.configService.getOrThrow<string>('LLM_MODEL_NAME');
+  private getAvailableModels() {
+    return getAvailableLlmModels(this.configService);
+  }
+
+  private resolveModel(preferredModel: string | null, availableModels: string[]) {
+    if (preferredModel && availableModels.includes(preferredModel)) {
+      return preferredModel;
+    }
+
+    return availableModels[0];
+  }
+
+  private validateLlmModel(llmModel: string, availableModels: string[]) {
+    if (!availableModels.includes(llmModel)) {
+      throw new BadRequestException(
+        `Invalid llmModel. Available models: ${availableModels.join(', ')}`
+      );
+    }
   }
 
   private validateReasoningEffort(reasoningEffort: ReasoningEffort) {

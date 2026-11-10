@@ -46,6 +46,7 @@ describe('BookService', () => {
   const mockQueue = { add: jest.fn(), waitUntilReady: jest.fn() };
   const mockConfigService = {
     getOrThrow: jest.fn(),
+    get: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -53,6 +54,7 @@ describe('BookService', () => {
     mockQueue.waitUntilReady.mockResolvedValue(undefined);
     mockQueue.add.mockResolvedValue(undefined);
     mockConfigService.getOrThrow.mockReturnValue('openai:env-model');
+    mockConfigService.get.mockReturnValue(undefined);
     mockPrismaClient.user.findUnique.mockResolvedValue({
       id: 'user-1',
       preferredReasoningEffort: ReasoningEffort.MEDIUM,
@@ -182,6 +184,35 @@ describe('BookService', () => {
             reasoningEffort: ReasoningEffort.HIGH,
             style: 'WATERCOLOR',
             tone: 'PLAYFUL',
+          }),
+        })
+      );
+    });
+
+    it('uses the user preferred model when it is in the allowlist', async () => {
+      const dto = {
+        childId: 'child-1',
+        type: 'AI_ADAPTED' as const,
+        storyTitle: 'Cinderella',
+        style: 'watercolor',
+      };
+
+      mockPrismaClient.user.findUnique.mockResolvedValue({
+        id: 'user-1',
+        preferredLlmModel: 'premium-model',
+        preferredReasoningEffort: ReasoningEffort.HIGH,
+      });
+      mockConfigService.get.mockImplementation((key: string) =>
+        key === 'LLM_MODELS' ? 'openai:env-model,premium-model' : undefined
+      );
+
+      await service.createAndGenerate(dto, 'user-1');
+
+      expect(mockPrismaClient.book.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            llmModel: 'premium-model',
+            reasoningEffort: ReasoningEffort.HIGH,
           }),
         })
       );

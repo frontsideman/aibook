@@ -23,6 +23,7 @@ import { PrismaService } from '../prisma.service';
 import { PdfService } from '../pdf/pdf.service';
 import { StorageService } from '../storage/storage.service';
 import { ConfigService } from '@nestjs/config';
+import { getAvailableLlmModels } from '../ai/llm.config';
 
 export class CreateBookDto {
   @IsString()
@@ -213,6 +214,7 @@ export class BookService {
       where: { id: userId },
       select: {
         id: true,
+        preferredLlmModel: true,
         preferredReasoningEffort: true,
       },
     });
@@ -230,7 +232,12 @@ export class BookService {
       throw new NotFoundException('Child profile not found');
     }
 
-    const activeModel = this.configService.getOrThrow('LLM_MODEL_NAME');
+    const availableModels = getAvailableLlmModels(this.configService);
+    const defaultModel = this.configService.getOrThrow<string>('LLM_MODEL_NAME');
+    const activeModel =
+      user.preferredLlmModel && availableModels.includes(user.preferredLlmModel)
+        ? user.preferredLlmModel
+        : defaultModel;
     const style = normalizeEnumValue(dto.style, Object.values(BookStyle), 'book style');
     const tone = normalizeEnumValue(dto.tone, Object.values(Tone), 'book tone');
 

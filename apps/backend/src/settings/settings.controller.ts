@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Patch, Req, UseGuards } from '@nestjs/common';
-import { IsEnum } from 'class-validator';
+import { IsEnum, IsOptional, IsString, MaxLength } from 'class-validator';
 import { ReasoningEffort } from '@repo/database';
 import { MockAuthGuard } from '../mock-auth.guard';
 import { SettingsService } from './settings.service';
@@ -9,6 +9,11 @@ interface AuthenticatedRequest {
 }
 
 export class UpdateGenerationSettingsDto {
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  llmModel?: string;
+
   @IsEnum(ReasoningEffort)
   reasoningEffort!: ReasoningEffort;
 }

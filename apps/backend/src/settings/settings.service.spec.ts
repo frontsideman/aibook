@@ -17,12 +17,16 @@ describe('SettingsService', () => {
 
   const mockPrismaService = { client: mockPrismaClient };
   const mockConfigService = {
-    getOrThrow: jest.fn().mockReturnValue('openai:env-model'),
+    getOrThrow: jest.fn(),
+    get: jest.fn(),
   };
 
   beforeEach(async () => {
     jest.clearAllMocks();
-    mockConfigService.getOrThrow.mockReturnValue('openai:env-model');
+    mockConfigService.getOrThrow.mockReturnValue('env-model');
+    mockConfigService.get.mockImplementation((key: string) =>
+      key === 'LLM_MODELS' ? 'env-model,pro-model' : undefined
+    );
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -35,28 +39,42 @@ describe('SettingsService', () => {
     service = module.get<SettingsService>(SettingsService);
   });
 
-  it('returns the active env model and persisted reasoning effort', async () => {
+  it('returns the configured allowlist and persisted reasoning effort', async () => {
     mockPrismaClient.user.findUnique.mockResolvedValue({
       preferredReasoningEffort: ReasoningEffort.HIGH,
+      preferredLlmModel: null,
     });
 
     await expect(service.getGenerationSettings('user-1')).resolves.toEqual({
-      llmModel: 'openai:env-model',
+      llmModel: 'env-model',
       reasoningEffort: ReasoningEffort.HIGH,
+      availableModels: ['env-model', 'pro-model'],
     });
-
-    expect(mockConfigService.getOrThrow).toHaveBeenCalledWith('LLM_MODEL_NAME');
   });
 
-  it('ignores a stale stored model preference because model selection is inactive', async () => {
+  it('returns the user preferred model when it is in the allowlist', async () => {
+    mockPrismaClient.user.findUnique.mockResolvedValue({
+      preferredReasoningEffort: ReasoningEffort.MEDIUM,
+      preferredLlmModel: 'pro-model',
+    });
+
+    await expect(service.getGenerationSettings('user-1')).resolves.toEqual({
+      llmModel: 'pro-model',
+      reasoningEffort: ReasoningEffort.MEDIUM,
+      availableModels: ['env-model', 'pro-model'],
+    });
+  });
+
+  it('falls back to the env model when the stored preference is stale', async () => {
     mockPrismaClient.user.findUnique.mockResolvedValue({
       preferredReasoningEffort: ReasoningEffort.MEDIUM,
       preferredLlmModel: 'openai:gpt-5.4-mini',
     });
 
     await expect(service.getGenerationSettings('user-1')).resolves.toEqual({
-      llmModel: 'openai:env-model',
+      llmModel: 'env-model',
       reasoningEffort: ReasoningEffort.MEDIUM,
+      availableModels: ['env-model', 'pro-model'],
     });
   });
 
@@ -74,24 +92,56 @@ describe('SettingsService', () => {
     ).rejects.toThrow(BadRequestException);
   });
 
-  it('persists only reasoning effort and returns the active env model', async () => {
+  it('rejects a model outside the allowlist', async () => {
+    await expect(
+      service.updateGenerationSettings('user-1', {
+        llmModel: 'unknown-model',
+        reasoningEffort: ReasoningEffort.MEDIUM,
+      })
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it('persists model and reasoning effort and returns the resolved settings', async () => {
     mockPrismaClient.user.update.mockResolvedValue({
-      preferredReasoningEffort: ReasoningEffort.MEDIUM,
+      preferredLlmModel: 'pro-model',
+      preferredReasoningEffort: ReasoningEffort.HIGH,
     });
 
     await expect(
       service.updateGenerationSettings('user-1', {
-        reasoningEffort: ReasoningEffort.MEDIUM,
+        llmModel: 'pro-model',
+        reasoningEffort: ReasoningEffort.HIGH,
       })
     ).resolves.toEqual({
-      llmModel: 'openai:env-model',
+      llmModel: 'pro-model',
+      reasoningEffort: ReasoningEffort.HIGH,
+      availableModels: ['env-model', 'pro-model'],
+    });
+
+    expect(mockPrismaClient.user.update).toHaveBeenCalledWith({
+      where: { id: 'user-1' },
+      data: {
+        preferredReasoningEffort: ReasoningEffort.HIGH,
+        preferredLlmModel: 'pro-model',
+      },
+      select: { preferredLlmModel: true, preferredReasoningEffort: true },
+    });
+  });
+
+  it('keeps the existing model when only reasoning effort is sent', async () => {
+    mockPrismaClient.user.update.mockResolvedValue({
+      preferredLlmModel: 'pro-model',
+      preferredReasoningEffort: ReasoningEffort.MEDIUM,
+    });
+
+    await service.updateGenerationSettings('user-1', {
       reasoningEffort: ReasoningEffort.MEDIUM,
     });
 
     expect(mockPrismaClient.user.update).toHaveBeenCalledWith({
       where: { id: 'user-1' },
       data: { preferredReasoningEffort: ReasoningEffort.MEDIUM },
-      select: { preferredReasoningEffort: true },
+      select: { preferredLlmModel: true, preferredReasoningEffort: true },
     });
   });
 

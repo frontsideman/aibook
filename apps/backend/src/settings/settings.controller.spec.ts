@@ -51,6 +51,7 @@ describe('SettingsController', () => {
     mockSettingsService.getGenerationSettings.mockResolvedValue({
       llmModel: 'openai:gpt-5.4-mini',
       reasoningEffort: ReasoningEffort.MEDIUM,
+      availableModels: ['openai:gpt-5.4-mini'],
     });
 
     await controller.getGenerationSettings({
@@ -62,6 +63,7 @@ describe('SettingsController', () => {
 
   it('updates owner-scoped generation settings', async () => {
     const body = {
+      llmModel: 'openai:gpt-5.4',
       reasoningEffort: ReasoningEffort.HIGH,
     };
 

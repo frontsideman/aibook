@@ -42,7 +42,8 @@ export class LlmGateway {
   ) {}
 
   async generateStory(prompt: string, options: StoryGenerationOptions): Promise<string> {
-    const { apiUrl, apiKey, modelName } = this.config;
+    const { apiUrl, apiKey, modelName: fallbackModelName } = this.config;
+    const modelName = options.model?.trim() || fallbackModelName;
     const requestUrl = buildRequestUrl(apiUrl);
     const abortController = new AbortController();
     const timeoutId = setTimeout(() => abortController.abort(), LLM_REQUEST_TIMEOUT_MS);

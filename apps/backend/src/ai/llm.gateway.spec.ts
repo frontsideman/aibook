@@ -13,7 +13,7 @@ describe('LlmGateway', () => {
     jest.resetAllMocks();
   });
 
-  it('posts the prompt and configured model to the provider endpoint', async () => {
+  it('posts the prompt and requested book model to the provider endpoint', async () => {
     const fetchMock = jest.fn().mockResolvedValue({
       ok: true,
       json: jest.fn().mockResolvedValue({ storyText: 'Once upon a time...' }),
@@ -36,7 +36,7 @@ describe('LlmGateway', () => {
         }),
         signal: expect.any(AbortSignal),
         body: JSON.stringify({
-          model: 'storybook-model',
+          model: 'openai:gpt-5.4-mini',
           messages: [{ role: 'user', content: 'A brave little cat' }],
           reasoning_effort: 'medium',
           stream: false,
@@ -90,7 +90,7 @@ describe('LlmGateway', () => {
     }
   });
 
-  it('ignores the requested model and still uses the configured env model', async () => {
+  it('uses the requested model from the book snapshot', async () => {
     const fetchMock = jest.fn().mockResolvedValue({
       ok: true,
       json: jest.fn().mockResolvedValue({ storyText: 'Once upon a time...' }),
@@ -106,11 +106,31 @@ describe('LlmGateway', () => {
       'https://provider.example.com/chat/completions',
       expect.objectContaining({
         body: JSON.stringify({
-          model: 'storybook-model',
+          model: 'different-requested-model',
           messages: [{ role: 'user', content: 'A brave little cat' }],
           reasoning_effort: 'medium',
           stream: false,
         }),
+      })
+    );
+  });
+
+  it('falls back to the configured model when the snapshot is blank', async () => {
+    const fetchMock = jest.fn().mockResolvedValue({
+      ok: true,
+      json: jest.fn().mockResolvedValue({ storyText: 'Once upon a time...' }),
+    });
+    const gateway = new LlmGateway(config, fetchMock as typeof fetch);
+
+    await gateway.generateStory('A brave little cat', {
+      model: '  ',
+      reasoningEffort: ReasoningEffort.MEDIUM,
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith(
+      'https://provider.example.com/chat/completions',
+      expect.objectContaining({
+        body: expect.stringContaining('"model":"storybook-model"'),
       })
     );
   });

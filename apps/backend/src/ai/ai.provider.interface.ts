@@ -1,11 +1,7 @@
 import type { ReasoningEffort } from '@repo/database';
 
 export interface StoryGenerationOptions {
-  /**
-   * The requested model is part of the service contract, but the current LLM
-   * gateway intentionally resolves the effective model from environment
-   * configuration.
-   */
+  /** Model snapshot stored on the book, selected from the configured allowlist. */
   model: string;
   reasoningEffort: ReasoningEffort;
 }
