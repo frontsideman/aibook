@@ -36,6 +36,7 @@ There is no backend `test:e2e` script.
 | `npm run start` | Next.js production server |
 | `npm run test` | Vitest |
 | `npm run test:e2e` | Playwright smoke test with stubbed API (`PLAYWRIGHT_PORT=3100` if 3000 is busy) |
+| `E2E_REAL_BACKEND=1 npm run test:e2e` | Opt-in live lifecycle test; needs backend, DB, Redis, MinIO, and a stubbed LLM |
 
 ## Database (`packages/database`)
 

@@ -7,8 +7,10 @@
 ## Summary
 
 Hardened ownership checks, request validation, generation atomicity, PDF delivery, and
-the Docker development stack. Updated Next.js, Prisma, oxfmt, and undici within
-compatible ranges; removed the unused MSW dependency from the frontend.
+the Docker development stack. Made generation defaults live in Settings and verified
+the full profile → book → review → approve → PDF flow against a real backend with a
+stubbed LLM. Updated Next.js, Prisma, oxfmt, and undici within compatible ranges;
+removed the unused MSW dependency from the frontend.
 
 ## Version Changes
 
@@ -25,9 +27,9 @@ compatible ranges; removed the unused MSW dependency from the frontend.
 
 | Workspace | Before | After |
 |-----------|--------|-------|
-| Backend (Jest) | 93 tests | 134 tests |
-| Frontend (Vitest) | 83 tests | 86 tests |
-| Playwright | 1 shell smoke test | 1 stubbed-API form smoke test |
+| Backend (Jest) | 93 tests | 139 tests |
+| Frontend (Vitest) | 83 tests | 88 tests |
+| Playwright | 1 shell smoke test | 1 stubbed-API smoke test + 1 opt-in live lifecycle test |
 
 ## CI/CD Results
 
@@ -37,8 +39,8 @@ compatible ranges; removed the unused MSW dependency from the frontend.
 | `npm run format:check` | Pass |
 | `npm run typecheck` | Pass |
 | `npm run build` | Pass |
-| `npm run test` | Pass (220 tests total) |
-| `npm run test:e2e` | Pass when ports are free |
+| `npm run test` | Pass (227 tests total) |
+| `npm run test:e2e` | Pass; live lifecycle test passes with `E2E_REAL_BACKEND=1` |
 | `npm audit --audit-level=critical` | Pass |
 
 ## Security
@@ -64,6 +66,12 @@ Remaining high/moderate findings are largely transitive tooling dependencies
 - Deleting a child profile keeps books (`Book.childId = NULL`).
 - PDF download for completed books creates the file on first click and stores it in
   MinIO.
+- Generation settings (model + reasoning effort) are live in `/settings`, snapshotted
+  on each new book, and sent to the provider. The model list is an `LLM_MODELS`
+  allowlist.
+- A live Playwright test verified profile creation → book generation → review →
+  approval → PDF download against a real backend and a stubbed LLM; the created book
+  used the newly saved model and reasoning effort.
 - Generating-page retry resumes polling or calls the regenerate endpoint correctly.
 - Preview page combines page notes with global feedback so notes are not lost.
 - Dashboard sorting is applied server-side and status counts are library-wide.
@@ -73,6 +81,7 @@ Remaining high/moderate findings are largely transitive tooling dependencies
 
 ## Notes
 
-- The current E2E test stubs `/api/*`; expanding it to real generation requires a
-  stubbed LLM provider and database orchestration.
+- The default E2E test stubs `/api/*`. The opt-in live test
+  (`E2E_REAL_BACKEND=1` + `PLAYWRIGHT_PORT`) expects a running backend, DB, Redis,
+  MinIO, and a stubbed LLM endpoint.
 - `npm audit --audit-level=high` is still failing; the CI gate remains at `critical`.

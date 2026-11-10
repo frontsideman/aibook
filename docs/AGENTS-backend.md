@@ -4,7 +4,7 @@
 
 - `book` — list, create, preview, edit, regenerate, approve, PDF creation/lookup
 - `book-generation` — BullMQ worker for story generation and page parsing
-- `settings` — generation defaults for new books (API only; UI is not wired)
+- `settings` — generation defaults for new books (text model + reasoning effort)
 - `child-profile` — child profile CRUD, scoped by user
 - `story-library` — story catalog search
 - `payment` — prototype webhook and subscription guard
@@ -97,16 +97,22 @@ the dashboard summary is not limited to the current page.
 
 ## Generation Settings
 
-- `GET/PATCH /settings/generation` returns the active `LLM_MODEL_NAME` and the
-  user's persisted `reasoningEffort`.
-- Model selection is **not active**: `preferredLlmModel` is stored in the schema but
-  generation always uses `LLM_MODEL_NAME`. The Settings page is presentation-only.
-- New books snapshot the active model and reasoning effort.
+- `GET/PATCH /settings/generation` returns the effective `llmModel`, the user's
+  persisted `reasoningEffort`, and the `availableModels` allowlist.
+- The allowlist is built from `LLM_MODELS` (comma-separated) plus the always-active
+  `LLM_MODEL_NAME`.
+- `preferredLlmModel` and `preferredReasoningEffort` are active: new books snapshot
+  the user's selected model and effort, and the gateway sends that model to the
+  provider.
+- Stored preferences outside the current allowlist fall back to `LLM_MODEL_NAME`.
+- The Settings page calls this API; subscription/billing/account panels remain
+  presentational.
 
 ## Current Product State
 
 - The end-to-end flow is: profile → story/style/tone → `GENERATING` → `REVIEW` →
   approve → `COMPLETED` → on-demand PDF.
+- Generation defaults are editable in `/settings` and applied to new books.
 - The create form sends `type=AI_ADAPTED`. `MANUAL` is accepted by the API schema but
   is not exposed in the UI and still goes through AI generation.
 - Illustrations are not generated.

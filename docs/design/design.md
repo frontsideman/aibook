@@ -255,16 +255,16 @@ Improvements to explore:
 
 ### Settings: `/settings`
 
-Purpose: account and subscription presentation.
+Purpose: generation defaults and account presentation.
 
 Implemented design:
 
 - "ACCOUNT" eyebrow + "Settings" heading.
-- Subscription and billing panels.
-- Account preferences, notification preferences, and danger zone.
-- All controls are intentionally disabled; the page is presentation-only and does not call the generation settings API.
+- **Generation defaults** panel with live model and reasoning-effort selects and a save action.
+- Subscription, billing, account preferences, notifications, and danger zone remain presentation-only.
+- The generation panel loads from and saves to `/api/settings/generation`.
 
-Currently minimal. Future work should decide whether generation settings return to the UI. Keep it quiet and utilitarian — trust and clarity matter more than decoration.
+Account/billing panels remain minimal until real billing and account APIs exist. Keep the page quiet and utilitarian — trust and clarity matter more than decoration.
 
 ### Auth: `/login`, `/signup`
 
@@ -400,8 +400,8 @@ Core screens to design:
 - Deleting a profile keeps existing books; their child reference becomes empty
 
 7. Settings
-- Presentation-only account, subscription, billing, notification, and danger-zone sections
-- No live generation settings UI
+- Live generation defaults (model + reasoning effort)
+- Static subscription, billing, account, notification, and danger-zone panels
 
 8. Auth
 - Centered card on warm gradient background
@@ -446,10 +446,11 @@ This section documents what is implemented versus what remains as prototype/plac
 
 - Auth is frontend-only mock (localStorage). Backend uses `MockAuthGuard` injecting a static user.
 - Illustrations are never generated in the current flow.
-- The settings page is presentation-only; generation settings are API-only.
+- The settings page exposes live generation defaults; account/billing panels are presentation-only.
+- Model selection is limited to the backend `LLM_MODELS` allowlist.
 - Stripe webhook handler has no signature verification.
 - Google auth and password reset are non-functional placeholders.
-- Model selection is not active; the LLM model comes from `LLM_MODEL_NAME`.
+- Model selection is limited to the backend `LLM_MODELS` allowlist.
 - MinIO objects are public-read in Docker.
 
 **Follow-up work tracked in `docs/AGENTS-backlog.md`:**

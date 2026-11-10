@@ -40,9 +40,10 @@ Already encoded in schema:
   existing books. The migration is
   `20261110_book_child_set_null`.
 - `User` stores generation preferences via `preferredLlmModel` and
-  `preferredReasoningEffort`. Only `preferredReasoningEffort` is active; the LLM
-  model always comes from `LLM_MODEL_NAME`.
-- `Book` snapshots `llmModel` and `reasoningEffort` at creation time.
+  `preferredReasoningEffort`. Both are active; preferences outside the
+  `LLM_MODELS` allowlist fall back to `LLM_MODEL_NAME`.
+- `Book` snapshots `llmModel` and `reasoningEffort` at creation time; the gateway
+  sends that snapshot to the provider.
 - `Book.pdfUrl` is filled lazily on the first PDF download for a completed book.
 
 ## Migrations

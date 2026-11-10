@@ -25,12 +25,13 @@ Current interim state:
 
 ## Settings
 
-1. Decide whether generation settings return to the UI.
-   - Backend exposes `GET/PATCH /settings/generation`.
-   - `/settings` is currently presentation-only and does not call the API.
-2. Add a model registry before enabling model selection.
-   - `preferredLlmModel` is stored but ignored; generation uses `LLM_MODEL_NAME`.
-   - Validate models against the configured provider before persisting them.
+Generation defaults (model + reasoning effort) are now live and applied to new
+books. Remaining follow-up:
+
+1. Add per-model metadata (provider, pricing, capabilities) once more than one
+   provider is supported.
+2. Keep the account, billing, notification, and danger-zone panels static until
+   real billing and account APIs exist.
 
 ## Illustrations
 
@@ -62,8 +63,8 @@ seeded. Optional follow-up:
 
 ## Testing & Quality
 
-1. Turn the Playwright stubbed-API smoke test into a real end-to-end flow with
-   backend, database, and a stubbed LLM provider.
+1. Add the opt-in live lifecycle test to CI with a stubbed LLM container and
+   provisioned PostgreSQL/Redis/MinIO services.
 2. Add an integration test for child-profile deletion keeping books with
    `childId = NULL`.
 3. Upgrade NestJS 10 → 12, Prisma, and CLI tooling to clear remaining `high`

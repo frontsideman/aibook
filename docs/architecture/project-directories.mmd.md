@@ -36,7 +36,7 @@ flowchart LR
         PdfModule["PdfModule<br/>PDFKit rendering"]
         StorageModule["StorageModule<br/>MinIO/S3 upload + public URL"]
         QueueModule["QueueModule<br/>BullMQ registration"]
-        SettingsModule["SettingsModule<br/>reasoning effort, active model"]
+        SettingsModule["SettingsModule<br/>model allowlist + reasoning effort"]
         PrismaService["PrismaService<br/>connect/disconnect Prisma"]
     end
 
@@ -275,7 +275,7 @@ erDiagram
 | `/books/:id/generating` | Polling and failure/retry state |
 | `/books/:id/preview` | Review, edits, regeneration, approval |
 | `/profiles` | Child profile CRUD |
-| `/settings` | Static account/subscription presentation |
+| `/settings` | Live generation defaults plus static account panels |
 | `/notifications` | Empty-state placeholder |
 
 ### Standalone

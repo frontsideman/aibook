@@ -166,6 +166,16 @@ Book lifecycle:
 - Exports `createPrismaClient()` and Prisma types via `@repo/database`
 - Deleting a child profile sets `Book.childId` to `NULL`; existing books remain
 
+## Generation Settings
+
+`/settings` loads and saves generation defaults:
+
+- text model from the backend `LLM_MODELS` allowlist (plus `LLM_MODEL_NAME`)
+- reasoning effort (`LOW`, `MEDIUM`, `HIGH`)
+
+New books snapshot both values; existing books keep the settings they were created
+with. Account, billing, and notification panels remain presentation-only.
+
 ## Environment Variables
 
 ### apps/backend/.env
@@ -176,6 +186,7 @@ DATABASE_URL=postgresql://user:password@db:5432/aibook?schema=public
 LLM_API_URL=https://api.deepseek.com/chat/completions
 LLM_API_KEY=your-key
 LLM_MODEL_NAME=deepseek-flash
+LLM_MODELS=deepseek-flash,deepseek-v4-pro
 LLM_DEFAULT_PROMPT="You are writing an original children's book adaptation..."
 
 # Optional (defaults shown)
@@ -193,6 +204,10 @@ AWS_SECRET_ACCESS_KEY=minioadmin
 
 `S3_ENDPOINT` is used by the backend container. `S3_PUBLIC_URL` is the
 browser-facing base URL stored in `Book.pdfUrl`.
+
+`LLM_MODELS` is an optional comma-separated allowlist for the Settings UI. The
+active `LLM_MODEL_NAME` is always included; a user-selected model is snapshotted on
+each new book and sent to the provider.
 
 For Prisma commands run on the host (outside Docker), either export
 `DATABASE_URL=postgresql://user:password@localhost:5432/aibook?schema=public` or
@@ -238,6 +253,9 @@ npm run format:check
 
 # Frontend E2E (Playwright; stubs backend API)
 npm run test:e2e --workspace=apps/frontend
+
+# Opt-in live lifecycle test (requires backend, PostgreSQL, Redis, MinIO, and a stubbed LLM)
+E2E_REAL_BACKEND=1 PLAYWRIGHT_PORT=3002 npm run test:e2e --workspace=apps/frontend -- e2e/book-lifecycle.live.spec.ts
 ```
 
 ## Docker Details
@@ -250,6 +268,8 @@ npm run test:e2e --workspace=apps/frontend
 - Includes PostgreSQL, Redis, MinIO, and a one-shot bucket initializer
 - The MinIO `aibook` bucket is public-read so the browser can open generated PDFs.
   Use a private bucket and signed URLs before production.
+- Compose uses `elestio/minio` and `bitnamilegacy/minio-client` because the official
+  `minio/minio` Docker Hub image is not always pullable. Pin digests for production.
 
 ### docker-compose.dev.yml (Development)
 
@@ -264,9 +284,8 @@ Install Docker Desktop from [docker.com](https://www.docker.com/products/docker-
 ## Current Limitations
 
 - Authentication is a local mock session; all backend data belongs to one mock user.
-- `/settings` is intentionally presentation-only. The generation settings API
-  exists, but the UI does not call it; only reasoning effort is stored, and the
-  active LLM model always comes from `LLM_MODEL_NAME`.
+- `/settings` exposes working generation defaults (text model + reasoning effort).
+  Subscription, billing, account, and notification panels are presentation-only.
 - Illustrations are not generated yet; pages are text-only.
 - Payment webhook handling is a prototype without Stripe signature verification.
 - PDFs are stored in MinIO with public-read access.

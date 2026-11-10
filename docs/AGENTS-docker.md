@@ -23,10 +23,13 @@ Both files start:
 |---------|---------|-------|
 | `db` | 5432 | PostgreSQL 16 |
 | `redis` | 6379 | Redis 7 |
-| `minio` | 9000 (API), 9001 (console) | `minioadmin` / `minioadmin` |
-| `minio-init` | — | Creates the `aibook` bucket and sets public-read |
+| `minio` | 9000 (API), 9001 (console) | `elestio/minio` image, `minioadmin` / `minioadmin` |
+| `minio-init` | — | `bitnamilegacy/minio-client`; creates the `aibook` bucket and sets public-read |
 | `backend` | 3001 | depends on the services above |
 | `frontend` | 3000 | production compose only |
+
+The official `minio/minio` Docker Hub image is not always pullable. The compose files
+use maintained mirrors; pin specific digests/tags for production.
 
 The `aibook` bucket is public-read so a browser can open `pdfUrl`. Replace this
 with private objects plus signed URLs before production.
@@ -38,6 +41,7 @@ with private objects plus signed URLs before production.
   before starting it.
 - LLM variables are required by env validation:
   `LLM_API_URL`, `LLM_API_KEY`, `LLM_MODEL_NAME`, `LLM_DEFAULT_PROMPT`.
+  `LLM_MODELS` is an optional comma-separated Settings allowlist.
 - Compose overrides MinIO values for the container:
   `S3_ENDPOINT=http://minio:9000`, `S3_PUBLIC_URL=http://localhost:9000`,
   `S3_BUCKET=aibook`.

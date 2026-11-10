@@ -85,8 +85,9 @@ Turbo `build` depends on upstream package builds first.
 - `typecheck` — TypeScript strict mode
 - `test-backend` — Jest with PostgreSQL 16 + Redis 7 services
 - `test-frontend` — Vitest
-- `test-e2e` — Playwright after a full build; the current test stubs `/api/*` and
-  does not start the backend or exercise real generation
+- `test-e2e` — Playwright after a full build; the default test stubs `/api/*` and
+  does not start the backend. An opt-in lifecycle test runs with
+  `E2E_REAL_BACKEND=1` against a real backend and stubbed LLM.
 - `build` — Turbo build (all workspaces)
 - `security-audit` — `npm audit --audit-level=critical`
 - `deps-check` — `npm outdated` (warn only)

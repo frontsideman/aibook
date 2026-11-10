@@ -35,8 +35,8 @@ The app is a working text-only MVP:
 - The frontend has explicit generating, review, failed, and completed states in the book flow.
 - Review/approval is part of the main flow before a book becomes `COMPLETED`.
 - Completed books can generate a PDF on first download; the file is stored in MinIO and `Book.pdfUrl` is saved.
+- Generation defaults (text model and reasoning effort) are configurable in `/settings` and applied to new books.
 - Illustrations are not generated.
-- `/settings` is presentation-only; generation settings are API-only and model selection is inactive.
 - Payment handling is a prototype without Stripe signature verification.
 
 ## Update Rule for AGENTS Documentation
