@@ -11,7 +11,7 @@ import {
   ParseIntPipe,
 } from '@nestjs/common';
 import { BookService } from './book.service';
-import type { CreateBookDto, SearchQueryDto, PageEditDto, RegenerateDto } from './book.service';
+import { CreateBookDto, PageEditDto, RegenerateDto, SearchQueryDto } from './book.service';
 import { SubscriptionGuard } from '../payment/subscription.guard';
 import { MockAuthGuard } from '../mock-auth.guard';
 
@@ -26,8 +26,8 @@ export class BookController {
 
   @Get()
   async findAll(@Query() query: SearchQueryDto, @Req() req: AuthenticatedRequest) {
-    const page = parseInt(query.page as string) || 1;
-    const limit = parseInt(query.limit as string) || 10;
+    const page = query.page ?? 1;
+    const limit = query.limit ?? 10;
     const skip = (page - 1) * limit;
 
     const where: Record<string, unknown> = { userId: req.user.id };
@@ -39,7 +39,7 @@ export class BookController {
     if (query.type) where.type = query.type;
     if (query.childName) where.child = { name: { contains: query.childName, mode: 'insensitive' } };
 
-    return this.bookService.findAll({ skip, take: limit, where });
+    return this.bookService.findAll({ skip, take: limit, where, sort: query.sort });
   }
 
   @Post('generate')
@@ -71,7 +71,7 @@ export class BookController {
   @Patch(':id/regenerate')
   async regenerate(
     @Param('id') id: string,
-    @Body() body: RegenerateDto,
+    @Body() body: RegenerateDto = {},
     @Req() req: AuthenticatedRequest
   ) {
     return this.bookService.regenerate(id, body, req.user.id);
@@ -86,5 +86,11 @@ export class BookController {
   @Get(':id/pdf')
   async getPdf(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
     return this.bookService.getPdfUrl(id, req.user.id);
+  }
+
+  @Post(':id/pdf')
+  @UseGuards(SubscriptionGuard)
+  async createPdf(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    return this.bookService.createPdf(id, req.user.id);
   }
 }

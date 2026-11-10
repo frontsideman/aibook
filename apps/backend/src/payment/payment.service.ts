@@ -7,7 +7,7 @@ interface StripeEvent {
 }
 
 interface CheckoutSession {
-  customer_details: { email: string };
+  customer_details?: { email?: string };
 }
 
 interface Subscription {
@@ -29,25 +29,35 @@ export class PaymentService {
       const customerEmail = session.customer_details?.email;
 
       if (customerEmail) {
-        await this.prisma.client.user.update({
-          where: { email: customerEmail },
-          data: { subscriptionActive: true },
-        });
-        this.logger.log(`Subscription activated for ${customerEmail}`);
+        await this.setSubscription(customerEmail, true);
       }
     } else if (stripeEvent.type === 'customer.subscription.deleted') {
       const subscription = stripeEvent.data.object as unknown as Subscription;
       const customerEmail = subscription.metadata?.email;
 
       if (customerEmail) {
-        await this.prisma.client.user.update({
-          where: { email: customerEmail },
-          data: { subscriptionActive: false },
-        });
-        this.logger.log(`Subscription deactivated for ${customerEmail}`);
+        await this.setSubscription(customerEmail, false);
       }
     }
 
     return { received: true };
+  }
+
+  private async setSubscription(email: string, active: boolean) {
+    try {
+      await this.prisma.client.user.update({
+        where: { email },
+        data: { subscriptionActive: active },
+      });
+      this.logger.log(`Subscription ${active ? 'activated' : 'deactivated'} for ${email}`);
+    } catch (error) {
+      const prismaError = error as { code?: string } | null;
+      if (prismaError?.code === 'P2025') {
+        this.logger.warn(`No user found for webhook email ${email}`);
+        return;
+      }
+
+      throw error;
+    }
   }
 }

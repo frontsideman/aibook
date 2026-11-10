@@ -13,6 +13,7 @@ const mockConfigService = {
       AWS_ACCESS_KEY_ID: 'minioadmin',
       AWS_SECRET_ACCESS_KEY: 'minioadmin',
       S3_ENDPOINT: 'http://localhost:9000',
+      S3_PUBLIC_URL: 'http://cdn.example.com',
       S3_BUCKET: 'test-bucket',
     };
     return config[key] ?? fallback;
@@ -54,5 +55,11 @@ describe('StorageService', () => {
       Body: body,
       ContentType: contentType,
     });
+  });
+
+  it('builds a public URL for an uploaded object', () => {
+    expect(service.getPublicUrl('books/book-1/book.pdf')).toBe(
+      'http://cdn.example.com/test-bucket/books/book-1/book.pdf'
+    );
   });
 });

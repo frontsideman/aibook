@@ -50,7 +50,8 @@
         "import/no-named-export": "off",
         "import/prefer-default-export": "off",
         "import/no-namespace": "off",
-        "unicorn/catch-error-name": "warn"
+        "unicorn/catch-error-name": "warn",
+        "no-underscore-dangle": ["warn", { "allow": ["_count", "_all"] }]
       }
     },
     {

@@ -17,7 +17,6 @@ export class SettingsService {
       where: { id: userId },
       select: {
         preferredReasoningEffort: true,
-        preferredLlmModel: true,
       },
     });
 
@@ -26,15 +25,12 @@ export class SettingsService {
     }
 
     return {
-      llmModel: user.preferredLlmModel || this.getActiveLlmModel(),
+      llmModel: this.getActiveLlmModel(),
       reasoningEffort: user.preferredReasoningEffort ?? DEFAULT_REASONING_EFFORT,
     };
   }
 
-  async updateGenerationSettings(
-    userId: string,
-    input: { llmModel?: string; reasoningEffort: ReasoningEffort }
-  ) {
+  async updateGenerationSettings(userId: string, input: { reasoningEffort: ReasoningEffort }) {
     this.validateReasoningEffort(input.reasoningEffort);
 
     let user;
@@ -43,11 +39,9 @@ export class SettingsService {
         where: { id: userId },
         data: {
           preferredReasoningEffort: input.reasoningEffort,
-          ...(input.llmModel ? { preferredLlmModel: input.llmModel } : {}),
         },
         select: {
           preferredReasoningEffort: true,
-          preferredLlmModel: true,
         },
       });
     } catch (error: unknown) {
@@ -60,7 +54,7 @@ export class SettingsService {
     }
 
     return {
-      llmModel: user.preferredLlmModel || this.getActiveLlmModel(),
+      llmModel: this.getActiveLlmModel(),
       reasoningEffort: user.preferredReasoningEffort,
     };
   }

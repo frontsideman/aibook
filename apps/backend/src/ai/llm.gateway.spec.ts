@@ -75,7 +75,7 @@ describe('LlmGateway', () => {
         'LLM provider request timed out'
       );
 
-      await jest.advanceTimersByTimeAsync(30_000);
+      await jest.advanceTimersByTimeAsync(90_000);
 
       await rejectionAssertion;
 

@@ -46,15 +46,17 @@ export class PdfService {
           }
         }
 
-        const textHeight = 100;
+        const textHeight = 220;
         const padding = 50;
 
         doc
           .fillColor('black')
-          .fontSize(30)
+          .fontSize(26)
           .text(page.text, padding, doc.page.height - textHeight - padding, {
             width: doc.page.width - 2 * padding,
+            height: textHeight,
             align: 'center',
+            lineGap: 4,
           });
       }
     } catch (error) {

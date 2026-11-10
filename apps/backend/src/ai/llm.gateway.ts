@@ -6,7 +6,7 @@ type ProviderResponse = {
   choices?: Array<{ message?: { content?: string } }>;
 };
 
-const LLM_REQUEST_TIMEOUT_MS = 30_000;
+const LLM_REQUEST_TIMEOUT_MS = 90_000;
 
 function toGatewayError(message: string): Error {
   return new Error(`LLM provider response invalid: ${message}`);

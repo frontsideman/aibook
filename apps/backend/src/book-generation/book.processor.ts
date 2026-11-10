@@ -1,8 +1,9 @@
 import { Processor, WorkerHost } from '@nestjs/bullmq';
-import type { Job } from 'bullmq';
+import { UnrecoverableError, type Job } from 'bullmq';
 import { PrismaService } from '../prisma.service';
 import { AiService } from '../ai/ai.service';
 import { PromptBuilderService } from './prompt-builder.service';
+import { parseStoryPages } from './story-pages';
 import { BookStatus, type Prisma } from '@repo/database';
 
 @Processor('book-generation')
@@ -24,13 +25,12 @@ export class BookProcessor extends WorkerHost {
     });
 
     if (!book) {
-      throw new Error(`Book with id ${bookId} not found`);
+      throw new UnrecoverableError(`Book with id ${bookId} not found`);
     }
 
-    await this.prisma.client.book.update({
-      where: { id: book.id },
-      data: { status: BookStatus.GENERATING },
-    });
+    if (book.status !== BookStatus.GENERATING) {
+      throw new UnrecoverableError(`Book ${bookId} is not GENERATING (status=${book.status})`);
+    }
 
     try {
       const storyPrompt = this.promptBuilder.buildPrompt(book, parentFeedback);
@@ -40,37 +40,23 @@ export class BookProcessor extends WorkerHost {
         reasoningEffort: book.reasoningEffort,
       });
 
-      // Support multiple LLM page formats: "Page 1:", "**Page 1:**", "Page 1.", etc.
-      const cleaned = storyText.replace(/\*\*/g, '').trim();
-      let pagesContent = cleaned
-        .split(/Page \d+[.:]\s*/)
-        .map((c) => c.trim())
-        .filter((content) => content.length > 0);
+      const pagesContent = parseStoryPages(storyText);
 
       if (pagesContent.length <= 1) {
-        // if the regex failed to split, fall back to double newline splitting
-        pagesContent = storyText
-          .split(/\n\n+/)
-          .map((c) => c.trim())
-          .filter((content) => content.length > 0);
-      }
-
-      if (pagesContent.length <= 1) {
-        throw new Error(
+        throw new UnrecoverableError(
           `Failed to parse story into pages — only ${pagesContent.length} segment(s) found`
         );
       }
 
       await this.prisma.client.$transaction(async (tx: Prisma.TransactionClient) => {
-        for (let i = 0; i < pagesContent.length; i++) {
-          const trimmedContent = pagesContent[i];
-          const pageNumber = i + 1;
+        await tx.page.deleteMany({ where: { bookId: book.id } });
 
+        for (let i = 0; i < pagesContent.length; i++) {
           await tx.page.create({
             data: {
               bookId: book.id,
-              pageNumber,
-              textContent: trimmedContent,
+              pageNumber: i + 1,
+              textContent: pagesContent[i],
             },
           });
         }

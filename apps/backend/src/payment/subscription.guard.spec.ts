@@ -57,6 +57,16 @@ describe('SubscriptionGuard', () => {
     ).rejects.toBeInstanceOf(ForbiddenException);
   });
 
+  it('does not trust the legacy user-email header', async () => {
+    await expect(
+      guard.canActivate(
+        createContext({
+          headers: { 'user-email': 'mock@example.com' },
+        })
+      )
+    ).rejects.toBeInstanceOf(ForbiddenException);
+  });
+
   it('rejects inactive subscriptions', async () => {
     mockPrismaService.client.user.findUnique.mockResolvedValue({
       email: 'mock@example.com',

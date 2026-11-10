@@ -13,6 +13,7 @@ import { PrismaModule } from './prisma.module';
 import { BACKEND_ENV_FILE_PATH } from './config/env-file-path';
 import { validateEnv } from './config/env.validation';
 import { SettingsModule } from './settings/settings.module';
+import { HealthController } from './health.controller';
 
 @Module({
   imports: [
@@ -41,7 +42,7 @@ import { SettingsModule } from './settings/settings.module';
     StoryLibraryModule,
     SettingsModule,
   ],
-  controllers: [],
+  controllers: [HealthController],
   providers: [],
 })
 export class AppModule {}

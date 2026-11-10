@@ -12,10 +12,10 @@ export class SubscriptionGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const email = request.user?.email ?? request.headers['user-email']; // TODO: Remove header fallback when real auth is implemented
+    const email = request.user?.email;
 
     if (!email) {
-      throw new ForbiddenException('User email required for subscription check');
+      throw new ForbiddenException('Authenticated user required for subscription check');
     }
 
     const user = await this.prisma.client.user.findUnique({

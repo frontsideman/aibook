@@ -22,6 +22,8 @@ describe('SettingsService', () => {
 
   beforeEach(async () => {
     jest.clearAllMocks();
+    mockConfigService.getOrThrow.mockReturnValue('openai:env-model');
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SettingsService,
@@ -44,6 +46,24 @@ describe('SettingsService', () => {
     });
 
     expect(mockConfigService.getOrThrow).toHaveBeenCalledWith('LLM_MODEL_NAME');
+  });
+
+  it('ignores a stale stored model preference because model selection is inactive', async () => {
+    mockPrismaClient.user.findUnique.mockResolvedValue({
+      preferredReasoningEffort: ReasoningEffort.MEDIUM,
+      preferredLlmModel: 'openai:gpt-5.4-mini',
+    });
+
+    await expect(service.getGenerationSettings('user-1')).resolves.toEqual({
+      llmModel: 'openai:env-model',
+      reasoningEffort: ReasoningEffort.MEDIUM,
+    });
+  });
+
+  it('raises a controlled not found error when the user does not exist', async () => {
+    mockPrismaClient.user.findUnique.mockResolvedValue(null);
+
+    await expect(service.getGenerationSettings('missing-user')).rejects.toThrow(NotFoundException);
   });
 
   it('rejects an invalid reasoning effort', async () => {
@@ -71,11 +91,11 @@ describe('SettingsService', () => {
     expect(mockPrismaClient.user.update).toHaveBeenCalledWith({
       where: { id: 'user-1' },
       data: { preferredReasoningEffort: ReasoningEffort.MEDIUM },
-      select: { preferredReasoningEffort: true, preferredLlmModel: true },
+      select: { preferredReasoningEffort: true },
     });
   });
 
-  it('raises a controlled not found error when the user does not exist', async () => {
+  it('raises a controlled not found error when update hits a missing user', async () => {
     mockPrismaClient.user.update.mockRejectedValue({ code: 'P2025' });
 
     await expect(

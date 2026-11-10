@@ -56,6 +56,18 @@ describe('validateEnv', () => {
     ).toThrow(/LLM_API_URL must be a valid absolute http\/https URL/);
   });
 
+  it('fails when S3_PUBLIC_URL is not an absolute http/https URL', () => {
+    expect(() =>
+      validateEnv({
+        DATABASE_URL: 'postgresql://user:pass@localhost:5432/db',
+        LLM_API_URL: 'https://api.example.com',
+        LLM_API_KEY: 'secret',
+        LLM_MODEL_NAME: 'model',
+        S3_PUBLIC_URL: 'localhost:9000',
+      })
+    ).toThrow(/S3_PUBLIC_URL must be a valid absolute http\/https URL/);
+  });
+
   it('fails when LLM_API_KEY is missing', () => {
     expect(() =>
       validateEnv({

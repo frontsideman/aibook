@@ -3,8 +3,11 @@ import { PdfService } from './pdf.service';
 
 describe('PdfService', () => {
   let service: PdfService;
+  let consoleErrorSpy: jest.SpyInstance;
 
   beforeEach(async () => {
+    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => undefined);
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [PdfService],
     }).compile();
@@ -20,6 +23,10 @@ describe('PdfService', () => {
         },
       } as unknown as Response)
     );
+  });
+
+  afterEach(() => {
+    consoleErrorSpy.mockRestore();
   });
 
   it('should be defined', () => {

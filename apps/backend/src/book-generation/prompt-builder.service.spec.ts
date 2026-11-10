@@ -81,6 +81,13 @@ describe('PromptBuilderService', () => {
     expect(result).toContain('interests: no specific interests listed');
   });
 
+  it('omits child details when the child profile was deleted', () => {
+    const result = service.buildPrompt({ ...mockBook, child: null });
+
+    expect(result).not.toContain('Child:');
+    expect(result).toContain('Story: "The Brave Little Dinosaur".');
+  });
+
   it('renders story title', () => {
     const result = service.buildPrompt(mockBook);
     expect(result).toContain('Story: "The Brave Little Dinosaur".');

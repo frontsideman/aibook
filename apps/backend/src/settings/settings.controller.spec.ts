@@ -62,7 +62,6 @@ describe('SettingsController', () => {
 
   it('updates owner-scoped generation settings', async () => {
     const body = {
-      llmModel: 'openai:gpt-5.4',
       reasoningEffort: ReasoningEffort.HIGH,
     };
 

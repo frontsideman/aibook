@@ -20,6 +20,7 @@ describe('BookController', () => {
     editPage: jest.fn(),
     regenerate: jest.fn(),
     getPdfUrl: jest.fn(),
+    createPdf: jest.fn(),
   };
 
   const mockPrismaService = {
@@ -58,7 +59,7 @@ describe('BookController', () => {
 
   describe('findAll', () => {
     it('should call bookService.findAll with user-scoped query', async () => {
-      const query: SearchQueryDto = { title: 'Test', style: 'CARTOON', page: '1', limit: '10' };
+      const query: SearchQueryDto = { title: 'Test', style: 'CARTOON', page: 1, limit: 10 };
       const req = { user: { id: 'user-1', email: 'test@example.com', name: 'Test User' } };
       await controller.findAll(query, req);
       expect(service.findAll).toHaveBeenCalledWith({
@@ -73,7 +74,7 @@ describe('BookController', () => {
     });
 
     it('should treat search as a title filter alias', async () => {
-      const query: SearchQueryDto = { search: 'Moon', page: '1', limit: '10' };
+      const query: SearchQueryDto = { search: 'Moon', page: 1, limit: 10 };
       const req = { user: { id: 'user-3', email: 'test@example.com', name: 'Test User' } };
       await controller.findAll(query, req);
       expect(service.findAll).toHaveBeenCalledWith({
@@ -87,7 +88,7 @@ describe('BookController', () => {
     });
 
     it('should include status and childId filters when provided', async () => {
-      const query: SearchQueryDto = { status: 'REVIEW', childId: 'child-1', page: '2', limit: '5' };
+      const query: SearchQueryDto = { status: 'REVIEW', childId: 'child-1', page: 2, limit: 5 };
       const req = { user: { id: 'user-2', email: 'test@example.com', name: 'Test User' } };
       await controller.findAll(query, req);
       expect(service.findAll).toHaveBeenCalledWith({
@@ -158,6 +159,14 @@ describe('BookController', () => {
       const req = { user: { id: 'user-1', email: 'test@example.com', name: 'Test User' } };
       await controller.getPdf('book-1', req);
       expect(service.getPdfUrl).toHaveBeenCalledWith('book-1', 'user-1');
+    });
+  });
+
+  describe('createPdf', () => {
+    it('should call createPdf with book id and userId', async () => {
+      const req = { user: { id: 'user-1', email: 'test@example.com', name: 'Test User' } };
+      await controller.createPdf('book-1', req);
+      expect(service.createPdf).toHaveBeenCalledWith('book-1', 'user-1');
     });
   });
 });

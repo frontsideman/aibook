@@ -24,18 +24,20 @@ const toneLabel: Record<Tone, string> = {
 export class PromptBuilderService {
   constructor(private readonly configService: ConfigService) {}
 
-  buildPrompt(book: Book & { child: ChildProfile }, parentFeedback?: string): string {
+  buildPrompt(book: Book & { child: ChildProfile | null }, parentFeedback?: string): string {
     const basePrompt = this.configService.getOrThrow<string>('LLM_DEFAULT_PROMPT');
     const child = book.child;
 
-    const childInterests = (child.interests || []).join(', ') || 'no specific interests listed';
+    const parts: string[] = [basePrompt];
 
-    const parts: string[] = [
-      basePrompt,
-      `Child: ${child.name}, ${child.age}-year-old ${child.gender}, interests: ${childInterests}.`,
-      `Story: "${book.title}".`,
-      `Style: ${styleLabel[book.style]}.`,
-    ];
+    if (child) {
+      const childInterests = (child.interests || []).join(', ') || 'no specific interests listed';
+      parts.push(
+        `Child: ${child.name}, ${child.age}-year-old ${child.gender}, interests: ${childInterests}.`
+      );
+    }
+
+    parts.push(`Story: "${book.title}".`, `Style: ${styleLabel[book.style]}.`);
 
     if (book.tone) {
       parts.push(`Tone: ${toneLabel[book.tone]}.`);

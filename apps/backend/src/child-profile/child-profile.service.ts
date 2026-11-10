@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 
 @Injectable()
@@ -23,14 +23,15 @@ export class ChildProfileService {
     });
   }
 
-  async findOne(id: string) {
-    return this.prisma.client.childProfile.findUnique({
-      where: { id },
+  async findOne(id: string, userId: string) {
+    return this.prisma.client.childProfile.findFirst({
+      where: { id, userId },
     });
   }
 
   async update(
     id: string,
+    userId: string,
     data: Partial<{
       name: string;
       age: number;
@@ -38,13 +39,27 @@ export class ChildProfileService {
       interests: string[];
     }>
   ) {
+    const existing = await this.prisma.client.childProfile.findFirst({
+      where: { id, userId },
+      select: { id: true },
+    });
+
+    if (!existing) throw new NotFoundException('Child profile not found');
+
     return this.prisma.client.childProfile.update({
       where: { id },
       data,
     });
   }
 
-  async remove(id: string) {
+  async remove(id: string, userId: string) {
+    const existing = await this.prisma.client.childProfile.findFirst({
+      where: { id, userId },
+      select: { id: true },
+    });
+
+    if (!existing) throw new NotFoundException('Child profile not found');
+
     return this.prisma.client.childProfile.delete({
       where: { id },
     });

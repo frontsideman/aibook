@@ -50,6 +50,11 @@ export function validateEnv(config: EnvInput): EnvInput {
     errors.push('REDIS_PORT must be a valid integer');
   }
 
+  const s3PublicUrl = getString(config.S3_PUBLIC_URL);
+  if (s3PublicUrl && !isAbsoluteHttpUrl(s3PublicUrl)) {
+    errors.push('S3_PUBLIC_URL must be a valid absolute http/https URL');
+  }
+
   const mockAuth = getString(config.MOCK_AUTH);
   if (mockAuth && mockAuth !== 'true' && mockAuth !== 'false') {
     errors.push('MOCK_AUTH must be either "true" or "false"');
