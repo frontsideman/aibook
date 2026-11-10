@@ -24,7 +24,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <PageBreadcrumb />
           </header>
         )}
-        <main className={cn('min-w-0 p-[28]', !header && 'p-4 lg:p-6')}>{children}</main>
+        <main className={cn('min-w-0 p-7', !header && 'p-4 lg:p-6')}>{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

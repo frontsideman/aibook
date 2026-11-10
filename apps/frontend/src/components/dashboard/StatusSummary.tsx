@@ -15,11 +15,12 @@ const STATUS_CONFIG: {
   { key: 'GENERATING', label: 'GENERATING', colorClass: 'text-info' },
   { key: 'REVIEW', label: 'REVIEW', colorClass: 'text-warning' },
   { key: 'COMPLETED', label: 'COMPLETED', colorClass: 'text-success' },
+  { key: 'FAILED', label: 'FAILED', colorClass: 'text-destructive' },
 ];
 
 export default function StatusSummary({ counts }: StatusSummaryProps) {
   return (
-    <div className='flex gap-[14px]' data-testid='status-summary'>
+    <div className='flex flex-wrap gap-[14px]' data-testid='status-summary'>
       {STATUS_CONFIG.map(({ key, label, colorClass }) => (
         <div
           key={key}

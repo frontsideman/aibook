@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import GeneratingPage from './page';
 
 const replace = vi.fn();
@@ -79,6 +79,38 @@ describe('GeneratingPage', () => {
         'href',
         '/books/new'
       );
+    });
+  });
+
+  it('retries a failed book through the regenerate endpoint', async () => {
+    vi.mocked(fetch).mockImplementation(async (_input, init) => {
+      if (init?.method === 'PATCH') {
+        return { ok: true, json: async () => ({ status: 'REGENERATING' }) } as Response;
+      }
+
+      return {
+        ok: true,
+        json: async () => ({
+          book: {
+            id: 'book-1',
+            title: 'Failed Book',
+            status: 'FAILED',
+            style: 'CARTOON',
+          },
+        }),
+      } as Response;
+    });
+
+    render(<GeneratingPage />);
+
+    fireEvent.click(await screen.findByRole('button', { name: 'Try Again' }));
+
+    await waitFor(() => {
+      expect(fetch).toHaveBeenCalledWith('/api/books/book-1/regenerate', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ parentFeedback: '' }),
+      });
     });
   });
 });

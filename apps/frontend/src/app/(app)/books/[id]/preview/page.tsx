@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import SpreadViewer from '@/components/SpreadViewer';
 
@@ -21,13 +21,6 @@ export default function PreviewPage() {
   const [globalFeedback, setGlobalFeedback] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, []);
 
   useEffect(() => {
     const loadPreview = async () => {
@@ -56,8 +49,8 @@ export default function PreviewPage() {
         }
 
         setData(previewJson);
-      } catch (fetchError: any) {
-        setError(fetchError.message);
+      } catch (fetchError) {
+        setError(fetchError instanceof Error ? fetchError.message : 'Preview could not be loaded');
       } finally {
         setLoading(false);
       }
@@ -70,58 +63,60 @@ export default function PreviewPage() {
     setSubmitting(true);
     setError('');
 
-    for (const [pageNum, feedback] of Object.entries(pageFeedback)) {
-      if (!feedback.trim()) continue;
-      await fetch(`/api/books/${params.id}/pages/${pageNum}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ feedback }),
-      });
-    }
+    const pageNotes = Object.entries(pageFeedback)
+      .filter(([, feedback]) => feedback.trim().length > 0)
+      .map(([pageNumber, feedback]) => `Page ${pageNumber}: ${feedback.trim()}`);
 
-    if (globalFeedback.trim()) {
-      const res = await fetch(`/api/books/${params.id}/regenerate`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ parentFeedback: globalFeedback }),
-      });
+    try {
+      if (globalFeedback.trim()) {
+        const combinedFeedback = [globalFeedback.trim(), ...pageNotes].join('\n\n');
+        if (combinedFeedback.length > 5000) {
+          throw new Error('Feedback is too long. Shorten the notes and try again.');
+        }
 
-      if (res.ok) {
+        const res = await fetch(`/api/books/${params.id}/regenerate`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ parentFeedback: combinedFeedback }),
+        });
+
+        if (!res.ok) throw new Error('Could not start regeneration');
+
         setGlobalFeedback('');
         setPageFeedback({});
-        setSubmitting(false);
-        timeoutRef.current = setTimeout(() => {
-          setLoading(true);
-          void (async () => {
-            try {
-              const bookResponse = await fetch(`/api/books/${params.id}`);
-              const bookJson = await bookResponse.json();
-              const currentBook = bookJson.book ?? bookJson;
-              if (currentBook.status !== 'REVIEW') {
-                router.replace(`/books/${params.id}/generating`);
-                return;
-              }
-
-              const previewResponse = await fetch(`/api/books/${params.id}/preview`);
-              if (!previewResponse.ok) throw new Error('Preview not available');
-              const previewJson = await previewResponse.json();
-              if (previewJson.redirectToDetail) {
-                router.replace(`/books/${params.id}`);
-                return;
-              }
-              setData(previewJson);
-            } catch {
-              // Leave the current preview in place if refresh fails.
-            } finally {
-              setLoading(false);
-            }
-          })();
-        }, 2000);
+        router.push(`/books/${params.id}/generating`);
         return;
       }
-    }
 
-    setSubmitting(false);
+      for (const [pageNum] of Object.entries(pageFeedback)) {
+        const feedback = pageFeedback[Number(pageNum)]?.trim();
+        if (!feedback) continue;
+
+        const res = await fetch(`/api/books/${params.id}/pages/${pageNum}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ feedback }),
+        });
+
+        if (!res.ok) throw new Error(`Could not update page ${pageNum}`);
+      }
+
+      const previewResponse = await fetch(`/api/books/${params.id}/preview`);
+      if (!previewResponse.ok) throw new Error('Preview is no longer available');
+
+      const previewJson = (await previewResponse.json()) as BookData;
+      if (previewJson.redirectToDetail) {
+        router.replace(`/books/${params.id}`);
+        return;
+      }
+
+      setData(previewJson);
+      setPageFeedback({});
+    } catch (submitError) {
+      setError(submitError instanceof Error ? submitError.message : 'Could not submit changes');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handleApprove = async () => {
@@ -131,15 +126,14 @@ export default function PreviewPage() {
       const res = await fetch(`/api/books/${params.id}/approve`, { method: 'POST' });
       if (!res.ok) throw new Error('Failed to approve book');
       router.push(`/books/${params.id}`);
-    } catch (fetchError: any) {
-      setError(fetchError.message);
+    } catch (fetchError) {
+      setError(fetchError instanceof Error ? fetchError.message : 'Failed to approve book');
       setSubmitting(false);
     }
   };
 
   if (loading) return <p className='text-muted-foreground'>Loading preview...</p>;
-  if (error) return <p className='text-red-600'>{error}</p>;
-  if (!data) return <p className='text-muted-foreground'>No preview available</p>;
+  if (!data) return <p className='text-red-600'>{error || 'No preview available'}</p>;
 
   const hasFeedback = Object.values(pageFeedback).some((f) => f.trim()) || globalFeedback.trim();
 

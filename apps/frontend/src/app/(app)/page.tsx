@@ -27,6 +27,7 @@ type PaginatedResponse = {
   total: number;
   page: number;
   totalPages: number;
+  statusCounts?: Partial<Record<DashboardBookStatus, number>>;
 };
 
 type ViewMode = 'grid' | 'list';
@@ -83,6 +84,7 @@ export default function DashboardPage() {
     if (style) params.set('style', style);
     if (type) params.set('type', type);
     if (profile) params.set('childName', profile);
+    params.set('sort', sort);
     params.set('page', String(page));
     params.set('limit', '10');
 
@@ -116,7 +118,7 @@ export default function DashboardPage() {
         setLoading(false);
       }
     }
-  }, [search, status, style, type, profile, page]);
+  }, [search, status, style, type, profile, page, sort]);
 
   useEffect(() => {
     fetchBooks();
@@ -147,6 +149,8 @@ export default function DashboardPage() {
 
   const statusCounts = useMemo(() => {
     if (!data) return EMPTY_COUNTS;
+    if (data.statusCounts) return { ...EMPTY_COUNTS, ...data.statusCounts };
+
     const counts = { ...EMPTY_COUNTS };
     for (const book of data.books) {
       if (book.status in counts) {

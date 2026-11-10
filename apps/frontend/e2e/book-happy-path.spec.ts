@@ -1,6 +1,37 @@
 import { expect, test } from '@playwright/test';
 
-test('book happy path scaffold', async ({ page }) => {
+test('create-book form becomes ready with a profile, story, and style', async ({ page }) => {
+  await page.route('**/api/**', async (route) => {
+    const url = new URL(route.request().url());
+
+    if (url.pathname === '/api/child-profiles') {
+      await route.fulfill({
+        json: [{ id: 'profile-1', name: 'Nina', age: 7, gender: 'female', interests: ['stars'] }],
+      });
+      return;
+    }
+
+    if (url.pathname === '/api/stories') {
+      await route.fulfill({ json: [{ title: 'Cinderella' }] });
+      return;
+    }
+
+    if (url.pathname === '/api/books') {
+      await route.fulfill({
+        json: {
+          books: [],
+          total: 0,
+          page: 1,
+          totalPages: 1,
+          statusCounts: {},
+        },
+      });
+      return;
+    }
+
+    await route.fulfill({ status: 404, json: { message: 'Not stubbed' } });
+  });
+
   await page.goto('/login');
   await page.evaluate(() => {
     localStorage.setItem(
@@ -12,10 +43,15 @@ test('book happy path scaffold', async ({ page }) => {
       })
     );
   });
-  await page.goto('/books/new');
-  await expect(page.getByText('Create New Book')).toBeVisible();
 
-  // Baseline scaffold: verifies flow entrypoint and stable page shell.
-  // Full create->generate->status assertions will be expanded when e2e test data orchestration is in place.
+  await page.goto('/books/new');
+
+  await expect(page.getByText('Create New Book')).toBeVisible();
   await expect(page.getByText('Select child profile')).toBeVisible();
+
+  await page.getByRole('button', { name: 'Select Nina, 7 years old' }).click();
+  await page.getByRole('textbox', { name: 'Story' }).fill('Cinderella');
+  await page.getByRole('button', { name: 'Watercolor' }).click();
+
+  await expect(page.getByRole('button', { name: 'Create Book' })).toBeEnabled();
 });
