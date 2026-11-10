@@ -18,7 +18,7 @@ services:
       - "6379:6379"
 
   minio:
-    image: minio/minio:latest
+    image: elestio/minio:latest
     restart: always
     command: server /data --console-address ":9001"
     environment:
@@ -31,7 +31,7 @@ services:
       - minio_data:/data
 
   minio-init:
-    image: minio/mc:latest
+    image: bitnamilegacy/minio-client:latest
     depends_on:
       minio:
         condition: service_started
