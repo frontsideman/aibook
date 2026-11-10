@@ -76,6 +76,8 @@ export default function GeneratingPage() {
       cancelled = true;
       if (timer) clearTimeout(timer);
     };
+    // pollRun is an intentional manual trigger for restarting the polling loop.
+    // oxlint-disable-next-line react/exhaustive-effect-dependencies
   }, [params.id, router, pollRun]);
 
   const handleRetry = async () => {

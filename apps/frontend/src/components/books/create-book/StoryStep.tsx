@@ -18,7 +18,9 @@ export function StoryStep({ value, onChange }: StoryStepProps) {
   const latestQueryRef = useRef('');
   const offsetRef = useRef(offset);
 
-  offsetRef.current = offset;
+  useEffect(() => {
+    offsetRef.current = offset;
+  }, [offset]);
 
   const loadStories = useCallback(async ({ query, append }: { query: string; append: boolean }) => {
     const currentOffset = append ? offsetRef.current : 0;

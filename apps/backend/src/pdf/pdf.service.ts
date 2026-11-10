@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import * as PDFDocument from 'pdfkit';
+import PdfDocument from 'pdfkit';
 
 @Injectable()
 export class PdfService {
   async generateBookPdf(pages: { text: string; imageUrl?: string }[]): Promise<Buffer> {
-    const doc = new PDFDocument({
+    const doc = new PdfDocument({
       size: 'A3',
       layout: 'landscape',
       margin: 0,

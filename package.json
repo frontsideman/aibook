@@ -15,18 +15,25 @@
     "db:generate": "npm --workspace packages/database run generate",
     "db:migrate:dev": "npm --workspace packages/database run migrate:dev",
     "db:push": "npm --workspace packages/database run db:push",
+    "postinstall": "npm --workspace packages/database run generate",
     "format": "oxfmt --write \"**/*.{ts,tsx,js,jsx,json}\"",
     "format:check": "oxfmt --check \"**/*.{ts,tsx,js,jsx,json}\""
   },
+  "dependencies": {
+    "@nestjs/platform-express": "^12.4.2"
+  },
   "devDependencies": {
     "oxfmt": "^0.78.0",
-    "oxlint": "^1.68.0",
+    "oxlint": "^1.93.0",
     "prisma": "^7.10.1",
-    "turbo": "^2.9.18"
+    "turbo": "^2.11.10"
   },
   "overrides": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
+  },
+  "engines": {
+    "node": ">=26"
   },
   "packageManager": "npm@11.6.2"
 }

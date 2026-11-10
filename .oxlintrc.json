@@ -31,7 +31,8 @@
       "rules": {
         "import/no-unassigned-import": "warn",
         "unicorn/catch-error-name": "warn",
-        "react/react-in-jsx-scope": "off"
+        "react/react-in-jsx-scope": "off",
+        "react/set-state-in-effect": "off"
       }
     },
     {
